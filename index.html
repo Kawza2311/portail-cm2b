@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CM2 B — Mes activités</title>
+<style>
+  :root{
+    --fond:#f6f3ee; --texte:#1f2328; --doux:#5b6168; --carte:#ffffff; --bord:#e4ded4;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size:18px; line-height:1.45; color:var(--texte); background:var(--fond);
+    min-height:100dvh; padding-bottom:env(safe-area-inset-bottom);
+    -webkit-text-size-adjust:100%;
+  }
+  header{
+    background:#1e3a5f; color:#fff; padding:18px 16px 16px;
+    padding-top:max(18px, env(safe-area-inset-top));
+  }
+  header h1{margin:0; font-size:1.5rem}
+  header p{margin:4px 0 0; opacity:.85; font-size:1rem}
+  main{max-width:900px; margin:0 auto; padding:16px}
+
+  /* Accueil : tuiles matières */
+  .grille{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px}
+  .tuile{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    min-height:120px; padding:14px 10px; border:none; border-radius:18px; cursor:pointer;
+    color:#fff; font:inherit; font-weight:700; font-size:1.1rem; text-align:center;
+    box-shadow:0 2px 0 rgba(0,0,0,.15); -webkit-tap-highlight-color:transparent;
+  }
+  .tuile:active{transform:translateY(2px); box-shadow:none}
+  .tuile .icone{font-size:2.2rem; line-height:1}
+  .tuile .nb{font-weight:500; font-size:.85rem; opacity:.9}
+
+  /* Page matière */
+  .retour{
+    display:inline-flex; align-items:center; gap:6px; margin-bottom:12px;
+    padding:12px 16px; border-radius:999px; border:2px solid var(--bord); background:#fff;
+    font:inherit; font-weight:600; cursor:pointer; color:var(--texte);
+  }
+  .titre-matiere{display:flex; align-items:center; gap:10px; margin:0 0 12px; font-size:1.6rem}
+  .sous-onglets{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px}
+  .sous-onglets button{
+    padding:12px 16px; border-radius:999px; border:2px solid var(--coul); background:#fff;
+    color:var(--coul); font:inherit; font-weight:700; cursor:pointer; min-height:48px;
+  }
+  .sous-onglets button[aria-selected="true"]{background:var(--coul); color:#fff}
+
+  .cartes{display:grid; gap:12px}
+  a.carte{
+    display:block; text-decoration:none; color:var(--texte); background:var(--carte);
+    border:2px solid var(--bord); border-left:8px solid var(--coul);
+    border-radius:16px; padding:16px; position:relative;
+  }
+  a.carte:active{background:#f1ede6}
+  .carte h3{margin:0 0 4px; font-size:1.2rem; padding-right:90px}
+  .carte p{margin:0; color:var(--doux)}
+  .carte .ouvrir{display:inline-block; margin-top:10px; font-weight:700; color:var(--coul)}
+  .badge{
+    position:absolute; top:14px; right:14px; background:#e11d48; color:#fff;
+    font-size:.8rem; font-weight:700; padding:4px 10px; border-radius:999px;
+  }
+  .vide{
+    background:#fff; border:2px dashed var(--bord); border-radius:16px; padding:24px 16px;
+    text-align:center; color:var(--doux);
+  }
+  .nouveautes h2{font-size:1.2rem; margin:24px 0 10px}
+  .sous-onglets.niveau2{padding:10px; background:#fff; border-radius:16px; border:2px solid var(--bord)}
+  .sous-onglets.niveau2 button{min-height:44px; padding:10px 14px; font-size:1rem}
+  .intro{margin:0 0 14px; padding:12px 14px; background:#fff; border-radius:12px; border-left:6px solid var(--coul)}
+  footer{text-align:center; color:var(--doux); font-size:.9rem; padding:24px 16px 32px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎒 CM2 B — Mes activités</h1>
+  <p>Refais à la maison ce qu'on a fait en classe.</p>
+</header>
+<main id="app"></main>
+<footer>Choisis une matière, puis une activité. Elle s'ouvre dans un nouvel onglet.</footer>
+
+<script>
+/* =========================================================
+   1) LES ONGLETS — un onglet peut contenir des sous-onglets (enfants)
+   ========================================================= */
+const MATIERES = [
+  { id:"francais", nom:"Français", icone:"📖", couleur:"#c2410c", enfants:[
+    {id:"lecture", nom:"Lecture et compréhension"},
+    {id:"litterature", nom:"Littérature"},
+    {id:"grammaire", nom:"Grammaire"},
+    {id:"conjugaison", nom:"Conjugaison"},
+    {id:"vocabulaire", nom:"Vocabulaire"},
+    {id:"dictee", nom:"Dictée", enfants:[
+      {id:"dictees", nom:"Dictées"},
+      {id:"mots-invariables", nom:"Dictées de mots invariables"}
+    ]},
+    {id:"ecriture", nom:"Écriture"}
+  ]},
+  { id:"maths", nom:"Mathématiques", icone:"🔢", couleur:"#1d4ed8", enfants:[
+    {id:"numeration", nom:"Numération"},
+    {id:"fractions-decimaux", nom:"Fractions et décimaux"},
+    {id:"calcul-mental", nom:"Calcul mental"},
+    {id:"problemes", nom:"Résolution de problèmes"},
+    {id:"proportionnalite", nom:"Proportionnalité"},
+    {id:"algebre", nom:"Algèbre"},
+    {id:"donnees-probabilites", nom:"Données et probabilités"},
+    {id:"mesures", nom:"Mesures"},
+    {id:"geometrie", nom:"Géométrie"}
+  ]},
+  { id:"objectif-6e", nom:"Objectif 6e", icone:"🎯", couleur:"#4338ca",
+    intro:"Le devoir de la semaine : fais-le en ligne, on le corrige ensemble le jeudi en classe." },
+  { id:"anglais",    nom:"Anglais",    icone:"💬", couleur:"#7c3aed" },
+  { id:"histoire",   nom:"Histoire",   icone:"🏛️", couleur:"#92400e" },
+  { id:"geographie", nom:"Géographie", icone:"🌍", couleur:"#0f766e" },
+  { id:"sciences",   nom:"Sciences",   icone:"🔬", couleur:"#15803d" },
+  { id:"emc",        nom:"EMC",        icone:"🤝", couleur:"#be185d" },
+  { id:"concours",   nom:"Concours",   icone:"🏆", couleur:"#b45309", enfants:[
+    {id:"ffjm", nom:"FFJM"},
+    {id:"pangea", nom:"Pangea"},
+    {id:"dis-moi-dix-mots", nom:"Dis-moi dix mots"}
+  ]}
+];
+
+/* =========================================================
+   2) LES ACTIVITÉS — pour en ajouter une, copier un bloc.
+   onglet : chemin de l'onglet, ex. "francais/dictee/mots-invariables"
+   ajout  : date AAAA-MM-JJ (badge « Nouveau » pendant 14 jours)
+   ========================================================= */
+const ACTIVITES = [
+  { onglet:"maths/calcul-mental",
+    titre:"Calcul mental CM2 — Toute l'année",
+    description:"Tous les entraînements de calcul mental de l'année.",
+    lien:"https://cm2mental.netlify.app/", ajout:"2026-11-12" },
+  { onglet:"anglais",
+    titre:"Halloween Vocabulary",
+    description:"Le vocabulaire d'Halloween en anglais.",
+    lien:"https://halloween-cm2b.netlify.app/", ajout:"2026-11-12" }
+];
+
+/* ========================================================= */
+const JOURS_NOUVEAU = 14;
+const app = document.getElementById("app");
+
+function estNouveau(a){
+  if(!a.ajout) return false;
+  return (Date.now() - new Date(a.ajout + "T00:00:00").getTime()) / 86400000 < JOURS_NOUVEAU;
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function matiere(id){ return MATIERES.find(m => m.id === id); }
+function dans(a, chemin){ return a.onglet === chemin || a.onglet.startsWith(chemin + "/"); }
+
+function carte(a){
+  const m = matiere(a.onglet.split("/")[0]);
+  return `<a class="carte" href="${esc(a.lien)}" target="_blank" rel="noopener" style="--coul:${m ? m.couleur : "#333"}">
+    ${estNouveau(a) ? '<span class="badge">Nouveau</span>' : ''}
+    <h3>${esc(a.titre)}</h3>
+    ${a.description ? `<p>${esc(a.description)}</p>` : ''}
+    <span class="ouvrir">Ouvrir ➜</span>
+  </a>`;
+}
+function listeCartes(liste){
+  return liste.length
+    ? `<div class="cartes">${liste.map(carte).join("")}</div>`
+    : `<div class="vide">Pas encore d'activité ici.<br>Reviens bientôt !</div>`;
+}
+
+function accueil(){
+  const tuiles = MATIERES.map(m => {
+    const n = ACTIVITES.filter(a => dans(a, m.id)).length;
+    return `<button class="tuile" style="background:${m.couleur}" onclick="location.hash='#/${m.id}'">
+      <span class="icone">${m.icone}</span>${esc(m.nom)}
+      <span class="nb">${n ? n + (n > 1 ? " activités" : " activité") : "bientôt"}</span>
+    </button>`;
+  }).join("");
+  const nouv = ACTIVITES.filter(estNouveau);
+  const blocNouv = nouv.length
+    ? `<section class="nouveautes"><h2>✨ Nouveautés</h2>${listeCartes(nouv)}</section>` : "";
+  app.innerHTML = `<div class="grille">${tuiles}</div>${blocNouv}`;
+}
+
+function pageMatiere(segments){
+  const m = matiere(segments[0]);
+  if(!m){ location.hash = ""; return; }
+  let html = "", noeud = m, chemin = m.id, niveau = 1;
+  // Descend dans les sous-onglets : une rangée de boutons par niveau
+  while(noeud.enfants && noeud.enfants.length){
+    const actif = noeud.enfants.find(e => e.id === segments[niveau]) || noeud.enfants[0];
+    html += `<div class="sous-onglets${niveau > 1 ? " niveau2" : ""}" role="tablist">${noeud.enfants.map(e =>
+      `<button role="tab" aria-selected="${e.id === actif.id}" onclick="location.hash='#/${chemin}/${e.id}'">${esc(e.nom)}</button>`
+    ).join("")}</div>`;
+    chemin += "/" + actif.id; noeud = actif; niveau++;
+  }
+  const liste = ACTIVITES.filter(a => a.onglet === chemin);
+  app.innerHTML = `<div style="--coul:${m.couleur}">
+    <button class="retour" onclick="location.hash=''">← Accueil</button>
+    <h2 class="titre-matiere"><span>${m.icone}</span>${esc(m.nom)}</h2>
+    ${m.intro ? `<p class="intro">${esc(m.intro)}</p>` : ""}
+    ${html}${listeCartes(liste)}</div>`;
+}
+
+function router(){
+  const segments = (location.hash || "").replace(/^#\/?/, "").split("/").filter(Boolean);
+  if(segments.length) pageMatiere(segments); else accueil();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", router);
+router();
+</script>
+</body>
+</html>
