@@ -69,6 +69,9 @@
     text-align:center; color:var(--doux);
   }
   .nouveautes h2{font-size:1.2rem; margin:24px 0 10px}
+  .sous-onglets .compte{display:inline-block; min-width:1.6em; margin-left:6px; padding:0 6px; border-radius:999px; background:var(--coul); color:#fff; font-size:.85em; font-weight:700; text-align:center}
+  .sous-onglets .compte.zero{background:#e5e7eb; color:#6b7280}
+  .sous-onglets button[aria-selected="true"] .compte{background:#fff; color:var(--coul)}
   .sous-onglets.niveau2{padding:10px; background:#fff; border-radius:16px; border:2px solid var(--bord)}
   .sous-onglets.niveau2 button{min-height:44px; padding:10px 14px; font-size:1rem}
   .intro{margin:0 0 14px; padding:12px 14px; background:#fff; border-radius:12px; border-left:6px solid var(--coul)}
@@ -202,7 +205,8 @@ function pageMatiere(segments){
   while(noeud.enfants && noeud.enfants.length){
     const actif = noeud.enfants.find(e => e.id === segments[niveau]) || noeud.enfants[0];
     html += `<div class="sous-onglets${niveau > 1 ? " niveau2" : ""}" role="tablist">${noeud.enfants.map(e =>
-      `<button role="tab" aria-selected="${e.id === actif.id}" onclick="location.hash='#/${chemin}/${e.id}'">${esc(e.nom)}</button>`
+      { const n = ACTIVITES.filter(a => dans(a, chemin + "/" + e.id)).length;
+      return `<button role="tab" aria-selected="${e.id === actif.id}" aria-label="${esc(e.nom)} : ${n} ${n > 1 ? "activités" : "activité"}" onclick="location.hash='#/${chemin}/${e.id}'">${esc(e.nom)} <span class="compte${n ? "" : " zero"}">${n}</span></button>`; }
     ).join("")}</div>`;
     chemin += "/" + actif.id; noeud = actif; niveau++;
   }
