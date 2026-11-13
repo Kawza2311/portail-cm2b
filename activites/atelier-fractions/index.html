@@ -106,6 +106,22 @@ input.dot.ko{background:var(--ko-soft);border-bottom-color:var(--ko)}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:20}
 .confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 @media (prefers-reduced-motion:no-preference){.card{animation:pop .25s ease-out}@keyframes pop{from{transform:translateY(6px)}to{transform:none}}}
+.qbox{display:flex;flex-direction:column;gap:12px}
+.manip{display:flex;flex-direction:column;gap:10px;background:#FFF8FB;border-radius:18px;padding:12px}
+.mtip{margin:0;font-weight:700;color:var(--choco)}
+.plates{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.plate{border:3px dashed transparent;background:none;border-radius:16px;padding:2px;cursor:default}
+.plate.cuttable{cursor:pointer;border-color:var(--straw)}
+.plate.cuttable:hover{background:var(--straw-soft)}
+.plate svg{display:block;max-width:100%;height:auto}
+.tray{display:flex;flex-direction:column;gap:6px;background:#F3E6DA;border-radius:14px;padding:8px;min-height:52px}
+.grp{display:flex;flex-wrap:wrap;gap:4px}
+.piece{width:40px;height:40px;border:none;background:#fff;border-radius:10px;padding:4px;cursor:pointer;box-shadow:0 2px 0 #D8C2B2}
+.piece svg{width:100%;height:100%}
+.verif{margin:0;font-size:1.1rem;background:var(--blue-soft);border-radius:12px;padding:8px 12px}
+.why{display:block;margin-top:4px;font-weight:700}
+.pouce{margin:8px 0 0;padding-left:1.4em;display:flex;flex-direction:column;gap:4px}
+.listen{white-space:nowrap}
 </style>
 
 </head>
@@ -127,12 +143,14 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const pl=(n,s,p)=>n>1?p:s;
 const F=(n,d)=>`<span class="fr"><span>${n}</span><span>${d}</span></span>`;
-const inp=(a,label="réponse")=>`<input class="dot" inputmode="numeric" autocomplete="off" data-ans="${a}" aria-label="${label}">`;
-const finp=(n,d)=>`<span class="fr fin" data-n="${n}" data-d="${d}"><input class="dot" inputmode="numeric" autocomplete="off" aria-label="numérateur"><input class="dot" inputmode="numeric" autocomplete="off" aria-label="dénominateur"></span>`;
-const fnum=(n,d)=>`<span class="fr"><span>${inp(n,"numérateur")}</span><span>${d}</span></span>`;
-const sg=a=>`<span class="sg" data-ans="${a}"><button data-v="&lt;">&lt;</button><button data-v="=">=</button><button data-v="&gt;">&gt;</button></span>`;
-const choices=(opts,ok)=>`<div class="choices" data-ans="${ok}">${opts.map((o,k)=>`<button data-v="${k}">${o}</button>`).join("")}</div>`;
+const inp=(a,role="",label="réponse")=>`<input class="dot" inputmode="numeric" autocomplete="off" data-ans="${a}" data-role="${role}" aria-label="${label}">`;
+const finp=(n,d,role="f")=>`<span class="fr fin" data-n="${n}" data-d="${d}" data-role="${role}"><input class="dot" inputmode="numeric" autocomplete="off" aria-label="numérateur"><input class="dot" inputmode="numeric" autocomplete="off" aria-label="dénominateur"></span>`;
+const fnum=(n,d,role="fn")=>`<span class="fr"><span>${inp(n,role,"numérateur")}</span><span>${d}</span></span>`;
+const sg=a=>`<span class="sg" data-ans="${a}"><button data-v="&lt;" aria-label="plus petit que">&lt;</button><button data-v="=" aria-label="égal à">=</button><button data-v="&gt;" aria-label="plus grand que">&gt;</button></span>`;
+const choices=(opts,ok,role="c")=>`<div class="choices" data-ans="${ok}" data-role="${role}">${opts.map((o,k)=>`<button data-v="${k}">${o}</button>`).join("")}</div>`;
+const LT="&lt;",GT="&gt;",sym=t=>t==="<"?LT:t===">"?GT:"=";
 
+// ================= DESSINS =================
 // ================= DESSINS =================
 function pizza(den,filled){
   let s=`<svg viewBox="0 0 100 100" width="104" height="104" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#E9A65A"/><circle cx="50" cy="50" r="42" fill="#FFF7EE"/>`;
@@ -182,155 +200,253 @@ const MACC=["#F2557A","#5DB075","#B48CE0"];
 function macaron(level,on){const c=on?MACC[level-1]:"#EADDE3";return `<svg class="mac" viewBox="0 0 50 40" aria-hidden="true"><ellipse cx="25" cy="13" rx="20" ry="9" fill="${c}"/><rect x="7" y="16" width="36" height="7" rx="3" fill="${on?"#FFF4D6":"#F6EEF1"}"/><ellipse cx="25" cy="27" rx="20" ry="9" fill="${c}"/>${on?'<ellipse cx="18" cy="10" rx="6" ry="2.5" fill="#fff" opacity=".5"/>':""}</svg>`}
 document.getElementById("hdrChef").innerHTML=chef();
 
+
+function sliceIcon(kind){return kind==="pizza"
+  ?`<svg viewBox="0 0 30 30" aria-hidden="true"><path d="M15 28 L3 6 Q15 0 27 6 Z" fill="#FFC94D" stroke="#C9803A" stroke-width="1.5"/><path d="M3 6 Q15 0 27 6" stroke="#E9A65A" stroke-width="4" fill="none"/><circle cx="15" cy="13" r="3.5" fill="#D9483B"/></svg>`
+  :`<svg viewBox="0 0 30 30" aria-hidden="true"><rect x="3" y="3" width="24" height="24" rx="4" fill="#7B4A2E" stroke="#5A321C"/><rect x="7" y="7" width="12" height="4" rx="2" fill="#9C6545"/></svg>`}
+
+// ================= MANIPULATION (niveau 1) =================
+// fill : ranger des parts en vrac dans des pizzas/tablettes vides. cut : découper des entières pour compter les parts.
+function manip(cfg){return `<div class="manip" data-cfg='${JSON.stringify(cfg)}'></div>`}
+function initManips(root){root.querySelectorAll(".manip").forEach(el=>{
+  const c=JSON.parse(el.dataset.cfg),K=KINDS[c.kind];
+  const st=c.mode==="fill"?{plates:Array(c.plates).fill(0),groups:[c.loose]}:{plates:Array(c.whole).fill(c.den),groups:[c.extra]};
+  el.state=st;
+  el.done=()=>c.mode==="fill"?st.groups[0]===0:st.plates.every(p=>p===0);
+  const draw=()=>{
+    const tray=st.groups.filter(g=>g>0);
+    el.innerHTML=`<p class="mtip">${c.mode==="fill"
+        ?(el.done()?`Toutes les ${K.parts} sont rangées. Observe bien !`:`Touche une ${K.part} du plateau pour la ranger dans une ${K.item}.`)
+        :(el.done()?`Toutes les ${K.items} sont découpées. Compte les ${K.parts} !`:`Touche une ${K.item} entière pour la découper en ${K.parts}.`)}</p>
+      <div class="plates">${st.plates.map((p,k)=>`<button class="plate ${c.mode==="cut"&&p===c.den?"cuttable":""}" data-k="${k}" aria-label="${K.item} ${k+1} : ${p} ${K.parts} sur ${c.den}">${K.draw(c.den,p)}</button>`).join("")}</div>
+      <div class="tray" aria-label="Plateau">${tray.length?tray.map(g=>`<div class="grp">${Array.from({length:g},()=>`<button class="piece" aria-label="une ${K.part}">${sliceIcon(c.kind)}</button>`).join("")}</div>`).join(""):`<span class="note">Plateau vide</span>`}</div>
+      <div class="row"><button class="btn small soft mreset">Tout remettre</button></div>`;
+    el.querySelectorAll(".piece").forEach(b=>b.onclick=()=>{if(c.mode!=="fill")return;
+      const k=st.plates.findIndex(p=>p<c.den);if(k<0)return;st.plates[k]++;st.groups[0]--;draw();el.dispatchEvent(new Event("manip",{bubbles:true}))});
+    el.querySelectorAll(".plate").forEach(b=>b.onclick=()=>{if(c.mode!=="cut")return;const k=+b.dataset.k;
+      if(st.plates[k]!==c.den)return;st.plates[k]=0;st.groups.unshift(c.den);draw();el.dispatchEvent(new Event("manip",{bubbles:true}))});
+    el.querySelector(".mreset").onclick=()=>{if(c.mode==="fill"){st.plates=Array(c.plates).fill(0);st.groups=[c.loose]}else{st.plates=Array(c.whole).fill(c.den);st.groups=[c.extra]}draw()};
+  };
+  draw();
+})}
+
 // ================= COMPÉTENCES ET EXERCICES =================
-const N=6; // questions par série
+const N=6;
 const SKILLS={
- N24:{tab:"Plus ou moins que 1 ?",txt:"Je sais dire si une fraction est plus petite, égale ou plus grande que 1.",ex:()=>`Exemple : ${F(3,4)} &lt; 1, mais ${F(5,4)} &gt; 1.`,gen:genN24},
+ N24:{tab:"Plus ou moins que 1 ?",txt:"Je sais dire si une fraction est plus petite, égale ou plus grande que 1.",ex:()=>`Exemple : ${F(3,4)} ${LT} 1, mais ${F(5,4)} ${GT} 1.`,gen:genN24},
  N19:{tab:"Décomposer",txt:"Je sais décomposer une fraction (entier + fraction restante).",ex:()=>`Exemple : ${F(5,4)} = 1 + ${F(1,4)}`,gen:genN19},
  N20:{tab:"Recomposer",txt:"Je sais faire l'inverse : transformer un entier + une fraction en une seule fraction.",ex:()=>`Exemple : 2 + ${F(1,3)} = ${F(7,3)}`,gen:genN20},
- N27:{tab:"Encadrer",txt:"Je sais encadrer une fraction simple entre deux nombres entiers qui se suivent.",ex:()=>`Exemple : 1 &lt; ${F(5,4)} &lt; 2`,gen:genN27}
+ N27:{tab:"Encadrer",txt:"Je sais encadrer une fraction simple entre deux nombres entiers qui se suivent.",ex:()=>`Exemple : 1 ${LT} ${F(5,4)} ${LT} 2`,gen:genN27}
 };
-const LEVELS=[["Niveau 1","guidé avec dessins"],["Niveau 2","avec un schéma"],["Niveau 3","niveau CM2"]];
-function uniq(make){const seen=new Set(),out=[];let t=0;while(out.length<N&&t<200){t++;const q=make(out.length);if(seen.has(q.key))continue;seen.add(q.key);out.push(q)}return out}
+const LEVELS=[["Niveau 1","guidé, je manipule"],["Niveau 2","avec un schéma"],["Niveau 3","niveau CM2"]];
+function uniq(make,n=N){const seen=new Set(),out=[];let t=0;while(out.length<n&&t<300){t++;const q=make(out.length);if(seen.has(q.key))continue;seen.add(q.key);out.push(q)}return out}
 const signOf=(n,d)=>n<d?"<":n===d?"=":">";
+
+// --- diagnostics des erreurs typiques ---
+function diag19(v,num,den,q,r){
+  const Q=v.q,R=v.r;
+  if(v.f&&v.f.d&&v.f.d!==den&&v.f.n*den!==r*v.f.d)return `Le dénominateur ne change pas : ce sont toujours des parts partagées en ${den}. La fraction restante s'écrit donc sur ${den}.`;
+  if(Q===undefined||isNaN(Q)||R===undefined||isNaN(R))return null;
+  if(Q===r&&R===q&&q!==r)return `Tu as inversé : le nombre d'unités entières vient d'abord, puis les parts qui restent.`;
+  if(R>=den)return `Il te reste ${R} parts : c'est trop ! Avec ${den} parts, on peut encore faire une unité entière. Le reste doit être plus petit que ${den}.`;
+  if(Q*den+R!==num)return `Vérifie en recomposant : ${Q} × ${den} + ${R} = ${Q*den+R}, et pas ${num}.`;
+  return null;
+}
+function diag20(v,e,n,den){
+  const T=v.fn!==undefined?v.fn:v.f?v.f.n:undefined,D=v.f?v.f.d:den;
+  if(v.f&&D&&D!==den&&T*den!==(e*den+n)*D)return `Le dénominateur ne change pas : les parts sont toujours partagées en ${den}.`;
+  if(T===undefined||isNaN(T))return null;
+  if(T===e+n)return `Attention : tu as ajouté ${e} et ${n}. Mais ${e} ${pl(e,"unité","unités")} = ${e} × ${den} = ${e*den} parts !`;
+  if(T===e*den)return `Tu as bien compté les unités entières, mais tu as oublié d'ajouter les ${n} parts en plus.`;
+  if(T===n*den+e)return `Tu as multiplié le mauvais nombre : c'est l'entier ${e} qu'il faut multiplier par ${den}, puis on ajoute ${n}.`;
+  if(T===e*n)return `Ce n'est pas ${e} × ${n} : chaque unité contient ${den} parts, donc ${e} × ${den}, puis + ${n}.`;
+  return null;
+}
+function diag27(v,num,den,q){
+  const Lo=v.lo,Hi=v.hi;if(isNaN(Lo)||isNaN(Hi)||Lo===undefined)return null;
+  if(Hi-Lo!==1)return `Les deux nombres doivent se suivre, comme 2 et 3.`;
+  if(Lo>q)return `C'est trop grand : ${F(num,den)} ne fait pas encore ${Lo} unités entières.`;
+  if(Lo<q)return `C'est trop petit : avec ${num} parts de ${den}, on fait déjà ${q} ${pl(q,"unité entière","unités entières")}.`;
+  return null;
+}
+function diag24(v,num,den,t){
+  if(v.c===undefined)return null;const chosen=["<","=",">"][v.c];if(chosen===t)return null;
+  if(t==="<")return `${num} parts, c'est moins que les ${den} parts d'une unité entière : la fraction est plus petite que 1.`;
+  if(t===">")return `${num} parts, c'est plus que les ${den} parts d'une unité entière : la fraction est plus grande que 1.`;
+  return `${num} parts = exactement les ${den} parts d'une unité : la fraction est égale à 1.`;
+}
 
 function genN24(L){
   const types=shuffle(["<",">","=","<",">",">"]);
   return uniq(i=>{
-    const t=types[i];
+    const t=types[i%6];
     if(L===1){const den=pick([2,3,4,6,8]),num=t==="<"?ri(1,den-1):t==="="?den:ri(den+1,2*den-1),k=kindFor(den),K=KINDS[k];
-      return {key:num+"/"+den,
-        html:`<p class="story">Voici ${F(num,den)} ${K.de}. Une ${K.item} entière, c'est ${den} ${K.parts}.</p>${items(k,den,num,num>den?2:1)}
-          <ol class="steps"><li><span class="n">1</span>J'ai colorié ${inp(num)} ${K.parts}.</li>
-          <li><span class="n">2</span>Avec ces ${K.parts}, j'ai :</li></ol>
+      return {type:t,key:num+"/"+den,manip:true,
+        html:`<p class="story">Le chef a <b>${num} ${K.parts}</b> ${K.de} en vrac. Range-les !</p>${manip({mode:"fill",kind:k,den,loose:num,plates:2})}
+          <ol class="steps"><li><span class="n">1</span>Dans une ${K.item} entière, il y a ${inp(den,"den")} ${K.parts}.</li>
+          <li><span class="n">2</span>Avec mes ${num} ${K.parts}, j'ai :</li></ol>
           ${choices([`moins d'une ${K.item}`,`exactement une ${K.item}`,`plus d'une ${K.item}`],["<","=",">"].indexOf(t))}`,
-        hint:`Compte les ${K.parts} coloriées et compare avec les ${den} ${K.parts} d'une ${K.item} entière.`,
-        explain:`${num} ${K.parts} ${t==="<"?"ne suffisent pas pour":t==="="?"remplissent exactement":"remplissent plus d'"} une ${K.item} de ${den} ${K.parts}. Donc ${F(num,den)} ${t==="<"?"&lt;":t==="="?"=":"&gt;"} 1.`};}
+        hint:`Regarde la première ${K.item} : est-elle remplie ? Déborde-t-on sur la deuxième ?`,
+        diag:v=>diag24(v,num,den,t),
+        explain:`${num} ${K.parts} ${t==="<"?"ne suffisent pas pour remplir":t==="="?"remplissent exactement":"remplissent plus d'"} une ${K.item} de ${den} ${K.parts}. Donc ${F(num,den)} ${sym(t)} 1.`};}
     if(L===2){const den=ri(2,10),num=t==="<"?ri(1,den-1):t==="="?den:ri(den+1,2*den);
-      return {key:num+"/"+den,
-        html:`<p class="story">Compare le numérateur (en haut) et le dénominateur (en bas).</p>
-          <div class="big">${F(num,den)}</div>
-          <ol class="steps"><li><span class="n">1</span>Le numérateur est ${inp(num)}, le dénominateur est ${inp(den)}.</li>
-          <li><span class="n">2</span>Cette fraction est :</li></ol>
+      return {type:t,key:num+"/"+den,
+        html:`<div class="big">${F(num,den)}</div>
+          <ol class="steps"><li><span class="n">1</span>Pour faire 1 unité, il faut ${inp(den,"den")} parts.</li>
+          <li><span class="n">2</span>Écart entre mes ${num} parts et 1 unité : ${inp(Math.abs(num-den),"gap")} ${Math.abs(num-den)>1?"parts":"part"}.</li>
+          <li><span class="n">3</span>Cette fraction est :</li></ol>
           ${choices(["plus petite que 1","égale à 1","plus grande que 1"],["<","=",">"].indexOf(t))}`,
-        hint:`Si le numérateur est plus petit que le dénominateur, la fraction est plus petite que 1.`,
-        explain:`${num} ${t==="<"?"&lt;":t==="="?"=":"&gt;"} ${den}, donc ${F(num,den)} ${t==="<"?"&lt;":t==="="?"=":"&gt;"} 1.${strip(den,num,Math.max(1,Math.ceil(num/den)))}`};}
-    // niveau 3 : trois fractions par question
+        hint:`Le dénominateur (en bas) dit combien de parts font 1 unité. Compare avec le numérateur (en haut).`,
+        diag:v=>diag24(v,num,den,t),
+        explain:`${num} ${sym(t)} ${den}, donc ${F(num,den)} ${sym(t)} 1.${strip(den,num,Math.max(1,Math.ceil(num/den)))}`};}
     const fr=[0,1,2].map(()=>{const den=pick([3,4,5,6,7,8,9,10,12,100]);const tt=pick(["<",">","<",">","="]);
       const num=tt==="="?den:tt==="<"?den-ri(1,Math.min(3,den-1)):den+ri(1,den>20?30:4);return [num,den]});
-    return {key:fr.map(f=>f.join("/")).join(","),
-      html:`<p class="story">Complète avec &lt;, = ou &gt;.</p>
+    return {type:"mix",key:fr.map(f=>f.join("/")).join(","),
+      html:`<p class="story">Complète avec ${LT}, = ou ${GT}.</p>
         <ul class="steps">${fr.map(([n,d])=>`<li class="big" style="justify-content:flex-start">${F(n,d)} ${sg(signOf(n,d))} 1</li>`).join("")}</ul>`,
-      hint:`Pour chaque fraction, compare le numérateur et le dénominateur.`,
-      explain:fr.map(([n,d])=>`${F(n,d)} ${signOf(n,d).replace("<","&lt;").replace(">","&gt;")} 1`).join(" ; ")};
+      hint:`Pour chaque fraction, compare le numérateur (en haut) et le dénominateur (en bas).`,
+      diag:()=>null,
+      explain:fr.map(([n,d])=>`${F(n,d)} ${sym(signOf(n,d))} 1 (car ${n} ${sym(signOf(n,d))} ${d})`).join(" ; ")};
   });
 }
 function genN19(L){
   return uniq(()=>{
     if(L===1){const den=pick([2,3,4,6,8]),q=ri(1,2),r=ri(1,den-1),num=q*den+r,k=kindFor(den),K=KINDS[k];
-      return {key:num+"/"+den,
-        html:`<p class="story">Le chef a <b>${num} ${K.parts}</b> ${K.de} : c'est ${F(num,den)} ${K.de}.</p>${items(k,den,num,q+1)}
-          <ol class="steps"><li><span class="n">1</span>Dans une ${K.item} entière, il y a ${inp(den)} ${K.parts}.</li>
-          <li><span class="n">2</span>Les ${K.parts} remplissent ${inp(q)} ${K.item}(s) entière(s).</li>
-          <li><span class="n">3</span>Il reste ${inp(r)} ${K.part}(s) en plus.</li>
-          <li><span class="n">4</span>Donc ${F(num,den)} = ${inp(q)} + ${fnum(r,den)}</li></ol>`,
-        hint:`Compte les ${K.items} entièrement coloriées, puis les ${K.parts} qui sont seules.`,
-        explain:`${F(num,den)} = ${q} + ${F(r,den)} : ${q} ${pl(q,K.item,K.items)} ${pl(q,"entière","entières")} (${q*den} ${K.parts}) et encore ${r} ${pl(r,K.part,K.parts)}.`};}
+      return {type:"std",key:num+"/"+den,manip:true,
+        html:`<p class="story">Le chef a <b>${num} ${K.parts}</b> ${K.de} en vrac, c'est-à-dire ${F(num,den)} ${K.de}. Range-les dans les ${K.items} !</p>${manip({mode:"fill",kind:k,den,loose:num,plates:q+2})}
+          <ol class="steps"><li><span class="n">1</span>Une ${K.item} entière contient ${inp(den,"den")} ${K.parts}.</li>
+          <li><span class="n">2</span>J'écris ce que je vois : ${F(num,den)} = ${inp(q,"q")} + ${fnum(r,den,"r")}</li></ol>`,
+        hint:`Le nombre entier, ce sont les ${K.items} complètement pleines. La fraction, ce sont les ${K.parts} de la ${K.item} pas finie.`,
+        diag:v=>diag19(v,num,den,q,r),
+        explain:`${F(num,den)} = ${q} + ${F(r,den)} : ${q} ${pl(q,K.item,K.items)} ${pl(q,"pleine","pleines")} (${q*den} ${K.parts}) et ${r} ${pl(r,K.part,K.parts)} en plus.`};}
     if(L===2){const den=ri(2,10),q=ri(1,4),r=ri(1,den-1),num=q*den+r;
-      return {key:num+"/"+den,
+      return {type:"std",key:num+"/"+den,
         html:`<div class="big">${F(num,den)}</div>${strip(den,num,q+1)}
-          <ol class="steps"><li><span class="n">1</span>Je cherche dans la table de ${den} : ${num} = ${inp(q)} × ${den} + ${inp(r)}</li>
-          <li><span class="n">2</span>Donc ${F(num,den)} = ${inp(q)} + ${fnum(r,den)}</li></ol>`,
+          <ol class="steps"><li><span class="n">1</span>Dans la table de ${den} : ${num} = ${inp(q,"q")} × ${den} + ${inp(r,"r")}</li>
+          <li><span class="n">2</span>Donc ${F(num,den)} = ${inp(q,"q2")} + ${fnum(r,den,"r2")}</li></ol>`,
         hint:`Dans la table de ${den}, cherche le plus grand résultat qui ne dépasse pas ${num}. Ce qui manque pour arriver à ${num}, c'est le reste.`,
+        diag:v=>diag19(v,num,den,q,r),
         explain:`${num} = ${q} × ${den} + ${r}, donc ${F(num,den)} = ${q} + ${F(r,den)}.`};}
     const den=pick([2,3,4,5,6,7,8,9,10,12]),q=ri(1,9),r=ri(1,den-1),num=q*den+r;
-    return {key:num+"/"+den,
-      html:`<p class="story">Décompose en un entier + une fraction plus petite que 1.</p>
-        <div class="big">${F(num,den)} = ${inp(q)} + ${finp(r,den)}</div>`,
-      hint:`Combien de fois ${den} dans ${num} ? C'est la partie entière. Le reste va au numérateur.`,
+    return {type:"std",key:num+"/"+den,
+      html:`<p class="story">Décompose en un entier + une fraction plus petite que 1, puis vérifie.</p>
+        <div class="big">${F(num,den)} = ${inp(q,"q")} + ${finp(r,den,"f")}</div>
+        <p class="verif">Je vérifie en recomposant : ${inp(q,"vq")} × ${den} + ${inp(r,"vr")} = ${num}</p>`,
+      hint:`Combien de fois ${den} dans ${num} ? C'est la partie entière. Ce qui reste va au numérateur.`,
+      diag:v=>diag19({q:v.q,r:v.f&&v.f.d===den?v.f.n:v.r!==undefined?v.r:(v.f?v.f.n*den/v.f.d:undefined),f:v.f},num,den,q,r),
       explain:`${num} = ${q} × ${den} + ${r}, donc ${F(num,den)} = ${q} + ${F(r,den)}.`};
   });
 }
 function genN20(L){
   return uniq(()=>{
     if(L===1){const den=pick([2,3,4,6,8]),e=ri(1,2),n=ri(1,den-1),tot=e*den+n,k=kindFor(den),K=KINDS[k];
-      return {key:e+"+"+n+"/"+den,
-        html:`<p class="story">Le chef a <b>${e} ${pl(e,K.item,K.items)} ${pl(e,"entière","entières")}</b> et <b>${F(n,den)}</b> ${K.de}.</p>${items(k,den,tot,e+1)}
-          <ol class="steps"><li><span class="n">1</span>Dans une ${K.item} entière, il y a ${inp(den)} ${K.parts}.</li>
-          <li><span class="n">2</span>Dans ${e} ${pl(e,K.item,K.items)}, il y a ${inp(e*den)} ${K.parts}.</li>
-          <li><span class="n">3</span>Avec les ${n} ${pl(n,K.part,K.parts)} en plus, cela fait ${inp(tot)} ${K.parts} en tout.</li>
-          <li><span class="n">4</span>Donc ${e} + ${F(n,den)} = ${fnum(tot,den)}</li></ol>`,
-        hint:`Compte toutes les ${K.parts} coloriées, une ${K.item} après l'autre.`,
-        explain:`${e} + ${F(n,den)} = ${F(e*den,den)} + ${F(n,den)} = ${F(tot,den)}.`};}
+      return {type:"std",key:e+"+"+n+"/"+den,manip:true,
+        html:`<p class="story">Le chef a <b>${e} ${pl(e,K.item,K.items)} ${pl(e,"entière","entières")}</b> et <b>${n} ${pl(n,K.part,K.parts)}</b> : c'est ${e} + ${F(n,den)} ${K.de}. Combien de ${K.parts} en tout ?</p>
+          ${manip({mode:"cut",kind:k,den,whole:e,extra:n})}
+          <ol class="steps"><li><span class="n">1</span>Une ${K.item} entière contient ${inp(den,"den")} ${K.parts}.</li>
+          <li><span class="n">2</span>J'écris en une seule fraction : ${e} + ${F(n,den)} = ${fnum(tot,den)}</li></ol>`,
+        hint:`Compte toutes les ${K.parts} du plateau. Chaque ligne de ${den} correspond à une ${K.item} découpée.`,
+        diag:v=>diag20(v,e,n,den),
+        explain:`${e} × ${den} = ${e*den} ${K.parts}, + ${n} = ${tot} ${K.parts}. Donc ${e} + ${F(n,den)} = ${F(tot,den)}.`};}
     if(L===2){const den=ri(2,10),e=ri(1,4),n=ri(1,den-1),tot=e*den+n;
-      return {key:e+"+"+n+"/"+den,
+      return {type:"std",key:e+"+"+n+"/"+den,
         html:`<div class="big">${e} + ${F(n,den)}</div>${strip(den,tot,e+1)}
-          <ol class="steps"><li><span class="n">1</span>${e} = ${fnum(e*den,den)} (car ${e} × ${den} = ?)</li>
+          <ol class="steps"><li><span class="n">1</span>${e} ${pl(e,"unité","unités")} = ${e} × ${den} parts = ${fnum(e*den,den,"u")}</li>
           <li><span class="n">2</span>${e} + ${F(n,den)} = ${fnum(tot,den)}</li></ol>`,
-        hint:`Une unité = ${F(den,den)}. Donc ${e} unités = ${e} × ${den} parts.`,
+        hint:`Une unité = ${F(den,den)}. Donc ${e} ${pl(e,"unité","unités")} = ${e} × ${den} parts, puis on ajoute les ${n} parts.`,
+        diag:v=>diag20(v,e,n,den),
         explain:`${e} = ${F(e*den,den)}, et ${F(e*den,den)} + ${F(n,den)} = ${F(tot,den)}.`};}
     const den=pick([2,3,4,5,6,7,8,9,10,12]),e=ri(1,9),n=ri(1,den-1),tot=e*den+n;
-    return {key:e+"+"+n+"/"+den,
+    return {type:"std",key:e+"+"+n+"/"+den,
       html:`<p class="story">Écris en une seule fraction.</p><div class="big">${e} + ${F(n,den)} = ${finp(tot,den)}</div>`,
-      hint:`Multiplie l'entier par ${den}, puis ajoute ${n}.`,
-      explain:`${e} × ${den} = ${e*den}, puis ${e*den} + ${n} = ${tot}. Donc ${e} + ${F(n,den)} = ${F(tot,den)}.`};
+      hint:`Multiplie l'entier ${e} par ${den}, puis ajoute ${n}.`,
+      diag:v=>diag20(v,e,n,den),
+      explain:`${e} × ${den} = ${e*den}, puis ${e*den} + ${n} = ${tot}. Donc ${e} + ${F(n,den)} = ${F(tot,den)}. Je vérifie : ${tot} = ${e} × ${den} + ${n} ✔`};
   });
 }
 function genN27(L){
   return uniq(()=>{
     if(L===1){const den=pick([2,3,4,6,8]),q=ri(1,2),r=ri(1,den-1),num=q*den+r,k=kindFor(den),K=KINDS[k];
-      return {key:num+"/"+den,
-        html:`<p class="story">Voici ${F(num,den)} ${K.de}.</p>${items(k,den,num,q+1)}
-          <ol class="steps"><li><span class="n">1</span>Je remplis ${inp(q)} ${K.item}(s) entière(s), mais pas encore ${inp(q+1)} ${K.items}.</li>
-          <li><span class="n">2</span>Donc ${inp(q)} &lt; ${F(num,den)} &lt; ${inp(q+1)}</li></ol>`,
-        hint:`Compte les ${K.items} pleines. La fraction est un peu plus que ce nombre, mais moins que le nombre suivant.`,
-        explain:`${F(num,den)} = ${q} + ${F(r,den)}, c'est plus que ${q} mais moins que ${q+1} : ${q} &lt; ${F(num,den)} &lt; ${q+1}.`};}
+      return {type:"std",key:num+"/"+den,manip:true,
+        html:`<p class="story">Voici ${F(num,den)} ${K.de} : <b>${num} ${K.parts}</b> en vrac. Range-les !</p>${manip({mode:"fill",kind:k,den,loose:num,plates:q+2})}
+          <ol class="steps"><li><span class="n">1</span>Combien de ${K.items} complètement pleines ? ${inp(q,"lo")}</li>
+          <li><span class="n">2</span>Combien de ${K.items} faudrait-il pour qu'elles soient toutes pleines ? ${inp(q+1,"hi")}</li>
+          <li><span class="n">3</span>Donc ${inp(q,"lo2")} ${LT} ${F(num,den)} ${LT} ${inp(q+1,"hi2")}</li></ol>`,
+        hint:`La fraction, c'est plus que les ${K.items} pleines, mais pas encore assez pour la ${K.item} suivante.`,
+        diag:v=>diag27(v,num,den,q),
+        explain:`${F(num,den)} = ${q} + ${F(r,den)}, c'est plus que ${q} mais moins que ${q+1} : ${q} ${LT} ${F(num,den)} ${LT} ${q+1}.`};}
     if(L===2){const den=pick([2,3,4,5,6]),q=ri(1,4),r=ri(1,den-1),num=q*den+r,max=Math.min(q+2,6);
-      return {key:num+"/"+den,
+      return {type:"std",key:num+"/"+den,
         html:`<p class="story">La cerise est placée sur ${F(num,den)}. Entre quels nombres entiers se trouve-t-elle ?</p>${line(den,num,max,num+"/"+den)}
-          <div class="big">${inp(q)} &lt; ${F(num,den)} &lt; ${inp(q+1)}</div>`,
+          <div class="big">${inp(q,"lo")} ${LT} ${F(num,den)} ${LT} ${inp(q+1,"hi")}</div>`,
         hint:`Regarde les grands traits juste avant et juste après la cerise.`,
-        explain:`La cerise est entre ${q} et ${q+1} : ${q} &lt; ${F(num,den)} &lt; ${q+1}.`};}
+        diag:v=>diag27(v,num,den,q),
+        explain:`La cerise est entre ${q} et ${q+1} : ${q} ${LT} ${F(num,den)} ${LT} ${q+1}.`};}
     const den=pick([2,3,4,5,6,7,8,9,10,12]),q=ri(1,12),r=ri(1,den-1),num=q*den+r;
-    return {key:num+"/"+den,
-      html:`<p class="story">Encadre entre deux nombres entiers qui se suivent.</p><div class="big">${inp(q)} &lt; ${F(num,den)} &lt; ${inp(q+1)}</div>`,
+    return {type:"std",key:num+"/"+den,
+      html:`<p class="story">Encadre entre deux nombres entiers qui se suivent.</p><div class="big">${inp(q,"lo")} ${LT} ${F(num,den)} ${LT} ${inp(q+1,"hi")}</div>`,
       hint:`Décompose d'abord : ${F(num,den)} = … + une fraction plus petite que 1.`,
-      explain:`${F(num,den)} = ${q} + ${F(r,den)}, donc ${q} &lt; ${F(num,den)} &lt; ${q+1}.`};
+      diag:v=>diag27(v,num,den,q),
+      explain:`${F(num,den)} = ${q} + ${F(r,den)}, donc ${q} ${LT} ${F(num,den)} ${LT} ${q+1}.`};
   });
 }
 
-// ================= PROBLÈMES (escalier) =================
+// ================= PROBLÈMES (escalier, nombres différents à chaque fois) =================
 const PROBS=[
- {code:"N19 · PR8.A",lvl:"facile",html:()=>`<p class="story">Le chef coupe ses pizzas en 4 parts. Il reste <b>5 parts</b> sur le comptoir. Peut-il reconstituer une pizza entière ?</p>${items("pizza",4,5,2)}
-   <ol class="steps"><li>Il peut reconstituer ${inp(1)} pizza entière et il reste ${inp(1)} part.</li><li>${F(5,4)} = ${inp(1)} + ${fnum(1,4)}</li></ol>`,
-  hint:"Une pizza entière = 4 parts. Combien de parts en plus ?",explain:`4 parts font 1 pizza, il reste 1 part : ${F(5,4)} = 1 + ${F(1,4)}.`},
- {code:"N20 · PR8.A",lvl:"facile",html:()=>`<p class="story">Mila a <b>2 tablettes entières</b> et <b>3 carrés</b>. Chaque tablette a 6 carrés.</p>${items("choco",6,15,3)}
-   <ol class="steps"><li>En tout, Mila a ${inp(15)} carrés.</li><li>Elle a donc ${fnum(15,6)} de tablette.</li></ol>`,
-  hint:"2 tablettes de 6 carrés, puis ajoute les 3 carrés.",explain:`2 × 6 = 12 carrés, + 3 = 15 carrés : 2 + ${F(3,6)} = ${F(15,6)}.`},
- {code:"N24 · PR8.A",lvl:"facile",html:()=>`<p class="story">Tom a mangé ${F(7,8)} d'une tarte coupée en 8 parts.</p>${items("pizza",8,7,1)}
-   <p class="story">Tom a mangé :</p>${choices(["moins d'une tarte","exactement une tarte","plus d'une tarte"],0)}`,
-  hint:"Une tarte entière = 8 parts. Tom en a mangé 7.",explain:`7 parts &lt; 8 parts, donc ${F(7,8)} &lt; 1 : moins d'une tarte.`},
- {code:"N19 · PR8.A",lvl:"moyen",html:()=>`<p class="story">Une boîte contient <b>6 macarons</b>. Le pâtissier a fait <b>20 macarons</b>.</p>
-   <ol class="steps"><li>Il remplit ${inp(3)} boîtes pleines et il reste ${inp(2)} macarons.</li><li>${F(20,6)} = ${inp(3)} + ${fnum(2,6)}</li></ol>`,
-  hint:"Table de 6 : quel est le plus grand résultat qui ne dépasse pas 20 ?",explain:`3 × 6 = 18, il reste 2 : ${F(20,6)} = 3 + ${F(2,6)}.`},
- {code:"N20 · PR8.A",lvl:"moyen",html:()=>`<p class="story">Pour des crêpes, il faut <b>1 litre et ${F(3,4)} de litre</b> de lait. Le pot doseur contient ${F(1,4)} de litre.</p>
-   <ol class="steps"><li>1 + ${F(3,4)} = ${fnum(7,4)}</li><li>Il faut remplir le pot doseur ${inp(7)} fois.</li></ol>`,
-  hint:`1 litre = ${F(4,4)}.`,explain:`1 = ${F(4,4)}, donc 1 + ${F(3,4)} = ${F(7,4)} : 7 pots de ${F(1,4)} de litre.`},
- {code:"N27 · PR8.A",lvl:"moyen",html:()=>`<p class="story">Léo a ${F(17,5)} kg de farine. Entre quels nombres entiers de kilos se trouve cette quantité ?</p>
-   <div class="big">${inp(3)} kg &lt; ${F(17,5)} kg &lt; ${inp(4)} kg</div>`,
-  hint:`Décompose ${F(17,5)} : combien de fois 5 dans 17 ?`,explain:`${F(17,5)} = 3 + ${F(2,5)}, donc 3 kg &lt; ${F(17,5)} kg &lt; 4 kg.`},
- {code:"N19 · PR8.A",lvl:"moyen",html:()=>`<p class="story">Le ruban de la boulangerie mesure ${F(23,10)} m. Écris cette longueur avec un entier et une fraction.</p>
-   <div class="big">${F(23,10)} m = ${inp(2)} m + ${finp(3,10)} m</div>`,
-  hint:"Combien de fois 10 dans 23 ?",explain:`23 = 2 × 10 + 3, donc ${F(23,10)} m = 2 m + ${F(3,10)} m.`},
- {code:"N20 · PR8.A",lvl:"CM2",html:()=>`<p class="story">La classe a mangé <b>3 pizzas entières et 5 parts</b>. Toutes les pizzas sont coupées en 8 parts. Quelle fraction de pizza la classe a-t-elle mangée ?</p>
-   <div class="big">3 + ${F(5,8)} = ${finp(29,8)}</div>`,
-  hint:"Combien de parts dans 3 pizzas ? Ajoute les 5 parts.",explain:`3 × 8 = 24, + 5 = 29 : la classe a mangé ${F(29,8)} de pizza.`},
- {code:"N19 · PR8.A",lvl:"CM2",html:()=>`<p class="story">Le chef a préparé <b>5 tartes</b> coupées en 6 parts. Les invités ont mangé <b>22 parts</b>. Quelle quantité de tarte reste-t-il ?</p>
-   <ol class="steps"><li>Au départ, il y avait ${inp(30)} parts.</li><li>Il reste ${inp(8)} parts, soit ${fnum(8,6)} de tarte.</li><li>${F(8,6)} = ${inp(1)} + ${finp(2,6)}</li></ol>`,
-  hint:"5 tartes de 6 parts, puis enlève les parts mangées.",explain:`5 × 6 = 30 parts, 30 − 22 = 8 parts : ${F(8,6)} = 1 + ${F(2,6)}. Il reste 1 tarte entière et ${F(2,6)} de tarte.`},
- {code:"N20 · N24 · PR8.A",lvl:"CM2",html:()=>`<p class="story">Ana a ${F(11,4)} tablettes de chocolat. Ben a 2 + ${F(1,4)} tablettes. Cléo a 3 tablettes.</p>
-   <ol class="steps"><li>Ben a ${fnum(9,4)} de tablette.</li><li>Cléo a ${fnum(12,4)} de tablette.</li><li>Qui a le plus de chocolat ?</li></ol>${choices(["Ana","Ben","Cléo"],2)}`,
-  hint:"Écris les trois quantités en quarts, puis compare les numérateurs.",explain:`Ben : 2 + ${F(1,4)} = ${F(9,4)}. Cléo : 3 = ${F(12,4)}. ${F(12,4)} &gt; ${F(11,4)} &gt; ${F(9,4)} : c'est Cléo.`}
+ {code:"N19 · PR8.A",lvl:"facile",make:()=>{const den=4,num=ri(5,7),r=num-4;return {
+   html:`<p class="story">Le chef coupe ses pizzas en 4 parts. Il reste <b>${num} parts</b> sur le comptoir. Range-les : combien de pizzas entières peut-il reconstituer ?</p>${manip({mode:"fill",kind:"pizza",den,loose:num,plates:3})}
+     <div class="big">${F(num,4)} = ${inp(1,"q")} + ${fnum(r,4,"r")}</div>`,
+   hint:"Une pizza entière = 4 parts. Combien de parts restent en plus ?",diag:v=>diag19(v,num,4,1,r),manip:true,
+   explain:`4 parts font 1 pizza, il reste ${r} ${pl(r,"part","parts")} : ${F(num,4)} = 1 + ${F(r,4)}.`}}},
+ {code:"N20 · PR8.A",lvl:"facile",make:()=>{const den=pick([6,8]),e=pick([2,3]),n=ri(1,den-1),tot=e*den+n;return {
+   html:`<p class="story">Mila a <b>${e} tablettes entières</b> et <b>${n} ${pl(n,"carré","carrés")}</b>. Chaque tablette a ${den} carrés. Combien de carrés a-t-elle en tout ?</p>${manip({mode:"cut",kind:"choco",den,whole:e,extra:n})}
+     <ol class="steps"><li>En tout, Mila a ${inp(tot,"fn")} carrés.</li><li>Elle a donc ${fnum(tot,den,"fn2")} de tablette.</li></ol>`,
+   hint:`${e} tablettes de ${den} carrés, puis ajoute les ${n} carrés.`,diag:v=>diag20(v,e,n,den),manip:true,
+   explain:`${e} × ${den} = ${e*den} carrés, + ${n} = ${tot} : ${e} + ${F(n,den)} = ${F(tot,den)}.`}}},
+ {code:"N24 · PR8.A",lvl:"facile",make:()=>{const den=pick([6,8,10]),t=pick(["<",">"]),num=t==="<"?ri(den-3,den-1):ri(den+1,den+3);return {
+   html:`<p class="story">Les tartes sont coupées en ${den} parts. Tom a mangé ${F(num,den)} de tarte, c'est-à-dire ${num} parts.</p>${items("pizza",den,num,2)}
+     <p class="story">Tom a mangé :</p>${choices(["moins d'une tarte","exactement une tarte","plus d'une tarte"],t==="<"?0:2)}`,
+   hint:`Une tarte entière = ${den} parts. Compare avec ${num}.`,diag:v=>diag24(v,num,den,t),
+   explain:`${num} parts ${sym(t)} ${den} parts, donc ${F(num,den)} ${sym(t)} 1 : ${t==="<"?"moins":"plus"} d'une tarte.`}}},
+ {code:"N19 · PR8.A",lvl:"moyen",make:()=>{const b=pick([4,6,8]),q=ri(2,4),r=ri(1,b-1),m=q*b+r;return {
+   html:`<p class="story">Une boîte contient <b>${b} macarons</b>. Le pâtissier a fait <b>${m} macarons</b>.</p>
+     <ol class="steps"><li>Il remplit ${inp(q,"q")} boîtes pleines et il reste ${inp(r,"r")} ${pl(r,"macaron","macarons")}.</li><li>Il a donc ${F(m,b)} de boîte = ${inp(q,"q2")} + ${fnum(r,b,"r2")}</li></ol>`,
+   hint:`Table de ${b} : quel est le plus grand résultat qui ne dépasse pas ${m} ?`,diag:v=>diag19(v,m,b,q,r),
+   explain:`${q} × ${b} = ${q*b}, il reste ${r} : ${F(m,b)} = ${q} + ${F(r,b)}.`}}},
+ {code:"N20 · PR8.A",lvl:"moyen",make:()=>{const e=pick([1,2]),k=ri(1,3),tot=4*e+k;return {
+   html:`<p class="story">Pour des crêpes, il faut <b>${e} ${pl(e,"litre","litres")} et ${F(k,4)} de litre</b> de lait. Le pot doseur contient ${F(1,4)} de litre.</p>
+     <ol class="steps"><li>${e} + ${F(k,4)} = ${fnum(tot,4)}</li><li>Il faut remplir le pot doseur ${inp(tot,"fois")} fois.</li></ol>`,
+   hint:`1 litre = ${F(4,4)}. Combien de quarts dans ${e} ${pl(e,"litre","litres")} ?`,diag:v=>diag20(v,e,k,4),
+   explain:`${e} = ${F(4*e,4)}, donc ${e} + ${F(k,4)} = ${F(tot,4)} : ${tot} pots de ${F(1,4)} de litre.`}}},
+ {code:"N27 · PR8.A",lvl:"moyen",make:()=>{const den=pick([3,4,5]),q=ri(2,5),r=ri(1,den-1),num=q*den+r;return {
+   html:`<p class="story">Léo a ${F(num,den)} kg de farine. Entre quels nombres entiers de kilos se trouve cette quantité ?</p>
+     <div class="big">${inp(q,"lo")} kg ${LT} ${F(num,den)} kg ${LT} ${inp(q+1,"hi")} kg</div>`,
+   hint:`Décompose ${F(num,den)} : combien de fois ${den} dans ${num} ?`,diag:v=>diag27(v,num,den,q),
+   explain:`${F(num,den)} = ${q} + ${F(r,den)}, donc ${q} kg ${LT} ${F(num,den)} kg ${LT} ${q+1} kg.`}}},
+ {code:"N19 · PR8.A",lvl:"moyen",make:()=>{const q=ri(1,4),r=ri(1,9),num=10*q+r;return {
+   html:`<p class="story">Le ruban de la boulangerie mesure ${F(num,10)} m. Écris cette longueur avec un nombre entier de mètres et une fraction de mètre.</p>
+     <div class="big">${F(num,10)} m = ${inp(q,"q")} m + ${finp(r,10)} m</div>`,
+   hint:`Combien de fois 10 dans ${num} ?`,diag:v=>diag19({q:v.q,r:v.f&&v.f.d===10?v.f.n:undefined,f:v.f},num,10,q,r),
+   explain:`${num} = ${q} × 10 + ${r}, donc ${F(num,10)} m = ${q} m + ${F(r,10)} m.`}}},
+ {code:"N20 · PR8.A",lvl:"CM2",cm2:true,make:()=>{const den=pick([6,8]),e=ri(2,5),n=ri(1,den-1),tot=e*den+n;return {
+   html:`<p class="story">La classe a mangé <b>${e} pizzas entières et ${n} ${pl(n,"part","parts")}</b>. Toutes les pizzas sont coupées en ${den} parts. Quelle fraction de pizza la classe a-t-elle mangée ?</p>
+     <div class="big">La classe a mangé ${finp(tot,den)} de pizza.</div>`,
+   pouce:[`Combien de parts dans une pizza ?`,`Combien de parts dans ${e} pizzas ?`,`N'oublie pas les ${n} parts en plus.`],
+   hint:`Calcule le nombre de parts dans ${e} pizzas, puis ajoute les ${n} parts.`,diag:v=>diag20(v,e,n,den),
+   explain:`${e} × ${den} = ${e*den}, + ${n} = ${tot} : la classe a mangé ${F(tot,den)} de pizza.`}}},
+ {code:"N19 · PR1.B · PR8.A",lvl:"CM2",cm2:true,make:()=>{const den=pick([6,8]),T=ri(3,6),R=ri(den+1,2*den-1),m=T*den-R,r=R-den;return {
+   html:`<p class="story">Le chef a préparé <b>${T} tartes</b> coupées en ${den} parts. Les invités ont mangé <b>${m} parts</b>. Quelle quantité de tarte reste-t-il ? Écris-la avec un entier et une fraction.</p>
+     <div class="big">Il reste ${inp(1,"q")} + ${finp(r,den)} de tarte.</div>`,
+   pouce:[`Combien de parts y avait-il au départ ?`,`Combien de parts restent après le repas ?`,`Écris ces parts restantes en fraction de tarte, puis décompose-la.`],
+   hint:`Cherche d'abord le nombre de parts qui restent.`,diag:v=>diag19({q:v.q,r:v.f&&v.f.d===den?v.f.n:undefined,f:v.f},R,den,1,r),
+   explain:`${T} × ${den} = ${T*den} parts, ${T*den} − ${m} = ${R} parts. ${F(R,den)} = 1 + ${F(r,den)} : il reste 1 tarte entière et ${F(r,den)} de tarte.`}}},
+ {code:"N20 · N24 · PR8.A",lvl:"CM2",cm2:true,make:()=>{
+   let a,e,b,c;do{a=ri(9,15);e=ri(2,3);b=e*4+ri(1,3);c=ri(2,4)}while(new Set([a,b,c*4]).size<3||a%4===0);
+   const vals=[a,b,c*4],best=vals.indexOf(Math.max(...vals));
+   return {html:`<p class="story">Ana a ${F(a,4)} de tablette de chocolat. Ben a ${e} + ${F(b-4*e,4)} tablettes. Cléo a ${c} tablettes entières. Qui a le plus de chocolat ?</p>${choices(["Ana","Ben","Cléo"],best)}`,
+   pouce:[`Écris les trois quantités en quarts de tablette.`,`Ben : ${e} tablettes = combien de quarts ?`,`Cléo : ${c} tablettes = combien de quarts ?`,`Compare les numérateurs.`],
+   hint:`Écris les trois quantités en quarts, puis compare les numérateurs.`,diag:()=>null,
+   explain:`Ana : ${F(a,4)}. Ben : ${e} + ${F(b-4*e,4)} = ${F(b,4)}. Cléo : ${c} = ${F(c*4,4)}. Le plus grand numérateur est ${Math.max(...vals)} : c'est ${["Ana","Ben","Cléo"][best]}.`}}}
 ];
 
 // ================= SAUVEGARDE (sur l'appareil) =================
@@ -342,6 +458,31 @@ const rec=(sk,L)=>{S.sk[sk]=S.sk[sk]||{};S.sk[sk][L]=S.sk[sk][L]||{scores:[]};re
 const best=(sk,L)=>{const r=S.sk[sk]&&S.sk[sk][L];return r&&r.scores.length?Math.max(...r.scores):null};
 const earned=(sk,L)=>(best(sk,L)||0)>=5;
 
+// ================= LECTURE À VOIX HAUTE =================
+let voice=null;
+function pickVoice(){try{const v=speechSynthesis.getVoices().filter(x=>/^fr/i.test(x.lang));
+  const sc=x=>(/fr[-_]FR/i.test(x.lang)?5:0)+(/natural|neural|online|premium|enhanced|google/i.test(x.name)?10:0)-(/compact|espeak/i.test(x.name)?10:0);
+  voice=v.sort((a,b)=>sc(b)-sc(a))[0]||null}catch(e){}}
+try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}
+const ORD={2:"demi",3:"tiers",4:"quart",5:"cinquième",6:"sixième",7:"septième",8:"huitième",9:"neuvième",10:"dixième",12:"douzième",100:"centième"};
+function frWords(n,d){const w=ORD[d]||(d+"ième");if(n==="combien")return `combien de ${w==="tiers"?w:w+"s"}`;
+  if(+n===1)return (d===2?"un demi":"un "+w);return `${n} ${w==="tiers"||/s$/.test(w)?w:w+"s"}`}
+function readText(box){
+  const c=box.cloneNode(true);
+  c.querySelectorAll("svg,.manip .row,.tray,.mtip").forEach(x=>x.remove());
+  c.querySelectorAll(".fin").forEach(x=>x.replaceWith(" combien, sous forme de fraction, "));
+  c.querySelectorAll(".fr").forEach(x=>{const a=x.children[0],b=x.children[1];const n=a.querySelector&&a.querySelector("input")?"combien":a.textContent.trim();x.replaceWith(" "+frWords(n,+b.textContent.trim())+" ")});
+  c.querySelectorAll("input").forEach(x=>x.replaceWith(" combien "));
+  c.querySelectorAll(".sg").forEach(x=>x.replaceWith(" plus petit, égal ou plus grand que "));
+  c.querySelectorAll(".choices").forEach(x=>x.replaceWith(" Choisis : "+[...x.querySelectorAll("button")].map(b=>b.textContent).join(", ou ")+". "));
+  c.querySelectorAll(".n").forEach(x=>x.replaceWith(" "));
+  c.querySelectorAll("li,p").forEach(x=>x.append(". "));
+  return c.textContent.replace(/</g," est plus petit que ").replace(/>/g," est plus grand que ").replace(/×/g," fois ").replace(/−/g," moins ").replace(/=/g," égale ").replace(/\s+/g," ").replace(/\s*\.(\s*\.)+/g,". ").replace(/(\?|!)\s*\./g,"$1");
+}
+function speak(box){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(readText(box));u.lang="fr-FR";u.rate=.9;if(voice)u.voice=voice;speechSynthesis.speak(u)}catch(e){}}
+const hush=()=>{try{speechSynthesis.cancel()}catch(e){}};
+const listenBtn=`<button class="btn small soft listen" type="button">🔊 Écouter l'énoncé</button>`;
+
 // ================= INTERFACE =================
 const $nav=document.getElementById("nav"),$main=document.getElementById("main");
 let view="home",level=1,series=null;
@@ -350,21 +491,21 @@ function renderNav(){
   $nav.innerHTML=tabs.map(([id,name,code])=>`<button class="tab ${view===id?"on":""}" data-v="${id}">${name}${code?`<span class="code">${code}</span>`:""}</button>`).join("");
 }
 $nav.addEventListener("click",e=>{const b=e.target.closest(".tab");if(!b)return;go(b.dataset.v)});
-function go(v,L){view=v;series=null;if(L)level=L;renderNav();
-  if(v==="home")renderHome();else if(v==="prob")renderStairs();else renderSkill();}
+function go(v,L){hush();view=v;series=null;if(L)level=L;renderNav();
+  if(v==="home")renderHome();else if(v==="prob"){curStep=null;renderStairs()}else renderSkill();}
 
 function renderHome(){
   const solved=S.stairs.solved.length;
   $main.innerHTML=`<section class="card">
     <h2>Mon carnet de pâtissier</h2>
-    <p class="note">Chaque macaron = un niveau réussi (au moins 5 bonnes réponses sur 6). Clique sur une page pour t'entraîner.</p>
+    <p class="note">Chaque macaron = un niveau réussi (au moins 5 bonnes réponses du premier coup sur 6). Clique sur une page pour t'entraîner.</p>
     <div class="book">${Object.keys(SKILLS).map(k=>`<div class="page">
       <h3>${SKILLS[k].tab}<span class="code">${k}</span></h3>
       <p class="note">${SKILLS[k].txt}</p>
       <div class="macs">${[1,2,3].map(L=>`<div>${macaron(L,earned(k,L))}<span>${LEVELS[L-1][0]}${best(k,L)!==null?" · "+best(k,L)+"/6":""}</span></div>`).join("")}</div>
       <div><button class="btn small soft" data-go="${k}">S'entraîner</button></div></div>`).join("")}
       <div class="page"><h3>L'escalier des problèmes</h3>
-      <p class="note">Résous les problèmes pour monter les 10 marches, du plus facile au niveau CM2.</p>
+      <p class="note">Résous les problèmes pour monter les 10 marches, du plus facile au niveau CM2. Les nombres changent à chaque fois.</p>
       <p style="margin:0;font-family:var(--title);font-weight:800;font-size:1.3rem">${solved} / 10 marches</p>
       <div><button class="btn small soft" data-go="prob">Monter l'escalier</button></div></div>
     </div>
@@ -384,37 +525,57 @@ function renderSkill(){
     <h2>${SKILLS[k].tab}</h2>${compBox(k)}
     <div class="levels">${[1,2,3].map(L=>`<button class="lvl ${L===level?"on":""}" data-l="${L}">${macaron(L,earned(k,L))}<span>${LEVELS[L-1][0]}<small>${LEVELS[L-1][1]}</small></span></button>`).join("")}</div>
     <div id="zone"></div></section>`;
-  $main.querySelectorAll(".lvl").forEach(b=>b.onclick=()=>{level=+b.dataset.l;series=null;renderSkill()});
+  $main.querySelectorAll(".lvl").forEach(b=>b.onclick=()=>{hush();level=+b.dataset.l;series=null;renderSkill()});
   renderLevelStart();
 }
 function renderLevelStart(){
   const k=view,r=rec(k,level),b=best(k,level);
   document.getElementById("zone").innerHTML=`<div class="row">
       <button class="btn" id="startS">${r.scores.length?"Recommencer":"Commencer"} le ${LEVELS[level-1][0].toLowerCase()}</button>
-      ${b!==null?`<span class="note">Meilleur score : <b>${b}/6</b></span>`:`<span class="note">6 questions, avec une aide si tu te trompes.</span>`}</div>
+      ${b!==null?`<span class="note">Meilleur score : <b>${b}/6</b></span>`:`<span class="note">6 questions, puis tu retravailles celles que tu as manquées.</span>`}</div>
     ${r.scores.length?chart(r.scores):""}`;
   document.getElementById("startS").onclick=startSeries;
 }
-function startSeries(){series={qs:SKILLS[view].gen(level),i:0,score:0,res:[]};renderQ()}
+function startSeries(){series={qs:SKILLS[view].gen(level),i:0,score:0,res:[],phase:"main",extra:[],ei:0,eok:0};renderQ()}
+function curQ(){const s=series;return s.phase==="main"?s.qs[s.i]:s.extra[s.ei]}
 function renderQ(){
-  const s=series,q=s.qs[s.i];s.tries=0;s.done=false;
-  document.getElementById("zone").innerHTML=`<div class="dots" aria-label="Question ${s.i+1} sur ${N}">${s.qs.map((_,j)=>`<i class="${j<s.i?(s.res[j]?"ok":"no"):j===s.i?"cur":""}"></i>`).join("")}</div>
-    <p class="note">Question ${s.i+1} sur ${N}</p>
-    <div id="qbox" style="display:flex;flex-direction:column;gap:12px">${q.html}</div>
+  const s=series,q=curQ();s.tries=0;s.done=false;
+  const main=s.phase==="main";
+  document.getElementById("zone").innerHTML=`${main
+      ?`<div class="dots" aria-label="Question ${s.i+1} sur ${N}">${s.qs.map((_,j)=>`<i class="${j<s.i?(s.res[j]?"ok":"no"):j===s.i?"cur":""}"></i>`).join("")}</div>
+        <div class="row" style="justify-content:space-between"><span class="note">Question ${s.i+1} sur ${N}</span>${listenBtn}</div>`
+      :`<p class="fb try" style="margin:0"><b>Je retravaille mes erreurs</b> · question ${s.ei+1} sur ${s.extra.length}. Même type de question, avec d'autres nombres.</p>
+        <div class="row" style="justify-content:flex-end">${listenBtn}</div>`}
+    <div id="qbox" class="qbox">${q.html}</div>
     <p class="fb" id="fb" hidden></p>
-    <div class="row"><button class="btn green" id="chk">Vérifier</button><button class="btn" id="nxt" hidden>${s.i<N-1?"Question suivante":"Voir mon résultat"}</button></div>`;
-  wire(document.getElementById("qbox"),()=>checkQ());
+    <div class="row"><button class="btn green" id="chk">Vérifier</button><button class="btn" id="nxt" hidden>Continuer</button></div>`;
+  const box=document.getElementById("qbox");
+  initManips(box);wire(box,checkQ);
+  document.querySelector(".listen").onclick=()=>speak(box);
   document.getElementById("chk").onclick=checkQ;
-  document.getElementById("nxt").onclick=()=>{s.i++;s.i<N?renderQ():endSeries()};
-  const first=document.querySelector("#qbox input");if(first)first.focus({preventScroll:true});
+  document.getElementById("nxt").onclick=nextQ;
+}
+function nextQ(){hush();const s=series;
+  if(s.phase==="main"){s.i++;if(s.i<N)return renderQ();
+    const missed=s.qs.map((q,j)=>s.res[j]?null:q).filter(Boolean).slice(0,3);
+    if(missed.length){const fresh=SKILLS[view].gen(level);const used=new Set(s.qs.map(q=>q.key));
+      s.extra=missed.map(m=>{const c=fresh.find(f=>f.type===m.type&&!used.has(f.key))||fresh.find(f=>!used.has(f.key))||fresh[0];used.add(c.key);return c});
+      s.phase="extra";s.ei=0;return renderQ();}
+    return endSeries();}
+  s.ei++;s.ei<s.extra.length?renderQ():endSeries();
 }
 function checkQ(){
-  const s=series;if(s.done)return;const q=s.qs[s.i],box=document.getElementById("qbox"),fb=document.getElementById("fb");
-  const ok=check(box);s.tries++;fb.hidden=false;
-  if(ok){s.done=true;if(s.tries===1)s.score++;s.res[s.i]=s.tries===1;
+  const s=series;if(s.done)return;const q=curQ(),box=document.getElementById("qbox"),fb=document.getElementById("fb");
+  if(q.manip){const m=box.querySelector(".manip");if(m&&!m.done()){fb.hidden=false;fb.className="fb try";
+    fb.innerHTML=`<b>Commence par manipuler !</b> ${m.querySelector(".mtip").textContent}`;return}}
+  fb.hidden=false;if(incomplete(box)){fb.className="fb try";fb.innerHTML=EMPTY;return}
+  const ok=check(box);s.tries++;
+  const main=s.phase==="main";
+  if(ok){s.done=true;if(main){if(s.tries===1)s.score++;s.res[s.i]=s.tries===1}else s.eok++;
     fb.className="fb good";fb.innerHTML=`<b>${pick(["Bravo !","Super !","Excellent !","C'est ça !"])}</b>${s.tries>1?" Tu as bien corrigé.":""} ${q.explain}`;lock(box);finishBtns();}
-  else if(s.tries===1){fb.className="fb try";fb.innerHTML=`<b>Presque !</b> Regarde les cases en rouge. Petite aide : ${q.hint}`;}
-  else{s.done=true;s.res[s.i]=false;reveal(box);fb.className="fb show";fb.innerHTML=`<b>Voici la réponse :</b> ${q.explain} Tu y arriveras à la prochaine !`;finishBtns();}
+  else if(s.tries===1){const d=q.diag?q.diag(values(box)):null;
+    fb.className="fb try";fb.innerHTML=`<b>Presque !</b> Regarde les cases en rouge. ${d?`<span class="why">${d}</span>`:`Petite aide : ${q.hint}`}`;}
+  else{s.done=true;if(main)s.res[s.i]=false;reveal(box);fb.className="fb show";fb.innerHTML=`<b>Voici la réponse :</b> ${q.explain} ${main?"Tu pourras la retravailler à la fin de la série.":"Continue, tu progresses !"}`;finishBtns();}
 }
 function finishBtns(){document.getElementById("chk").hidden=true;const n=document.getElementById("nxt");n.hidden=false;n.focus({preventScroll:true})}
 function endSeries(){
@@ -425,20 +586,21 @@ function endSeries(){
   if(s.score===6)msg="Parfait, 6 sur 6 ! Tu es un vrai chef pâtissier.";
   else if(got)msg="Bravo, tu as gagné le macaron de ce niveau !";
   else if(prev!==null&&s.score>prev)msg=`Tu progresses : ${prev}/6 la dernière fois, ${s.score}/6 aujourd'hui ! Encore une série pour gagner le macaron.`;
-  else msg="Bel entraînement ! Recommence : chaque série te fait progresser. Il faut 5 bonnes réponses pour gagner le macaron.";
+  else msg="Bel entraînement ! Recommence : chaque série te fait progresser. Il faut 5 bonnes réponses du premier coup pour gagner le macaron.";
+  const livret=got&&level===3?`<p class="fb show" style="margin:0">Niveau CM2 réussi : tu peux montrer ce résultat et colorier <b>${view}</b> dans ton Livret de Réussite.</p>`:"";
+  const extra=s.extra.length?`<p class="note">Questions retravaillées : <b>${s.eok} / ${s.extra.length}</b> réussies.</p>`:"";
   document.getElementById("zone").innerHTML=`<div class="result">
       ${macaron(level,got||wasEarned)}
       <div class="score">${s.score}/6</div>
-      <p class="fb ${got?"good":"try"}" style="margin:0">${msg}</p>
+      <p class="fb ${got?"good":"try"}" style="margin:0">${msg}</p>${extra}${livret}
       ${chart(r.scores)}
       <div class="row" style="justify-content:center"><button class="btn" id="again">Nouvelle série</button>
       ${got&&level<3?`<button class="btn green" id="up">Passer au niveau ${level+1}</button>`:""}</div></div>`;
   document.getElementById("again").onclick=startSeries;
   const up=document.getElementById("up");if(up)up.onclick=()=>{level++;series=null;renderSkill()};
-  renderSkillLevelsOnly();
+  document.querySelectorAll(".lvl").forEach(b=>{const L=+b.dataset.l;b.querySelector("svg").outerHTML=macaron(L,earned(view,L))});
   if(got&&!wasEarned)confetti();
 }
-function renderSkillLevelsOnly(){document.querySelectorAll(".lvl").forEach(b=>{const L=+b.dataset.l;b.querySelector("svg").outerHTML=macaron(L,earned(view,L))})}
 function chart(scores){const last=scores.slice(-8);
   return `<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:4px"><p class="note" style="align-self:flex-start">Mes dernières séries</p><div class="chart">${last.map((v,j)=>`<div class="bar ${j===last.length-1?"last":""} ${v>=5?"full":""}"><span>${v}</span><i style="height:${Math.max(6,v*15)}px"></i></div>`).join("")}</div></div>`}
 
@@ -446,10 +608,17 @@ function chart(scores){const last=scores.slice(-8);
 function wire(box,onEnter){
   box.addEventListener("click",e=>{const b=e.target.closest(".sg button,.choices button");if(!b||box.dataset.locked)return;
     const g=b.parentElement;g.querySelectorAll("button").forEach(x=>x.classList.toggle("sel",x===b));g.classList.remove("ok","ko")});
-  box.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();onEnter()}});
+  box.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches("input")){e.preventDefault();onEnter()}});
   box.addEventListener("input",e=>{if(e.target.matches("input.dot"))e.target.classList.remove("ok","ko")});
 }
 const val=i=>i.value.trim().replace(/\s/g,"");
+function values(box){const v={};
+  box.querySelectorAll("input.dot[data-role]").forEach(i=>{if(i.dataset.role)v[i.dataset.role]=val(i)===""?undefined:+val(i)});
+  box.querySelectorAll(".fin[data-role]").forEach(g=>{const[a,b]=g.querySelectorAll("input");v[g.dataset.role]={n:+val(a),d:+val(b)}});
+  box.querySelectorAll(".choices[data-role]").forEach(g=>{const s=g.querySelector(".sel");if(s)v[g.dataset.role]=+s.dataset.v});
+  return v}
+function incomplete(box){return [...box.querySelectorAll("input.dot")].some(i=>val(i)==="")||[...box.querySelectorAll(".sg,.choices")].some(g=>!g.querySelector(".sel"))}
+const EMPTY=`<b>Il manque des réponses.</b> Complète toutes les cases avant de vérifier.`;
 function mark(el,ok){el.classList.toggle("ok",ok);el.classList.toggle("ko",!ok)}
 function check(box){
   let all=true;
@@ -472,49 +641,60 @@ function lock(box){box.dataset.locked="1";box.querySelectorAll("input").forEach(
 function stairsSVG(cur){
   const solved=new Set(S.stairs.solved),W=560,H=250,w=50,h=20;
   const cols=["#F2557A","#FF8FAB","#FFB4C6","#FFD166","#FFC14D","#F9A03F","#5DB075","#7CC48D","#5B7BE0","#8DA2EC"];
+  const reach=Math.max(firstUnsolved(),...solved,0);
   let s=`<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Escalier des problèmes"><rect x="0" y="${H-10}" width="${W}" height="10" fill="#F0D6DF"/>`;
-  for(let k=0;k<10;k++){const x=20+k*w,y=H-10-(k+1)*h,on=solved.has(k),open=k<=Math.max(cur,...solved,-1)||on;
-    s+=`<g class="step" data-k="${k}" tabindex="${open?0:-1}" aria-label="Marche ${k+1}${on?", réussie":""}"><rect x="${x}" y="${y}" width="${w}" height="${(k+1)*h}" fill="${on?cols[k]:open?"#FFF":"#F6EEF1"}" stroke="#E0C8D2" stroke-width="2"/>
+  for(let k=0;k<10;k++){const x=20+k*w,y=H-10-(k+1)*h,on=solved.has(k),open=k<=reach;
+    s+=`<g class="step" data-k="${k}" tabindex="${open?0:-1}" aria-label="Marche ${k+1}${on?", réussie":""}"><rect x="${x}" y="${y}" width="${w}" height="${(k+1)*h}" fill="${on?cols[k]:open?"#FFF":"#F6EEF1"}" stroke="${k===cur?"#5B7BE0":"#E0C8D2"}" stroke-width="${k===cur?4:2}"/>
       <text x="${x+w/2}" y="${y+16}" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="15" fill="${on?"#fff":"#B79AA8"}">${k+1}</text></g>`;}
   const ck=Math.min(cur,9),cx=20+ck*w+w/2-17,cy=H-10-(ck+1)*h-36;
   s+=`<g transform="translate(${cx} ${cy}) scale(.36)">${chef().replace('<svg class="chef" viewBox="0 0 100 100" aria-hidden="true">',"").replace("</svg>","")}</g>`;
   return s+`</svg>`;
 }
-function firstUnsolved(){for(let k=0;k<10;k++)if(!S.stairs.solved.includes(k))return k;return 10}
+function firstUnsolved(){for(let k=0;k<10;k++)if(!S.stairs.solved.includes(k))return k;return 9}
 let curStep=null;
 function renderStairs(){
-  if(curStep===null||curStep>9)curStep=Math.min(firstUnsolved(),9);
-  const all=S.stairs.solved.length===10,p=PROBS[curStep];
+  if(curStep===null)curStep=firstUnsolved();
+  const all=S.stairs.solved.length===10,P=PROBS[curStep],p=P.make();
   $main.innerHTML=`<section class="card">
     <h2>L'escalier des problèmes</h2>
     <div class="comp"><span class="badge">N19 · N20 · N24 · N27 · PR8.A</span><div><p><b>Je résous des problèmes en décomposant et en recomposant des fractions.</b></p><p class="ex">PR8.A : déterminer des parts, identifier une fraction d'un tout.</p></div></div>
     <div class="stairs">${stairsSVG(curStep)}</div>
-    ${all?`<p class="fb good">Tu as monté les 10 marches, bravo chef ! Clique sur une marche pour refaire un problème.</p>`:""}
+    ${all?`<p class="fb good">Tu as monté les 10 marches, bravo chef ! Clique sur une marche pour refaire un problème : les nombres changent.</p>`:""}
     <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="row"><b style="font-family:var(--title);font-size:1.25rem">Marche ${curStep+1}</b><span class="ptag">${p.lvl}</span><span class="ptag" style="background:var(--butter-soft);color:#7A5300">${p.code}</span></div>
-      <div id="qbox" style="display:flex;flex-direction:column;gap:12px">${p.html()}</div>
+      <div class="row"><b style="font-family:var(--title);font-size:1.25rem">Marche ${curStep+1}</b><span class="ptag">${P.lvl}</span><span class="ptag" style="background:var(--butter-soft);color:#7A5300">${P.code}</span><span style="margin-left:auto">${listenBtn}</span></div>
+      <div id="qbox" class="qbox">${p.html}</div>
+      ${p.pouce?`<div><button class="btn small soft" id="pouceBtn" type="button">💡 Coup de pouce</button><ol class="pouce" id="pouce" hidden>${p.pouce.map(x=>`<li>${x}</li>`).join("")}</ol></div>`:""}
       <p class="fb" id="fb" hidden></p>
-      <div class="row"><button class="btn green" id="chk">Vérifier</button><button class="btn" id="nxt" hidden>Marche suivante</button></div>
+      <div class="row"><button class="btn green" id="chk">Vérifier</button><button class="btn" id="nxt" hidden>Marche suivante</button><button class="btn soft" id="other" hidden>Un autre problème</button></div>
     </div></section>`;
-  $main.querySelectorAll("g.step").forEach(g=>{const go2=()=>{const k=+g.dataset.k;if(g.getAttribute("tabindex")==="0"){curStep=k;renderStairs()}};
+  $main.querySelectorAll("g.step").forEach(g=>{const go2=()=>{if(g.getAttribute("tabindex")==="0"){hush();curStep=+g.dataset.k;renderStairs()}};
     g.addEventListener("click",go2);g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go2()}})});
-  const box=document.getElementById("qbox");let tries=0,done=false;
-  const doCheck=()=>{if(done)return;const fb=document.getElementById("fb"),ok=check(box);tries++;fb.hidden=false;
+  const box=document.getElementById("qbox");initManips(box);
+  document.querySelector(".listen").onclick=()=>speak(box);
+  const pb=document.getElementById("pouceBtn");if(pb)pb.onclick=()=>{document.getElementById("pouce").hidden=false;pb.hidden=true};
+  let tries=0,done=false;
+  const doCheck=()=>{if(done)return;const fb=document.getElementById("fb");fb.hidden=false;
+    if(p.manip){const m=box.querySelector(".manip");if(m&&!m.done()){fb.className="fb try";fb.innerHTML=`<b>Commence par manipuler !</b> ${m.querySelector(".mtip").textContent}`;return}}
+    if(incomplete(box)){fb.className="fb try";fb.innerHTML=EMPTY;return}
+    const ok=check(box);tries++;
     if(ok){done=true;lock(box);fb.className="fb good";fb.innerHTML=`<b>Bravo, tu montes d'une marche !</b> ${p.explain}`;
       if(!S.stairs.solved.includes(curStep)){S.stairs.solved.push(curStep);save();if(S.stairs.solved.length===10)confetti()}
       document.getElementById("chk").hidden=true;const n=document.getElementById("nxt");
-      if(curStep<9){n.hidden=false;n.onclick=()=>{curStep++;renderStairs()}}
+      if(curStep<9){n.hidden=false;n.onclick=()=>{hush();curStep++;renderStairs()}}
       $main.querySelector(".stairs").innerHTML=stairsSVG(Math.min(curStep+1,9));}
-    else if(tries===1){fb.className="fb try";fb.innerHTML=`<b>Pas encore !</b> Regarde les cases en rouge. Petite aide : ${p.hint}`}
-    else{fb.className="fb try";fb.innerHTML=`<b>Courage, tu restes sur ta marche !</b> ${p.hint} Corrige les cases en rouge et vérifie encore.`+(tries>=3?` <button class="btn small soft" id="sol">Voir la solution</button>`:"");
-      const sb=document.getElementById("sol");if(sb)sb.onclick=()=>{done=true;reveal(box);fb.className="fb show";fb.innerHTML=`<b>Voici la solution :</b> ${p.explain} Relis-la, puis réessaie ce problème plus tard pour monter la marche.`;document.getElementById("chk").hidden=true}}};
+    else{const d=p.diag?p.diag(values(box)):null;
+      fb.className="fb try";fb.innerHTML=`<b>${tries===1?"Pas encore !":"Courage, tu restes sur ta marche !"}</b> Regarde les cases en rouge. ${d?`<span class="why">${d}</span>`:`Petite aide : ${p.hint}`}`+(tries>=3?` <button class="btn small soft" id="sol">Voir la solution</button>`:"");
+      const sb=document.getElementById("sol");if(sb)sb.onclick=()=>{done=true;reveal(box);fb.className="fb show";
+        fb.innerHTML=`<b>Voici la solution :</b> ${p.explain} Relis-la, puis essaie un autre problème du même type pour monter la marche.`;
+        document.getElementById("chk").hidden=true;const o=document.getElementById("other");o.hidden=false;o.onclick=()=>{hush();renderStairs()}}}};
   wire(box,doCheck);document.getElementById("chk").onclick=doCheck;
 }
 
 // ---------- confettis ----------
 function confetti(){
-  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;try{document.createElement("canvas").getContext("2d").fillRect}catch(e){return}
-  const cv=document.getElementById("confetti");cv.hidden=false;const ctx=cv.getContext("2d");cv.width=innerWidth;cv.height=innerHeight;
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const cv=document.getElementById("confetti");let ctx;try{ctx=cv.getContext("2d")}catch(e){return}if(!ctx)return;
+  cv.hidden=false;cv.width=innerWidth;cv.height=innerHeight;
   const cols=["#F2557A","#FFD166","#5DB075","#5B7BE0","#B48CE0","#7B4A2E"];
   const P=Array.from({length:120},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,c:pick(cols),a:Math.random()*6,r:Math.random()<.5}));
   let t=0;(function f(){ctx.clearRect(0,0,cv.width,cv.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;
