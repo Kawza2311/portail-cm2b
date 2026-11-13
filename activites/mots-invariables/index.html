@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mission Mots Invariables</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<style>
+/* Layout: carte de l'espace — 14 planètes à conquérir, une chouette astronaute guide, une fusée avance pendant la dictée. Univers unique (nuit étoilée). */
+:root{
+  --sky:#1B1F5E; --sky2:#2B1F6B; --panel:#FFFDF7; --ink:#24204A; --muted:#6A6590;
+  --yellow:#FFD23F; --pink:#FF6FA5; --mint:#3DDC97; --sky-blue:#4CC9F0; --orange:#FF9F1C; --red:#E63946; --red-soft:#FFE3E6; --mint-soft:#DDF8EC;
+  --title:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --text:"Andika","Comic Sans MS","Trebuchet MS",system-ui,sans-serif;
+  color-scheme:light;
+}
+html{background:var(--sky)}
+body{min-height:100vh;color:var(--ink);font-family:var(--text);font-size:18px;line-height:1.5;
+  background:
+   radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 90px 120px,#fff,transparent),
+   radial-gradient(2px 2px at 160px 60px,#FFE9A8,transparent),radial-gradient(1px 1px at 230px 170px,#fff,transparent),
+   radial-gradient(1.5px 1.5px at 60px 200px,#cfe8ff,transparent),
+   linear-gradient(170deg,var(--sky) 0%,var(--sky2) 60%,#3A1F6E 100%);
+  background-size:260px 240px,260px 240px,260px 240px,260px 240px,260px 240px,100% 100%;background-attachment:fixed}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 56px;display:flex;flex-direction:column;gap:20px}
+header{display:flex;align-items:center;gap:14px;color:#fff}
+header svg{width:84px;height:84px;flex:none}
+h1{font-family:var(--title);font-weight:800;font-size:2rem;line-height:1.05;margin:0;text-wrap:balance}
+h1 span{color:var(--yellow)}
+.badge{margin-left:auto;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 14px;font-family:var(--title);font-weight:800;font-size:1.1rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+@media (max-width:520px){h1{font-size:1.5rem}header svg{width:64px;height:64px}.badge{font-size:.95rem;padding:4px 10px}}
+.warn{background:#FFF1D6;color:#7A4A00;border-radius:14px;padding:10px 14px;margin:0}
+
+/* carte des planètes */
+.map{display:grid;grid-template-columns:repeat(7,1fr);gap:10px 6px}
+@media (max-width:620px){.map{grid-template-columns:repeat(4,1fr)}}
+.planet{font:inherit;background:none;border:none;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:16px}
+.planet .ball{position:relative;width:54px;height:54px;border-radius:50%;box-shadow:inset -8px -8px 0 rgba(0,0,0,.18),0 0 0 0 transparent;transition:transform .15s}
+.planet .ball::after{content:"";position:absolute;width:12px;height:8px;border-radius:50%;background:rgba(255,255,255,.45);top:12px;left:12px}
+.planet.ring .ball::before{content:"";position:absolute;left:-10px;right:-10px;top:22px;height:10px;border:3px solid rgba(255,255,255,.7);border-radius:50%;transform:rotate(-18deg)}
+.planet .flag{position:absolute;top:-16px;right:-2px;font-size:0}
+.planet .flag svg{width:22px;height:24px}
+.planet b{font-family:var(--title);font-weight:800;font-size:1rem;line-height:1.1}
+.planet small{font-size:.85rem;color:#E6E1FF;font-variant-numeric:tabular-nums}
+.planet.on{background:rgba(255,255,255,.14)}
+.planet.on .ball{transform:scale(1.12);box-shadow:inset -8px -8px 0 rgba(0,0,0,.18),0 0 0 4px var(--yellow)}
+.planet:hover .ball{transform:scale(1.08)}
+.planet:focus-visible,.btn:focus-visible,.answer:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+
+/* panneau */
+.card{background:var(--panel);border-radius:26px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:0 10px 0 rgba(0,0,0,.18)}
+.card h2{font-family:var(--title);font-weight:800;font-size:1.6rem;margin:0;line-height:1.1}
+.guide{display:flex;gap:12px;align-items:flex-start}
+.guide svg{width:76px;height:76px;flex:none}
+.bubble{position:relative;background:#EEF3FF;border-radius:18px;padding:12px 16px;margin:0;font-size:1.1rem;min-width:0}
+.bubble::before{content:"";position:absolute;left:-10px;top:22px;border:10px solid transparent;border-right-color:#EEF3FF;border-left:0}
+.bubble.good{background:var(--mint-soft)}.bubble.good::before{border-right-color:var(--mint-soft)}
+.bubble.mid{background:#FFF4D1}.bubble.mid::before{border-right-color:#FFF4D1}
+.bubble.bad{background:var(--red-soft)}.bubble.bad::before{border-right-color:var(--red-soft)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font-family:var(--title);font-weight:800;font-size:1.15rem;border:none;border-radius:16px;padding:12px 22px;cursor:pointer;color:var(--ink);background:var(--yellow);box-shadow:0 5px 0 #D9A400;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #D9A400}
+.btn.blue{background:var(--sky-blue);box-shadow:0 5px 0 #2A9CC0}
+.btn.soft{background:#EDEAFB;box-shadow:0 5px 0 #CFC8F2}
+.btn.small{font-size:.95rem;padding:6px 12px;border-radius:12px;box-shadow:0 3px 0 #CFC8F2}
+.words{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.words li{border-radius:12px;padding:4px 14px;font-size:1.2rem;font-weight:700;color:var(--ink)}
+
+/* piste de la fusée */
+.track{position:relative;height:64px;margin:4px 6px 0}
+.track .line{position:absolute;left:0;right:0;top:36px;border-top:4px dashed #CFC8F2}
+.track .stars{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:flex-end;padding:0 0 10px 36px}
+.track .stars svg{width:20px;height:20px}
+.rocket{position:absolute;top:8px;width:46px;height:46px;transition:left .5s cubic-bezier(.3,1.4,.5,1)}
+.listen{width:110px;height:110px;border-radius:50%;align-self:center;display:grid;place-items:center;padding:0;background:var(--pink);box-shadow:0 6px 0 #C94A7C}
+.listen svg{width:54px;height:54px}
+.answer{font-family:var(--text);font-size:1.8rem;font-weight:700;padding:12px 14px;border:4px solid #CFC8F2;border-radius:18px;background:#fff;color:var(--ink);width:100%;box-sizing:border-box;text-align:center}
+.answer:focus{border-color:var(--sky-blue)}
+.note{color:var(--muted);font-size:1rem;margin:0}
+.center{text-align:center}
+
+/* résultat */
+.scorebox{display:flex;flex-direction:column;align-items:center;gap:6px}
+.score{font-family:var(--title);font-weight:800;font-size:3.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.starrow{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.starrow svg{width:30px;height:30px}
+.errs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0;padding:0;list-style:none}
+@media (max-width:560px){.errs{grid-template-columns:1fr}}
+.err{border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;background:#F6F4FF;border:3px solid #E6E1FF;min-width:0}
+.pair{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.wrong{text-decoration:line-through;text-decoration-color:var(--red);color:var(--muted);font-size:1.1rem}
+.right{font-size:1.45rem;font-weight:700}
+.right b{color:var(--red);background:var(--red-soft);border-radius:4px;padding:0 1px}
+.tag{display:inline-block;background:var(--red);color:#fff;border-radius:999px;padding:0 10px;font-size:.9rem;font-weight:700;margin-right:4px}
+.why{margin:0;font-size:1rem}
+.chart{display:flex;align-items:flex-end;gap:10px;height:140px;padding:8px 4px 0;border-bottom:4px solid #E6E1FF}
+.bar{flex:1;max-width:48px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.bar i{display:block;width:100%;border-radius:10px 10px 4px 4px;background:#CFC8F2;min-height:6px}
+.bar.last i{background:var(--sky-blue)}
+.bar.ten i{background:var(--mint)}
+.bar span{font-family:var(--title);font-weight:800;font-size:1rem;font-variant-numeric:tabular-nums}
+.settings{color:#fff;background:rgba(255,255,255,.08);border-radius:16px;padding:10px 14px}
+.settings summary{cursor:pointer;font-family:var(--title);font-weight:800}
+.settings .row{margin-top:10px}
+.settings select{font:inherit;font-size:1rem;padding:6px 10px;border-radius:10px;border:none;max-width:100%;min-width:0;color:var(--ink);background:#fff}
+.ok-list{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.ok-list li{background:var(--mint-soft);color:#13794A;border:3px solid #9BE7C4;border-radius:12px;padding:2px 12px;font-size:1.25rem;font-weight:700}
+.slow{align-self:center}
+.h3{font-family:var(--title);font-weight:800;font-size:1.2rem;margin:0}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:20}
+@media (prefers-reduced-motion:no-preference){
+  .card{animation:pop .3s ease-out}
+  @keyframes pop{from{transform:scale(.97)}to{transform:none}}
+  header svg{animation:float 3s ease-in-out infinite}
+  @keyframes float{50%{transform:translateY(-5px)}}
+}
+</style>
+
+</head>
+<body>
+<canvas id="confetti" hidden></canvas>
+<div class="wrap">
+  <header>
+    <span id="hdrOwl"></span>
+    <h1>Mission <span>mots invariables</span></h1>
+    <div class="badge" id="badge"></div>
+  </header>
+  <p class="warn" id="noVoice" hidden>Le son ne fonctionne pas sur cet appareil. Demande de l'aide à un adulte.</p>
+  <nav class="map" id="tabs" aria-label="Les planètes (listes)"></nav>
+  <main id="main"></main>
+  <details class="settings"><summary>🔊 Réglage de la voix</summary>
+    <div class="row"><label for="voiceSel">Voix :</label><select id="voiceSel"></select>
+    <button class="btn soft small" id="voiceTest">Tester avec « loin »</button></div>
+    <p class="note" style="color:#E6E1FF">Choisis la voix la plus claire. Les voix « Google », « Natural » ou « Premium » sont souvent les meilleures.</p>
+  </details>
+</div>
+
+<script>
+const LISTS=[
+ ["chez","assez","en effet","jamais","mais","malgré","autrefois","parfois","quelquefois","est-ce que"],
+ ["ailleurs","alors","dans","dehors","dedans","dessous","dessus","puis","depuis","puisque"],
+ ["longtemps","moins","néanmoins","sans","toujours","vers","à travers","avec","il y a","derrière"],
+ ["beaucoup","tout à coup","trop","ici","voici","attentivement","hier","volontiers","plus","plusieurs"],
+ ["d'abord","tard","quand","un peu de","peut-être","debout","hélas","entièrement","doucement","également"],
+ ["déjà","jusqu'à","voilà","après","cela","là-bas","très","près de","auprès","brusquement"],
+ ["loin","cependant","tant","tandis que","seulement","souvent","tellement","vraiment","pour","pourquoi"],
+ ["sur","surtout","partout","autour","aujourd'hui","avant","autant","devant","pendant","durant"],
+ ["facilement","heureusement","environ","pourtant","parce que","dès que","personne","lorsque","même","mieux"],
+ ["combien","comme","comment","complètement","naturellement","poliment","malheureusement","vivement","immédiatement","rapidement"],
+ ["encore","enfin","ensuite","vite","entre","gentiment","tranquillement","rarement","simplement","certainement"],
+ ["demain","maintenant","soudain","vraiment","lentement","justement","totalement","généralement","régulièrement","joyeusement"],
+ ["aussi","aussitôt","bien","bientôt","tôt","plutôt","parmi","presque","quand","contre"],
+ ["afin","ainsi","car","chaque","aucun","chacun","aujourd'hui","la plupart","quelqu'un","ensemble"]
+];
+// Phrases d'aide pour les mots qui se prononcent comme d'autres mots
+const CONTEXT={
+ "chez":"Je vais chez ma tante.","assez":"J'ai assez mangé.","en effet":"Il fait froid, en effet c'est l'hiver.","jamais":"Je ne mens jamais.","mais":"Je voudrais venir, mais je suis malade.","malgré":"Il sort malgré la pluie.","autrefois":"Autrefois, il n'y avait pas d'électricité.","parfois":"Parfois, je vais à la piscine.","quelquefois":"Quelquefois, il neige en novembre.","est-ce que":"Est-ce que tu viens jouer ?",
+ "ailleurs":"Mon chat dort ailleurs ce soir.","alors":"Il pleuvait, alors j'ai pris mon parapluie.","dans":"Le livre est dans mon cartable.","dehors":"Les enfants jouent dehors.","dedans":"La boîte est vide, il n'y a rien dedans.","dessous":"Le chat se cache dessous.","dessus":"Pose le livre dessus.","puis":"Je me lave, puis je m'habille.","depuis":"J'attends depuis ce matin.","puisque":"Je reste, puisque tu es là.",
+ "longtemps":"J'ai attendu longtemps.","moins":"Il fait moins froid aujourd'hui.","néanmoins":"Il est fatigué, néanmoins il continue.","sans":"Il est sorti sans son manteau.","toujours":"Je suis toujours à l'heure.","vers":"Elle marche vers l'école.","à travers":"Le soleil passe à travers la vitre.","avec":"Je joue avec mon frère.","il y a":"Il y a un oiseau sur le toit.","derrière":"Le chien est derrière la porte.",
+ "beaucoup":"J'aime beaucoup lire.","tout à coup":"Tout à coup, la lumière s'éteint.","trop":"Cette soupe est trop chaude.","ici":"Viens ici !","voici":"Voici mon cahier.","attentivement":"Écoute attentivement la maîtresse.","hier":"Hier, il a neigé.","volontiers":"Je t'aide volontiers.","plus":"Je n'en veux plus.","plusieurs":"J'ai plusieurs crayons.",
+ "d'abord":"D'abord, je lis la consigne.","tard":"Il est rentré tard.","quand":"Je souris quand il fait beau.","un peu de":"Je veux un peu de sucre.","peut-être":"Il viendra peut-être demain.","debout":"Les élèves sont debout.","hélas":"Hélas, il pleut encore.","entièrement":"J'ai lu le livre entièrement.","doucement":"Ferme la porte doucement.","également":"Mon frère vient également.",
+ "déjà":"J'ai déjà fini.","jusqu'à":"Je compte jusqu'à cent.","voilà":"Voilà ton cahier.","après":"Je joue après l'école.","cela":"Cela me fait plaisir.","là-bas":"Regarde la maison là-bas.","très":"Ce gâteau est très bon.","près de":"J'habite près de l'école.","auprès":"Il s'assoit auprès de sa grand-mère.","brusquement":"La porte s'ouvre brusquement.",
+ "loin":"La mer est loin d'ici.","cependant":"Il pleut, cependant je sors.","tant":"Il a tant de jouets !","tandis que":"Je lis tandis que tu dessines.","seulement":"J'ai seulement deux euros.","souvent":"Je vais souvent au parc.","tellement":"Je suis tellement content !","vraiment":"Ce film est vraiment drôle.","pour":"Ce cadeau est pour toi.","pourquoi":"Pourquoi le ciel est-il bleu ?",
+ "sur":"Le chat dort sur le lit.","surtout":"J'aime les fruits, surtout les fraises.","partout":"Il y a des feuilles partout.","autour":"Nous dansons autour du feu.","aujourd'hui":"Aujourd'hui, c'est vendredi.","avant":"Lave-toi les mains avant le repas.","autant":"J'ai autant de billes que toi.","devant":"Je t'attends devant l'école.","pendant":"Je dors pendant la nuit.","durant":"Il a plu durant toute la journée.",
+ "facilement":"Il a gagné facilement.","heureusement":"Heureusement, j'ai mon parapluie.","environ":"Il y a environ vingt élèves.","pourtant":"Il a révisé, pourtant il a oublié.","parce que":"Je reste parce qu'il pleut.","dès que":"Je t'appelle dès que j'arrive.","personne":"Personne n'est venu.","lorsque":"Je souris lorsque tu chantes.","même":"Même mon chat aime la musique.","mieux":"Je vais mieux aujourd'hui.",
+ "combien":"Combien coûte ce livre ?","comme":"Il court comme le vent.","comment":"Comment vas-tu ?","complètement":"Le verre est complètement vide.","naturellement":"Elle sourit naturellement.","poliment":"Il demande poliment.","malheureusement":"Malheureusement, le match est annulé.","vivement":"Il se lève vivement.","immédiatement":"Viens ici immédiatement.","rapidement":"Le lapin court rapidement.",
+ "encore":"Je veux encore jouer.","enfin":"Enfin, les vacances !","ensuite":"Je mange, ensuite je me brosse les dents.","vite":"Cours vite !","entre":"Le ballon est entre les deux arbres.","gentiment":"Elle m'aide gentiment.","tranquillement":"Le chat dort tranquillement.","rarement":"Il pleut rarement ici.","simplement":"Explique-le simplement.","certainement":"Il viendra certainement.",
+ "demain":"Demain, nous irons au musée.","maintenant":"Range ta chambre maintenant.","soudain":"Soudain, un bruit retentit.","lentement":"La tortue avance lentement.","justement":"Je pensais justement à toi.","totalement":"Je suis totalement d'accord.","généralement":"Généralement, je me couche tôt.","régulièrement":"Je lis régulièrement.","joyeusement":"Les enfants chantent joyeusement.",
+ "aussi":"Moi aussi, j'aime le chocolat.","aussitôt":"Il est parti aussitôt.","bien":"Tu as bien travaillé.","bientôt":"Ce sera bientôt Noël.","tôt":"Je me lève tôt.","plutôt":"Je préfère plutôt le jus d'orange.","parmi":"Il y a un chat parmi les chiens.","presque":"J'ai presque fini.","contre":"Le vélo est contre le mur.",
+ "afin":"Je travaille afin de réussir.","ainsi":"Fais ainsi, c'est plus facile.","car":"Je reste à l'intérieur car il pleut.","chaque":"Chaque élève a un cahier.","aucun":"Il n'y a aucun bruit.","chacun":"Chacun range ses affaires.","la plupart":"La plupart des élèves aiment le sport.","quelqu'un":"Quelqu'un frappe à la porte.","ensemble":"Nous chantons ensemble."
+};
+
+// ---------- stockage (sur cet appareil) ----------
+const KEY="mots-invariables-v1";
+let store={};
+try{store=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){store={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+function hist(i){store[i]=store[i]||{attempts:[],lastOrder:null};return store[i]}
+
+// ---------- voix ----------
+// On choisit la voix française la plus naturelle de l'appareil (voix « Natural », « Google », « Premium »…)
+let voice=null, frVoices=[];
+const VKEY="mots-invariables-voix";
+function voiceScore(v){
+  let s=0;
+  if(/fr[-_]FR/i.test(v.lang))s+=5;
+  if(/natural|neural|online|premium|enhanced|améliorée|google/i.test(v.name))s+=10;
+  if(/amélie|amelie|thomas|audrey|denise|henri|eloise|vivienne|remy|rémy|aurélie|marie/i.test(v.name))s+=3;
+  if(/compact|espeak/i.test(v.name))s-=10;
+  return s;
+}
+function pickVoice(){
+  if(!("speechSynthesis" in window)){document.getElementById("noVoice").hidden=false;return}
+  frVoices=speechSynthesis.getVoices().filter(x=>/^fr/i.test(x.lang)).sort((a,b)=>voiceScore(b)-voiceScore(a));
+  let saved=null;try{saved=localStorage.getItem(VKEY)}catch(e){}
+  voice=frVoices.find(v=>v.name===saved)||frVoices[0]||null;
+  renderVoicePicker();
+}
+if("speechSynthesis" in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}else{document.getElementById("noVoice").hidden=false}
+function say(text,rate=0.85){
+  if(!("speechSynthesis" in window))return;
+  const u=new SpeechSynthesisUtterance(text);u.lang="fr-FR";u.rate=rate;u.pitch=1;if(voice)u.voice=voice;speechSynthesis.speak(u);
+}
+// Mot, puis phrase, puis mot : un mot court dit seul se comprend mal, la phrase lève le doute
+function dictate(word,slow=false){
+  if(!("speechSynthesis" in window))return;
+  speechSynthesis.cancel();
+  const r=slow?0.6:0.8;
+  say(word+".",r);
+  if(CONTEXT[word])say(CONTEXT[word],slow?0.7:0.9);
+  say(word+".",r);
+}
+function renderVoicePicker(){
+  const el=document.getElementById("voiceSel");if(!el)return;
+  el.innerHTML=frVoices.length?frVoices.map(v=>`<option ${voice&&v.name===voice.name?"selected":""}>${v.name.replace(/[<>&]/g,"")}</option>`).join(""):"<option>Aucune voix française trouvée</option>";
+}
+
+// ---------- comparaison ----------
+const norm=s=>s.trim().toLowerCase().replace(/[’`´]/g,"'").replace(/\s+/g," ").replace(/\s*-\s*/g,"-").replace(/\s*'\s*/g,"'");
+const deacc=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"");
+const depunct=s=>s.replace(/[-' ]/g,"");
+const undouble=s=>s.replace(/(.)\1+/g,"$1");
+const sound=s=>s.replace(/em(?=[bp])|am(?=[bp])|an|en/g,"AN").replace(/ss/g,"s").replace(/qu|k/g,"c").replace(/ph/g,"f");
+
+function accentNote(a,w){
+  // a et w de même longueur une fois sans ponctuation
+  const A=[...depunct(a)],W=[...depunct(w)];
+  if(A.length!==W.length)return "Attention aux accents.";
+  const notes=[];
+  for(let i=0;i<W.length;i++){
+    if(A[i]===W[i])continue;
+    const wa=deacc(W[i])!==W[i], aa=deacc(A[i])!==A[i];
+    if(wa&&!aa)notes.push(`il manque l'accent : on écrit « ${W[i]} »`);
+    else if(!wa&&aa)notes.push(`pas d'accent sur ce « ${W[i]} »`);
+    else notes.push(`on écrit « ${W[i]} » et pas « ${A[i]} »`);
+  }
+  if(!notes.length)return "Attention aux accents.";
+  const t=notes.join(" ; ");return t[0].toUpperCase()+t.slice(1)+".";
+}
+function punctNote(a,w){
+  if(w.includes("-")&&!a.includes("-"))return ["Trait d'union","Il faut un trait d'union (-) entre les mots."];
+  if(w.includes("'")&&!a.includes("'"))return ["Apostrophe","Il faut une apostrophe (')."];
+  if(w.includes(" ")&&!a.includes(" "))return ["Espace","Ce sont plusieurs mots : il faut des espaces."];
+  if(!w.includes("-")&&a.includes("-"))return ["Trait d'union","Il n'y a pas de trait d'union dans ce mot."];
+  if(!w.includes(" ")&&a.includes(" "))return ["Espace","C'est un seul mot, sans espace."];
+  return ["Ponctuation","Regarde bien les traits d'union, apostrophes et espaces."];
+}
+function diagnose(a,w){
+  if(a==="")return [["Pas de réponse","Tu n'as rien écrit pour ce mot."]];
+  const out=[];
+  const a1=deacc(a),w1=deacc(w),a2=depunct(a1),w2=depunct(w1);
+  const hasAccentIssue=depunct(a)!==depunct(w);
+  if(a2===w2){
+    if(a1!==w1)out.push(punctNote(a,w));
+    if(hasAccentIssue)out.push(["Accent",accentNote(a,w)]);
+    return out;
+  }
+  const last=w2.slice(-1);
+  if(a2+"s"===w2)out.push(["Le s","Tu as oublié le « s » à la fin. Il ne s'entend pas, il faut s'en souvenir."]);
+  else if(a2===w2+"s")out.push(["Le s","Il n'y a pas de « s » à la fin de ce mot."]);
+  else if(a2+last===w2)out.push(["Lettre muette",`Tu as oublié la lettre muette à la fin : « ${last} ».`]);
+  else if(a2.length===w2.length+1&&a2.slice(0,-1)===w2)out.push(["Lettre en trop",`Il n'y a pas de « ${a2.slice(-1)} » à la fin.`]);
+  else if(undouble(a2)===undouble(w2)){
+    const d=w2.match(/(.)\1/);
+    out.push(["Lettre doublée",d&&a2.length<w2.length?`Il faut doubler la lettre : « ${d[0]} ».`:"Ici, la lettre n'est pas doublée."]);
+  }
+  else if(sound(a2)===sound(w2))out.push(["Son","Tu as bien entendu le mot, mais un son ne s'écrit pas comme ça. Regarde les lettres en rouge."]);
+  else out.push(["Orthographe","Regarde bien les lettres en rouge."]);
+  if(deacc(w)!==w&&deacc(a)===a)out.push(["Accent","Pense aussi à l'accent."]);
+  return out;
+}
+function highlight(a,w){
+  // lettres du bon mot que l'élève n'a pas écrites (ou mal) en rouge
+  const A=[...a],W=[...w],n=A.length,m=W.length;
+  const L=Array.from({length:n+1},()=>Array(m+1).fill(0));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)L[i][j]=A[i]===W[j]?L[i+1][j+1]+1:Math.max(L[i+1][j],L[i][j+1]);
+  const keep=Array(m).fill(false);let i=0,j=0;
+  while(i<n&&j<m){if(A[i]===W[j]){keep[j]=true;i++;j++}else if(L[i+1][j]>=L[i][j+1])i++;else j++}
+  return W.map((c,k)=>keep[k]?esc(c):`<b>${esc(c)}</b>`).join("");
+}
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+
+// ---------- dessins ----------
+const COLORS=[["#FF9F1C","#FFBF69"],["#4CC9F0","#90E0EF"],["#FF6FA5","#FFB3CF"],["#3DDC97","#9BF2C9"],["#9B5DE5","#C9A7F5"],["#F15BB5","#F9A8D9"],["#FEE440","#FFF3A3"],["#00BBF9","#7FDBFF"],["#00F5D4","#9DFCEB"],["#FF7F51","#FFB899"],["#8AC926","#C5E88E"],["#6A8DFF","#B3C4FF"],["#FFCA3A","#FFE49A"],["#E5989B","#F5C8CA"]];
+const RING=[1,4,7,10,13];
+function owl(mood="normal"){
+  const eyes = mood==="happy"
+    ? `<path d="M38 56 q8 -10 16 0" stroke="#24204A" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M66 56 q8 -10 16 0" stroke="#24204A" stroke-width="4" fill="none" stroke-linecap="round"/>`
+    : mood==="wink"
+    ? `<circle cx="46" cy="56" r="12" fill="#fff"/><circle cx="48" cy="57" r="6" fill="#24204A"/><circle cx="50" cy="54" r="2" fill="#fff"/><path d="M66 57 q8 -8 16 0" stroke="#24204A" stroke-width="4" fill="none" stroke-linecap="round"/>`
+    : `<circle cx="46" cy="56" r="12" fill="#fff"/><circle cx="74" cy="56" r="12" fill="#fff"/><circle cx="48" cy="57" r="6" fill="#24204A"/><circle cx="72" cy="57" r="6" fill="#24204A"/><circle cx="50" cy="54" r="2" fill="#fff"/><circle cx="74" cy="54" r="2" fill="#fff"/>`;
+  return `<svg viewBox="0 0 120 120" aria-hidden="true">
+    <ellipse cx="60" cy="112" rx="30" ry="5" fill="rgba(0,0,0,.12)"/>
+    <path d="M30 34 L38 18 L48 32 Z" fill="#8C5A3C"/><path d="M90 34 L82 18 L72 32 Z" fill="#8C5A3C"/>
+    <ellipse cx="60" cy="68" rx="34" ry="40" fill="#A86B47"/>
+    <ellipse cx="60" cy="82" rx="22" ry="24" fill="#F3D9B1"/>
+    <path d="M46 78 q4 4 8 0 M58 86 q4 4 8 0 M52 94 q4 4 8 0" stroke="#D9B78A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="27" cy="74" rx="8" ry="16" fill="#8C5A3C" transform="rotate(15 27 74)"/><ellipse cx="93" cy="74" rx="8" ry="16" fill="#8C5A3C" transform="rotate(-15 93 74)"/>
+    ${eyes}
+    <path d="M55 64 L65 64 L60 72 Z" fill="#FF9F1C"/>
+    ${mood==="happy"?`<circle cx="36" cy="68" r="5" fill="#FF6FA5" opacity=".5"/><circle cx="84" cy="68" r="5" fill="#FF6FA5" opacity=".5"/>`:""}
+    <circle cx="60" cy="60" r="48" fill="#BDE7FF" opacity=".22" stroke="#E8F6FF" stroke-width="4"/>
+    <path d="M30 34 a36 36 0 0 1 22 -18" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>
+    <path d="M50 108 l-4 6 M70 108 l4 6" stroke="#FF9F1C" stroke-width="4" stroke-linecap="round"/>
+  </svg>`;
+}
+const star=(on,c="#FFD23F")=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z" fill="${on?c:"#E6E1FF"}" stroke="${on?"#E0A800":"#CFC8F2"}" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
+const rocket=`<svg viewBox="0 0 48 48" aria-hidden="true"><g transform="rotate(45 24 24)"><path d="M24 4c7 6 9 15 7 26H17C15 19 17 10 24 4z" fill="#fff" stroke="#24204A" stroke-width="2"/><circle cx="24" cy="18" r="4" fill="#4CC9F0" stroke="#24204A" stroke-width="2"/><path d="M17 26l-6 8h7zM31 26l6 8h-7z" fill="#FF6FA5" stroke="#24204A" stroke-width="2" stroke-linejoin="round"/><path d="M20 31q4 12 8 0z" fill="#FF9F1C"/></g></svg>`;
+const speaker=`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 18h8l10-8v28l-10-8H8z" fill="#fff"/><path d="M32 16q6 8 0 16M36 11q11 13 0 26" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`;
+const flag=`<svg viewBox="0 0 22 24" aria-hidden="true"><path d="M3 2v21" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M4 3h14l-4 4 4 4H4z" fill="#FFD23F" stroke="#24204A" stroke-width="1"/></svg>`;
+document.getElementById("hdrOwl").innerHTML=owl("normal");
+
+// ---------- confettis ----------
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const cv=document.getElementById("confetti");cv.hidden=false;const ctx=cv.getContext("2d");
+  cv.width=innerWidth;cv.height=innerHeight;
+  const cols=["#FFD23F","#FF6FA5","#3DDC97","#4CC9F0","#FF9F1C","#9B5DE5"];
+  const P=Array.from({length:140},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,r:Math.random()*6,c:cols[Math.floor(Math.random()*cols.length)],a:Math.random()*6}));
+  let t=0;(function f(){ctx.clearRect(0,0,cv.width,cv.height);
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;ctx.fillRect(-4,-3,8+p.r,6);ctx.restore()});
+    if(++t<220)requestAnimationFrame(f);else{ctx.clearRect(0,0,cv.width,cv.height);cv.hidden=true}})();
+}
+
+// ---------- interface ----------
+let cur=0, session=null;
+const $tabs=document.getElementById("tabs"),$main=document.getElementById("main");
+function best(i){const a=hist(i).attempts;return a.length?Math.max(...a.map(x=>x.score)):null}
+function planetStyle(i){const[c1,c2]=COLORS[i];return `background:radial-gradient(circle at 35% 30%,${c2},${c1} 70%)`}
+function renderTabs(){
+  const conquered=LISTS.filter((_,i)=>best(i)===10).length;
+  document.getElementById("badge").innerHTML=`🚩 ${conquered} / 14`;
+  document.getElementById("badge").setAttribute("aria-label",`${conquered} planètes conquises sur 14`);
+  $tabs.innerHTML=LISTS.map((_,i)=>{
+    const b=best(i);
+    return `<button class="planet ${i===cur?"on":""} ${RING.includes(i)?"ring":""}" data-i="${i}" id="tab${i}" aria-label="Liste ${i+1}${b!==null?", meilleur score "+b+" sur 10":""}">
+      <span class="ball" style="${planetStyle(i)}">${b===10?`<span class="flag">${flag}</span>`:""}</span>
+      <b>Liste ${i+1}</b><small>${b===null?"à explorer":b+"/10"}</small></button>`;
+  }).join("");
+}
+$tabs.addEventListener("click",e=>{
+  const t=e.target.closest(".planet");if(!t)return;
+  if("speechSynthesis" in window)speechSynthesis.cancel();
+  cur=+t.dataset.i;session=null;renderTabs();renderStart();
+  $main.scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+function renderStart(){
+  const h=hist(cur),n=h.attempts.length,b=best(cur);
+  const talk = n===0 ? `Bienvenue sur la planète ${cur+1} ! Écoute bien chaque mot et écris-le sans erreur. Tu es prêt·e ?`
+    : b===10 ? `Tu as déjà conquis cette planète avec 10/10 ! Tu peux t'entraîner encore pour ne pas oublier.`
+    : `Te revoilà ! Ton meilleur score ici : ${b}/10. Cette fois, on vise les 10 étoiles !`;
+  $main.innerHTML=`<section class="card">
+    <h2>Planète ${cur+1}</h2>
+    <div class="guide">${owl(n&&b===10?"happy":"normal")}<p class="bubble">${talk}</p></div>
+    <div class="row">
+      <button class="btn" id="go">🚀 Décoller</button>
+      <button class="btn soft" id="peek">👀 Revoir les mots</button>
+    </div>
+    <ul class="words" id="wl" hidden>${LISTS[cur].map((w,k)=>`<li style="background:${COLORS[(cur+k)%14][1]}">${esc(w)}</li>`).join("")}</ul>
+    ${n?historyChart(h.attempts):""}
+    ${n?`<div class="row" id="resetZone"><button class="btn soft small" id="reset">Effacer mes scores de cette planète</button></div>`:""}
+  </section>`;
+  document.getElementById("go").onclick=start;
+  document.getElementById("peek").onclick=()=>{const wl=document.getElementById("wl");wl.hidden=!wl.hidden;
+    document.getElementById("peek").textContent=wl.hidden?"👀 Revoir les mots":"🙈 Cacher les mots"};
+  const r=document.getElementById("reset");
+  if(r)r.onclick=()=>{document.getElementById("resetZone").innerHTML=`<span>Tout effacer pour la liste ${cur+1} ?</span>
+    <button class="btn small" id="yes">Oui</button><button class="btn soft small" id="no">Non</button>`;
+    document.getElementById("yes").onclick=()=>{store[cur]={attempts:[],lastOrder:null};save();renderTabs();renderStart()};
+    document.getElementById("no").onclick=renderStart};
+}
+
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function start(){
+  const h=hist(cur);let order,tries=0;
+  do{order=shuffle(LISTS[cur]);tries++}while(h.lastOrder&&order.join("|")===h.lastOrder.join("|")&&tries<20);
+  if(order[0]===(h.lastOrder||[])[0]){const k=1+Math.floor(Math.random()*9);[order[0],order[k]]=[order[k],order[0]]}
+  h.lastOrder=order;save();
+  session={order,answers:[],i:0};renderWord();
+}
+function renderWord(){
+  const s=session,w=s.order[s.i];
+  const pct=s.i/9;
+  $main.innerHTML=`<section class="card">
+    <h2>Mot ${s.i+1} sur 10</h2>
+    <div class="track" aria-hidden="true"><div class="line"></div>
+      <div class="stars">${s.order.map((_,k)=>star(k<s.i)).join("")}</div>
+      <div class="rocket" style="left:calc(${pct} * (100% - 46px))">${rocket}</div></div>
+    <button class="btn listen" id="listen" aria-label="Écouter le mot">${speaker}</button>
+    <button class="btn soft small slow" id="slow">🐢 Réécouter plus lentement</button>
+    <input class="answer" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Écris le mot ici" placeholder="J'écris ici…">
+    <div class="row" style="justify-content:center"><button class="btn blue" id="ok">${s.i<9?"Mot suivant ➜":"Atterrir 🏁"}</button></div>
+  </section>`;
+  const inp=document.getElementById("ans");
+  document.getElementById("listen").onclick=()=>{dictate(w);inp.focus()};
+  document.getElementById("slow").onclick=()=>{dictate(w,true);inp.focus()};
+  document.getElementById("ok").onclick=next;
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")next()});
+  dictate(w);inp.focus();
+}
+function next(){
+  const s=session;s.answers.push(norm(document.getElementById("ans").value));
+  if(++s.i<10)renderWord();else finish();
+}
+function finish(){
+  if("speechSynthesis" in window)speechSynthesis.cancel();
+  const s=session,h=hist(cur);
+  const prevScores=h.attempts.map(x=>x.score);
+  const errors=[];
+  s.order.forEach((w,k)=>{const a=s.answers[k];if(a!==w)errors.push({w,a,why:diagnose(a,w)})});
+  const score=10-errors.length;
+  h.attempts.push({score,date:new Date().toISOString(),errors:errors.map(e=>({w:e.w,a:e.a}))});
+  save();renderTabs();
+
+  const prev=prevScores.length?prevScores[prevScores.length-1]:null;
+  let msg,cls,mood;
+  if(score===10){msg=prev!==null&&prev<10?`Hourra ! Tu es passé·e de ${prev} à 10/10. La planète ${cur+1} est conquise, ton drapeau est planté !`:`Hourra ! 10/10, la planète ${cur+1} est conquise, ton drapeau est planté !`;cls="good";mood="happy"}
+  else if(prev===null){msg=`Premier voyage terminé : ${score}/10. Regarde les mots à réparer ci-dessous, puis redécolle pour faire mieux !`;cls="mid";mood="wink"}
+  else if(score>prev){msg=`Tu progresses ! ${prev}/10 la dernière fois, ${score}/10 aujourd'hui. Encore un voyage et tu peux atteindre 10/10 !`;cls="good";mood="happy"}
+  else if(score===prev){msg=`Tu tiens bon avec ${score}/10 ! Relis bien les mots à réparer : au prochain voyage, tu peux gagner des étoiles.`;cls="mid";mood="wink"}
+  else{msg=`Bravo pour ce nouveau voyage, ${score}/10 ! Chaque entraînement t'aide à mieux retenir. Relis les mots à réparer et redécolle, tu vas y arriver !`;cls="mid";mood="wink"}
+
+  const counts={};errors.forEach(e=>e.why.forEach(([t])=>counts[t]=(counts[t]||0)+1));
+  const summary=Object.entries(counts).map(([t,n])=>`${n} × ${t.toLowerCase()}`).join(", ");
+
+  $main.innerHTML=`<section class="card">
+    <h2>Planète ${cur+1} : atterrissage !</h2>
+    <div class="scorebox"><div class="score">${score}/10</div>
+      <div class="starrow" aria-hidden="true">${Array.from({length:10},(_,k)=>star(k<score)).join("")}</div></div>
+    <div class="guide">${owl(mood)}<p class="bubble ${cls}">${msg}</p></div>
+    ${score?`<p class="h3">✅ Les mots bien écrits</p>
+    <ul class="ok-list">${s.order.filter((w,k)=>s.answers[k]===w).map(w=>`<li>${esc(w)}</li>`).join("")}</ul>`:""}
+    ${errors.length?`<p class="h3">🔧 Les mots à réparer${summary?` <span class="note">(${esc(summary)})</span>`:""}</p>
+    <ul class="errs">${errors.map(e=>`<li class="err">
+      <div class="pair">${e.a?`<span class="wrong">${esc(e.a)}</span>`:""}<span class="right">${highlight(e.a,e.w)}</span>
+        <button class="btn soft small" data-say="${esc(e.w)}" aria-label="Écouter ${esc(e.w)}">🔊</button></div>
+      ${e.why.map(([t,d])=>`<p class="why"><span class="tag">${esc(t)}</span>${esc(d)}</p>`).join("")}
+    </li>`).join("")}</ul>`:""}
+    ${historyChart(h.attempts)}
+    <div class="row">
+      <button class="btn" id="again">🚀 ${score===10?"Refaire ce voyage":"Redécoller (nouvel ordre)"}</button>
+      ${score===10&&cur<13?`<button class="btn blue" id="nextList">Planète ${cur+2} ➜</button>`:""}
+    </div>
+  </section>`;
+  $main.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>{speechSynthesis.cancel();say(b.dataset.say)});
+  document.getElementById("again").onclick=start;
+  const nl=document.getElementById("nextList");if(nl)nl.onclick=()=>{cur++;renderTabs();renderStart()};
+  if(score===10)confetti();
+}
+function historyChart(att){
+  const last=att.slice(-8);
+  return `<div><p class="h3">📈 Mes derniers voyages</p>
+  <div class="chart">${last.map((a,k)=>`<div class="bar ${k===last.length-1?"last":""} ${a.score===10?"ten":""}"><span>${a.score}</span><i style="height:${Math.max(6,a.score*10)}px"></i></div>`).join("")}</div></div>`;
+}
+
+document.getElementById("voiceSel").onchange=e=>{voice=frVoices.find(v=>v.name===e.target.value)||voice;try{localStorage.setItem(VKEY,voice.name)}catch(err){}};
+document.getElementById("voiceTest").onclick=()=>dictate("loin");
+renderVoicePicker();
+renderTabs();renderStart();
+</script>
+</body>
+</html>
