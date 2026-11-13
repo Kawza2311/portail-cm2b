@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>L'Atelier des fractions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Baloo+2:wght@600;800&display=swap">
+<style>
+/* Layout: atelier de pâtisserie — vitrine d'onglets, plan de travail blanc, toques et macarons comme récompenses, escalier des problèmes. Univers unique (clair, gourmand). */
+:root{
+  --bg:#FFEFF4; --dot:#FFD9E5; --panel:#FFFFFF; --ink:#3B2630; --muted:#7A6170;
+  --straw:#F2557A; --straw-soft:#FFE1EA; --pista:#5DB075; --pista-soft:#E2F5E7;
+  --blue:#5B7BE0; --blue-soft:#E6ECFF; --butter:#FFD166; --butter-soft:#FFF4D6;
+  --choco:#7B4A2E; --line:#F0D6DF; --ko:#D64545; --ko-soft:#FDE6E6;
+  --title:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --text:"Andika","Comic Sans MS","Trebuchet MS",system-ui,sans-serif;
+  color-scheme:light;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--text);font-size:19px;line-height:1.5;
+  background-image:radial-gradient(var(--dot) 2.5px,transparent 2.6px);background-size:28px 28px}
+.wrap{max-width:900px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 60px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:center;gap:12px}
+header .chef{width:74px;height:74px;flex:none}
+h1{font-family:var(--title);font-weight:800;font-size:2rem;line-height:1.05;margin:0;text-wrap:balance}
+h1 span{color:var(--straw)}
+header p{margin:0;color:var(--muted);font-size:1rem}
+@media (max-width:520px){h1{font-size:1.55rem}header .chef{width:58px;height:58px}}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+.tab{font-family:var(--title);font-weight:800;font-size:1rem;border:3px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.tab .code{font-family:var(--text);font-size:.8rem;background:var(--straw-soft);color:var(--straw);border-radius:999px;padding:0 8px}
+.tab.on{background:var(--straw);border-color:var(--straw);color:#fff}
+.tab.on .code{background:#fff}
+button:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.card{background:var(--panel);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 6px 0 var(--line)}
+.card h2{font-family:var(--title);font-weight:800;font-size:1.5rem;margin:0;line-height:1.1}
+.comp{display:flex;gap:12px;align-items:flex-start;background:var(--butter-soft);border-radius:18px;padding:12px 14px}
+.comp .badge{font-family:var(--title);font-weight:800;background:var(--butter);border-radius:12px;padding:2px 10px;flex:none}
+.comp p{margin:0}
+.comp .ex{color:var(--muted);font-size:1rem}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media (max-width:560px){.levels{grid-template-columns:1fr}}
+.lvl{font-family:var(--title);font-weight:800;font-size:1.05rem;text-align:left;border:3px solid var(--line);background:var(--panel);color:var(--ink);border-radius:18px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.lvl svg{width:38px;height:30px;flex:none}
+.lvl small{display:block;font-family:var(--text);font-weight:400;font-size:.85rem;color:var(--muted)}
+.lvl.on{border-color:var(--blue);background:var(--blue-soft)}
+.btn{font-family:var(--title);font-weight:800;font-size:1.1rem;border:none;border-radius:16px;padding:10px 20px;cursor:pointer;color:#fff;background:var(--straw);box-shadow:0 4px 0 #C93A5E}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #C93A5E}
+.btn.green{background:var(--pista);box-shadow:0 4px 0 #3F8C57}
+.btn.soft{background:var(--blue-soft);color:var(--ink);box-shadow:0 4px 0 #C6D2F7}
+.btn.small{font-size:.95rem;padding:6px 12px;border-radius:12px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.dots{display:flex;gap:6px}
+.dots i{flex:1;height:10px;border-radius:5px;background:var(--line)}
+.dots i.ok{background:var(--pista)} .dots i.no{background:var(--butter)} .dots i.cur{background:var(--blue)}
+.story{margin:0;font-size:1.15rem}
+.visual{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;background:#FFF8FB;border-radius:18px;padding:12px}
+.visual svg{max-width:100%;height:auto}
+.steps{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.steps li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:1.15rem}
+.steps .n{font-family:var(--title);font-weight:800;background:var(--blue);color:#fff;border-radius:50%;width:28px;height:28px;display:inline-grid;place-items:center;font-size:.95rem;flex:none}
+.big{font-size:1.6rem;display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:center;font-weight:700}
+/* fractions */
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;font-weight:700;margin:0 2px}
+.fr>span:first-child,.fr>input:first-child{border-bottom:3px solid currentColor;padding:0 4px 2px}
+.fr>span:last-child,.fr>input:last-child{padding:2px 4px 0}
+.fin{gap:4px}.fin>input:first-child{border-bottom:2px dotted var(--muted)}
+/* pointillés */
+input.dot{font-family:var(--text);font-weight:700;font-size:1.25rem;width:2.6em;text-align:center;border:none;border-bottom:3px dotted var(--muted);background:var(--butter-soft);border-radius:8px 8px 0 0;color:var(--ink);padding:2px 0}
+input.dot.ok{background:var(--pista-soft);border-bottom-color:var(--pista);color:#1E6B39}
+input.dot.ko{background:var(--ko-soft);border-bottom-color:var(--ko)}
+.sg{display:inline-flex;gap:4px;border-radius:12px;padding:3px}
+.sg button,.choices button{font-family:var(--title);font-weight:800;font-size:1.2rem;border:3px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;min-width:46px;padding:4px 10px;cursor:pointer}
+.sg button.sel,.choices button.sel{border-color:var(--blue);background:var(--blue-soft)}
+.sg.ok button.sel,.choices.ok button.sel{border-color:var(--pista);background:var(--pista-soft)}
+.sg.ko button.sel,.choices.ko button.sel{border-color:var(--ko);background:var(--ko-soft)}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choices button{font-size:1.05rem}
+.fb{margin:0;border-radius:14px;padding:10px 14px;font-size:1.05rem}
+.fb.good{background:var(--pista-soft);color:#1E6B39}
+.fb.try{background:var(--butter-soft);color:#7A5300}
+.fb.show{background:var(--blue-soft);color:#2B3F8F}
+.fb b{font-weight:700}
+.result{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.score{font-family:var(--title);font-weight:800;font-size:3.2rem;line-height:1;font-variant-numeric:tabular-nums}
+.result svg.mac{width:80px;height:64px}
+.chart{display:flex;align-items:flex-end;gap:10px;height:120px;border-bottom:4px solid var(--line);padding-top:6px;width:100%;max-width:420px}
+.bar{flex:1;max-width:44px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;height:100%}
+.bar i{display:block;width:100%;border-radius:10px 10px 3px 3px;background:var(--straw-soft);min-height:6px}
+.bar.last i{background:var(--straw)} .bar.full i{background:var(--pista)}
+.bar span{font-family:var(--title);font-weight:800;font-size:.95rem}
+/* carnet */
+.book{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:620px){.book{grid-template-columns:1fr}}
+.page{border:3px solid var(--line);border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;background:#fff;min-width:0}
+.page h3{font-family:var(--title);font-weight:800;font-size:1.15rem;margin:0;display:flex;gap:8px;align-items:center}
+.page h3 .code{font-family:var(--text);font-size:.8rem;background:var(--straw-soft);color:var(--straw);border-radius:999px;padding:0 8px}
+.macs{display:flex;gap:10px;flex-wrap:wrap}
+.macs div{display:flex;flex-direction:column;align-items:center;font-size:.85rem;color:var(--muted)}
+.macs svg{width:46px;height:36px}
+.note{color:var(--muted);font-size:1rem;margin:0}
+/* escalier */
+.stairs svg{width:100%;max-width:560px;height:auto;display:block;margin:0 auto}
+.stairs g.step{cursor:pointer}
+.ptag{display:inline-block;font-size:.85rem;background:var(--straw-soft);color:var(--straw);border-radius:999px;padding:0 10px;font-weight:700}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:20}
+.confirm{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+@media (prefers-reduced-motion:no-preference){.card{animation:pop .25s ease-out}@keyframes pop{from{transform:translateY(6px)}to{transform:none}}}
+</style>
+
+</head>
+<body>
+<canvas id="confetti" hidden></canvas>
+<div class="wrap">
+  <header>
+    <span id="hdrChef"></span>
+    <div><h1>L'Atelier <span>des fractions</span></h1><p>Décomposer, recomposer, encadrer… comme un vrai pâtissier !</p></div>
+  </header>
+  <nav id="nav" aria-label="Onglets"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+// ================= OUTILS =================
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pl=(n,s,p)=>n>1?p:s;
+const F=(n,d)=>`<span class="fr"><span>${n}</span><span>${d}</span></span>`;
+const inp=(a,label="réponse")=>`<input class="dot" inputmode="numeric" autocomplete="off" data-ans="${a}" aria-label="${label}">`;
+const finp=(n,d)=>`<span class="fr fin" data-n="${n}" data-d="${d}"><input class="dot" inputmode="numeric" autocomplete="off" aria-label="numérateur"><input class="dot" inputmode="numeric" autocomplete="off" aria-label="dénominateur"></span>`;
+const fnum=(n,d)=>`<span class="fr"><span>${inp(n,"numérateur")}</span><span>${d}</span></span>`;
+const sg=a=>`<span class="sg" data-ans="${a}"><button data-v="&lt;">&lt;</button><button data-v="=">=</button><button data-v="&gt;">&gt;</button></span>`;
+const choices=(opts,ok)=>`<div class="choices" data-ans="${ok}">${opts.map((o,k)=>`<button data-v="${k}">${o}</button>`).join("")}</div>`;
+
+// ================= DESSINS =================
+function pizza(den,filled){
+  let s=`<svg viewBox="0 0 100 100" width="104" height="104" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#E9A65A"/><circle cx="50" cy="50" r="42" fill="#FFF7EE"/>`;
+  for(let i=0;i<den;i++){
+    const a0=(-90+i*360/den)*Math.PI/180,a1=(-90+(i+1)*360/den)*Math.PI/180,am=(a0+a1)/2;
+    const x0=50+42*Math.cos(a0),y0=50+42*Math.sin(a0),x1=50+42*Math.cos(a1),y1=50+42*Math.sin(a1);
+    const on=i<filled;
+    s+=`<path d="M50 50 L${x0.toFixed(2)} ${y0.toFixed(2)} A42 42 0 ${den===1?1:0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z" fill="${on?"#FFC94D":"#FFF7EE"}" stroke="#C9803A" stroke-width="1.5"/>`;
+    if(on){s+=`<circle cx="${(50+26*Math.cos(am)).toFixed(1)}" cy="${(50+26*Math.sin(am)).toFixed(1)}" r="${den>6?4:6}" fill="#D9483B"/>`;
+      if(den<=6)s+=`<circle cx="${(50+14*Math.cos(am+.3)).toFixed(1)}" cy="${(50+14*Math.sin(am+.3)).toFixed(1)}" r="3" fill="#5DB075"/>`;}
+  }
+  return s+`</svg>`;
+}
+const CHOCO={2:[2,1],3:[3,1],4:[4,1],5:[5,1],6:[3,2],7:[7,1],8:[4,2],9:[3,3],10:[5,2],12:[4,3]};
+function choco(den,filled){
+  const [c,r]=CHOCO[den]||[den,1],S=22,P=5,w=c*S+2*P,h=r*S+2*P;
+  let s=`<svg viewBox="0 0 ${w} ${h}" width="${w*1.25}" height="${h*1.25}" aria-hidden="true"><rect x="0" y="0" width="${w}" height="${h}" rx="5" fill="#E9D3C3"/>`;
+  for(let k=0;k<den;k++){const x=P+(k%c)*S,y=P+Math.floor(k/c)*S,on=k<filled;
+    s+=`<rect x="${x+1}" y="${y+1}" width="${S-2}" height="${S-2}" rx="3" fill="${on?"#7B4A2E":"#FBF3EE"}" stroke="${on?"#5A321C":"#C9A890"}" ${on?"":'stroke-dasharray="3 2"'}/>`;
+    if(on)s+=`<rect x="${x+4}" y="${y+4}" width="${S-12}" height="4" rx="2" fill="#9C6545"/>`;}
+  return s+`</svg>`;
+}
+const KINDS={pizza:{item:"pizza",items:"pizzas",part:"part",parts:"parts",de:"de pizza",draw:pizza},
+             choco:{item:"tablette",items:"tablettes",part:"carré",parts:"carrés",de:"de tablette",draw:choco}};
+function kindFor(den){return [2,3,4,6,8].includes(den)&&Math.random()<.55?"pizza":"choco"}
+function items(kind,den,num,count){let s="";for(let k=0;k<count;k++)s+=KINDS[kind].draw(den,Math.max(0,Math.min(den,num-k*den)));return `<div class="visual">${s}</div>`}
+function strip(den,num,units){
+  const W=300,H=26,G=10;let s=`<svg viewBox="0 0 ${W+40} ${units*(H+G)}" width="${W+40}" aria-hidden="true">`;
+  for(let u=0;u<units;u++){const y=u*(H+G);
+    for(let k=0;k<den;k++){const x=k*W/den,on=u*den+k<num;
+      s+=`<rect x="${x+1}" y="${y}" width="${W/den-2}" height="${H}" rx="4" fill="${on?"#F2557A":"#FFF1F5"}" stroke="#E28AA3"/>`;}
+    s+=`<text x="${W+8}" y="${y+18}" font-family="Andika,sans-serif" font-size="15" fill="#7A6170">1</text>`;}
+  return `<div class="visual">${s}</svg></div><p class="note">Chaque bande = 1 unité, partagée en ${den}.</p>`;
+}
+function line(den,num,maxInt,label){
+  const W=340,P=18,U=(W-2*P)/maxInt,x=P+num/den*U;
+  let s=`<svg viewBox="0 0 ${W} 86" width="${W}" aria-hidden="true"><line x1="${P}" y1="56" x2="${W-P}" y2="56" stroke="#3B2630" stroke-width="3"/>`;
+  for(let k=0;k<=maxInt*den;k++){const tx=P+k/den*U,big=k%den===0;
+    s+=`<line x1="${tx}" y1="${big?44:50}" x2="${tx}" y2="${big?68:62}" stroke="#3B2630" stroke-width="${big?3:1.5}"/>`;
+    if(big)s+=`<text x="${tx}" y="84" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="16" fill="#3B2630">${k/den}</text>`;}
+  s+=`<path d="M${x} 50 q-2 -14 8 -22" stroke="#5DB075" stroke-width="3" fill="none"/><circle cx="${x}" cy="46" r="8" fill="#D9483B"/><circle cx="${x-3}" cy="43" r="2.5" fill="#fff" opacity=".7"/>`;
+  if(label)s+=`<text x="${x}" y="18" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="15" fill="#F2557A">${label}</text>`;
+  return `<div class="visual">${s}</svg></div>`;
+}
+function chef(){return `<svg class="chef" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="62" r="28" fill="#FFD7B5"/><circle cx="40" cy="60" r="3.5" fill="#3B2630"/><circle cx="60" cy="60" r="3.5" fill="#3B2630"/><path d="M40 72 q10 8 20 0" stroke="#3B2630" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="33" cy="69" r="4" fill="#F2557A" opacity=".4"/><circle cx="67" cy="69" r="4" fill="#F2557A" opacity=".4"/><rect x="28" y="30" width="44" height="12" rx="3" fill="#fff" stroke="#E0C8D2" stroke-width="2"/><circle cx="34" cy="24" r="12" fill="#fff" stroke="#E0C8D2" stroke-width="2"/><circle cx="50" cy="17" r="14" fill="#fff" stroke="#E0C8D2" stroke-width="2"/><circle cx="66" cy="24" r="12" fill="#fff" stroke="#E0C8D2" stroke-width="2"/><rect x="29" y="28" width="42" height="12" fill="#fff"/></svg>`}
+const MACC=["#F2557A","#5DB075","#B48CE0"];
+function macaron(level,on){const c=on?MACC[level-1]:"#EADDE3";return `<svg class="mac" viewBox="0 0 50 40" aria-hidden="true"><ellipse cx="25" cy="13" rx="20" ry="9" fill="${c}"/><rect x="7" y="16" width="36" height="7" rx="3" fill="${on?"#FFF4D6":"#F6EEF1"}"/><ellipse cx="25" cy="27" rx="20" ry="9" fill="${c}"/>${on?'<ellipse cx="18" cy="10" rx="6" ry="2.5" fill="#fff" opacity=".5"/>':""}</svg>`}
+document.getElementById("hdrChef").innerHTML=chef();
+
+// ================= COMPÉTENCES ET EXERCICES =================
+const N=6; // questions par série
+const SKILLS={
+ N24:{tab:"Plus ou moins que 1 ?",txt:"Je sais dire si une fraction est plus petite, égale ou plus grande que 1.",ex:()=>`Exemple : ${F(3,4)} &lt; 1, mais ${F(5,4)} &gt; 1.`,gen:genN24},
+ N19:{tab:"Décomposer",txt:"Je sais décomposer une fraction (entier + fraction restante).",ex:()=>`Exemple : ${F(5,4)} = 1 + ${F(1,4)}`,gen:genN19},
+ N20:{tab:"Recomposer",txt:"Je sais faire l'inverse : transformer un entier + une fraction en une seule fraction.",ex:()=>`Exemple : 2 + ${F(1,3)} = ${F(7,3)}`,gen:genN20},
+ N27:{tab:"Encadrer",txt:"Je sais encadrer une fraction simple entre deux nombres entiers qui se suivent.",ex:()=>`Exemple : 1 &lt; ${F(5,4)} &lt; 2`,gen:genN27}
+};
+const LEVELS=[["Niveau 1","guidé avec dessins"],["Niveau 2","avec un schéma"],["Niveau 3","niveau CM2"]];
+function uniq(make){const seen=new Set(),out=[];let t=0;while(out.length<N&&t<200){t++;const q=make(out.length);if(seen.has(q.key))continue;seen.add(q.key);out.push(q)}return out}
+const signOf=(n,d)=>n<d?"<":n===d?"=":">";
+
+function genN24(L){
+  const types=shuffle(["<",">","=","<",">",">"]);
+  return uniq(i=>{
+    const t=types[i];
+    if(L===1){const den=pick([2,3,4,6,8]),num=t==="<"?ri(1,den-1):t==="="?den:ri(den+1,2*den-1),k=kindFor(den),K=KINDS[k];
+      return {key:num+"/"+den,
+        html:`<p class="story">Voici ${F(num,den)} ${K.de}. Une ${K.item} entière, c'est ${den} ${K.parts}.</p>${items(k,den,num,num>den?2:1)}
+          <ol class="steps"><li><span class="n">1</span>J'ai colorié ${inp(num)} ${K.parts}.</li>
+          <li><span class="n">2</span>Avec ces ${K.parts}, j'ai :</li></ol>
+          ${choices([`moins d'une ${K.item}`,`exactement une ${K.item}`,`plus d'une ${K.item}`],["<","=",">"].indexOf(t))}`,
+        hint:`Compte les ${K.parts} coloriées et compare avec les ${den} ${K.parts} d'une ${K.item} entière.`,
+        explain:`${num} ${K.parts} ${t==="<"?"ne suffisent pas pour":t==="="?"remplissent exactement":"remplissent plus d'"} une ${K.item} de ${den} ${K.parts}. Donc ${F(num,den)} ${t==="<"?"&lt;":t==="="?"=":"&gt;"} 1.`};}
+    if(L===2){const den=ri(2,10),num=t==="<"?ri(1,den-1):t==="="?den:ri(den+1,2*den);
+      return {key:num+"/"+den,
+        html:`<p class="story">Compare le numérateur (en haut) et le dénominateur (en bas).</p>
+          <div class="big">${F(num,den)}</div>
+          <ol class="steps"><li><span class="n">1</span>Le numérateur est ${inp(num)}, le dénominateur est ${inp(den)}.</li>
+          <li><span class="n">2</span>Cette fraction est :</li></ol>
+          ${choices(["plus petite que 1","égale à 1","plus grande que 1"],["<","=",">"].indexOf(t))}`,
+        hint:`Si le numérateur est plus petit que le dénominateur, la fraction est plus petite que 1.`,
+        explain:`${num} ${t==="<"?"&lt;":t==="="?"=":"&gt;"} ${den}, donc ${F(num,den)} ${t==="<"?"&lt;":t==="="?"=":"&gt;"} 1.${strip(den,num,Math.max(1,Math.ceil(num/den)))}`};}
+    // niveau 3 : trois fractions par question
+    const fr=[0,1,2].map(()=>{const den=pick([3,4,5,6,7,8,9,10,12,100]);const tt=pick(["<",">","<",">","="]);
+      const num=tt==="="?den:tt==="<"?den-ri(1,Math.min(3,den-1)):den+ri(1,den>20?30:4);return [num,den]});
+    return {key:fr.map(f=>f.join("/")).join(","),
+      html:`<p class="story">Complète avec &lt;, = ou &gt;.</p>
+        <ul class="steps">${fr.map(([n,d])=>`<li class="big" style="justify-content:flex-start">${F(n,d)} ${sg(signOf(n,d))} 1</li>`).join("")}</ul>`,
+      hint:`Pour chaque fraction, compare le numérateur et le dénominateur.`,
+      explain:fr.map(([n,d])=>`${F(n,d)} ${signOf(n,d).replace("<","&lt;").replace(">","&gt;")} 1`).join(" ; ")};
+  });
+}
+function genN19(L){
+  return uniq(()=>{
+    if(L===1){const den=pick([2,3,4,6,8]),q=ri(1,2),r=ri(1,den-1),num=q*den+r,k=kindFor(den),K=KINDS[k];
+      return {key:num+"/"+den,
+        html:`<p class="story">Le chef a <b>${num} ${K.parts}</b> ${K.de} : c'est ${F(num,den)} ${K.de}.</p>${items(k,den,num,q+1)}
+          <ol class="steps"><li><span class="n">1</span>Dans une ${K.item} entière, il y a ${inp(den)} ${K.parts}.</li>
+          <li><span class="n">2</span>Les ${K.parts} remplissent ${inp(q)} ${K.item}(s) entière(s).</li>
+          <li><span class="n">3</span>Il reste ${inp(r)} ${K.part}(s) en plus.</li>
+          <li><span class="n">4</span>Donc ${F(num,den)} = ${inp(q)} + ${fnum(r,den)}</li></ol>`,
+        hint:`Compte les ${K.items} entièrement coloriées, puis les ${K.parts} qui sont seules.`,
+        explain:`${F(num,den)} = ${q} + ${F(r,den)} : ${q} ${pl(q,K.item,K.items)} ${pl(q,"entière","entières")} (${q*den} ${K.parts}) et encore ${r} ${pl(r,K.part,K.parts)}.`};}
+    if(L===2){const den=ri(2,10),q=ri(1,4),r=ri(1,den-1),num=q*den+r;
+      return {key:num+"/"+den,
+        html:`<div class="big">${F(num,den)}</div>${strip(den,num,q+1)}
+          <ol class="steps"><li><span class="n">1</span>Je cherche dans la table de ${den} : ${num} = ${inp(q)} × ${den} + ${inp(r)}</li>
+          <li><span class="n">2</span>Donc ${F(num,den)} = ${inp(q)} + ${fnum(r,den)}</li></ol>`,
+        hint:`Dans la table de ${den}, cherche le plus grand résultat qui ne dépasse pas ${num}. Ce qui manque pour arriver à ${num}, c'est le reste.`,
+        explain:`${num} = ${q} × ${den} + ${r}, donc ${F(num,den)} = ${q} + ${F(r,den)}.`};}
+    const den=pick([2,3,4,5,6,7,8,9,10,12]),q=ri(1,9),r=ri(1,den-1),num=q*den+r;
+    return {key:num+"/"+den,
+      html:`<p class="story">Décompose en un entier + une fraction plus petite que 1.</p>
+        <div class="big">${F(num,den)} = ${inp(q)} + ${finp(r,den)}</div>`,
+      hint:`Combien de fois ${den} dans ${num} ? C'est la partie entière. Le reste va au numérateur.`,
+      explain:`${num} = ${q} × ${den} + ${r}, donc ${F(num,den)} = ${q} + ${F(r,den)}.`};
+  });
+}
+function genN20(L){
+  return uniq(()=>{
+    if(L===1){const den=pick([2,3,4,6,8]),e=ri(1,2),n=ri(1,den-1),tot=e*den+n,k=kindFor(den),K=KINDS[k];
+      return {key:e+"+"+n+"/"+den,
+        html:`<p class="story">Le chef a <b>${e} ${pl(e,K.item,K.items)} ${pl(e,"entière","entières")}</b> et <b>${F(n,den)}</b> ${K.de}.</p>${items(k,den,tot,e+1)}
+          <ol class="steps"><li><span class="n">1</span>Dans une ${K.item} entière, il y a ${inp(den)} ${K.parts}.</li>
+          <li><span class="n">2</span>Dans ${e} ${pl(e,K.item,K.items)}, il y a ${inp(e*den)} ${K.parts}.</li>
+          <li><span class="n">3</span>Avec les ${n} ${pl(n,K.part,K.parts)} en plus, cela fait ${inp(tot)} ${K.parts} en tout.</li>
+          <li><span class="n">4</span>Donc ${e} + ${F(n,den)} = ${fnum(tot,den)}</li></ol>`,
+        hint:`Compte toutes les ${K.parts} coloriées, une ${K.item} après l'autre.`,
+        explain:`${e} + ${F(n,den)} = ${F(e*den,den)} + ${F(n,den)} = ${F(tot,den)}.`};}
+    if(L===2){const den=ri(2,10),e=ri(1,4),n=ri(1,den-1),tot=e*den+n;
+      return {key:e+"+"+n+"/"+den,
+        html:`<div class="big">${e} + ${F(n,den)}</div>${strip(den,tot,e+1)}
+          <ol class="steps"><li><span class="n">1</span>${e} = ${fnum(e*den,den)} (car ${e} × ${den} = ?)</li>
+          <li><span class="n">2</span>${e} + ${F(n,den)} = ${fnum(tot,den)}</li></ol>`,
+        hint:`Une unité = ${F(den,den)}. Donc ${e} unités = ${e} × ${den} parts.`,
+        explain:`${e} = ${F(e*den,den)}, et ${F(e*den,den)} + ${F(n,den)} = ${F(tot,den)}.`};}
+    const den=pick([2,3,4,5,6,7,8,9,10,12]),e=ri(1,9),n=ri(1,den-1),tot=e*den+n;
+    return {key:e+"+"+n+"/"+den,
+      html:`<p class="story">Écris en une seule fraction.</p><div class="big">${e} + ${F(n,den)} = ${finp(tot,den)}</div>`,
+      hint:`Multiplie l'entier par ${den}, puis ajoute ${n}.`,
+      explain:`${e} × ${den} = ${e*den}, puis ${e*den} + ${n} = ${tot}. Donc ${e} + ${F(n,den)} = ${F(tot,den)}.`};
+  });
+}
+function genN27(L){
+  return uniq(()=>{
+    if(L===1){const den=pick([2,3,4,6,8]),q=ri(1,2),r=ri(1,den-1),num=q*den+r,k=kindFor(den),K=KINDS[k];
+      return {key:num+"/"+den,
+        html:`<p class="story">Voici ${F(num,den)} ${K.de}.</p>${items(k,den,num,q+1)}
+          <ol class="steps"><li><span class="n">1</span>Je remplis ${inp(q)} ${K.item}(s) entière(s), mais pas encore ${inp(q+1)} ${K.items}.</li>
+          <li><span class="n">2</span>Donc ${inp(q)} &lt; ${F(num,den)} &lt; ${inp(q+1)}</li></ol>`,
+        hint:`Compte les ${K.items} pleines. La fraction est un peu plus que ce nombre, mais moins que le nombre suivant.`,
+        explain:`${F(num,den)} = ${q} + ${F(r,den)}, c'est plus que ${q} mais moins que ${q+1} : ${q} &lt; ${F(num,den)} &lt; ${q+1}.`};}
+    if(L===2){const den=pick([2,3,4,5,6]),q=ri(1,4),r=ri(1,den-1),num=q*den+r,max=Math.min(q+2,6);
+      return {key:num+"/"+den,
+        html:`<p class="story">La cerise est placée sur ${F(num,den)}. Entre quels nombres entiers se trouve-t-elle ?</p>${line(den,num,max,num+"/"+den)}
+          <div class="big">${inp(q)} &lt; ${F(num,den)} &lt; ${inp(q+1)}</div>`,
+        hint:`Regarde les grands traits juste avant et juste après la cerise.`,
+        explain:`La cerise est entre ${q} et ${q+1} : ${q} &lt; ${F(num,den)} &lt; ${q+1}.`};}
+    const den=pick([2,3,4,5,6,7,8,9,10,12]),q=ri(1,12),r=ri(1,den-1),num=q*den+r;
+    return {key:num+"/"+den,
+      html:`<p class="story">Encadre entre deux nombres entiers qui se suivent.</p><div class="big">${inp(q)} &lt; ${F(num,den)} &lt; ${inp(q+1)}</div>`,
+      hint:`Décompose d'abord : ${F(num,den)} = … + une fraction plus petite que 1.`,
+      explain:`${F(num,den)} = ${q} + ${F(r,den)}, donc ${q} &lt; ${F(num,den)} &lt; ${q+1}.`};
+  });
+}
+
+// ================= PROBLÈMES (escalier) =================
+const PROBS=[
+ {code:"N19 · PR8.A",lvl:"facile",html:()=>`<p class="story">Le chef coupe ses pizzas en 4 parts. Il reste <b>5 parts</b> sur le comptoir. Peut-il reconstituer une pizza entière ?</p>${items("pizza",4,5,2)}
+   <ol class="steps"><li>Il peut reconstituer ${inp(1)} pizza entière et il reste ${inp(1)} part.</li><li>${F(5,4)} = ${inp(1)} + ${fnum(1,4)}</li></ol>`,
+  hint:"Une pizza entière = 4 parts. Combien de parts en plus ?",explain:`4 parts font 1 pizza, il reste 1 part : ${F(5,4)} = 1 + ${F(1,4)}.`},
+ {code:"N20 · PR8.A",lvl:"facile",html:()=>`<p class="story">Mila a <b>2 tablettes entières</b> et <b>3 carrés</b>. Chaque tablette a 6 carrés.</p>${items("choco",6,15,3)}
+   <ol class="steps"><li>En tout, Mila a ${inp(15)} carrés.</li><li>Elle a donc ${fnum(15,6)} de tablette.</li></ol>`,
+  hint:"2 tablettes de 6 carrés, puis ajoute les 3 carrés.",explain:`2 × 6 = 12 carrés, + 3 = 15 carrés : 2 + ${F(3,6)} = ${F(15,6)}.`},
+ {code:"N24 · PR8.A",lvl:"facile",html:()=>`<p class="story">Tom a mangé ${F(7,8)} d'une tarte coupée en 8 parts.</p>${items("pizza",8,7,1)}
+   <p class="story">Tom a mangé :</p>${choices(["moins d'une tarte","exactement une tarte","plus d'une tarte"],0)}`,
+  hint:"Une tarte entière = 8 parts. Tom en a mangé 7.",explain:`7 parts &lt; 8 parts, donc ${F(7,8)} &lt; 1 : moins d'une tarte.`},
+ {code:"N19 · PR8.A",lvl:"moyen",html:()=>`<p class="story">Une boîte contient <b>6 macarons</b>. Le pâtissier a fait <b>20 macarons</b>.</p>
+   <ol class="steps"><li>Il remplit ${inp(3)} boîtes pleines et il reste ${inp(2)} macarons.</li><li>${F(20,6)} = ${inp(3)} + ${fnum(2,6)}</li></ol>`,
+  hint:"Table de 6 : quel est le plus grand résultat qui ne dépasse pas 20 ?",explain:`3 × 6 = 18, il reste 2 : ${F(20,6)} = 3 + ${F(2,6)}.`},
+ {code:"N20 · PR8.A",lvl:"moyen",html:()=>`<p class="story">Pour des crêpes, il faut <b>1 litre et ${F(3,4)} de litre</b> de lait. Le pot doseur contient ${F(1,4)} de litre.</p>
+   <ol class="steps"><li>1 + ${F(3,4)} = ${fnum(7,4)}</li><li>Il faut remplir le pot doseur ${inp(7)} fois.</li></ol>`,
+  hint:`1 litre = ${F(4,4)}.`,explain:`1 = ${F(4,4)}, donc 1 + ${F(3,4)} = ${F(7,4)} : 7 pots de ${F(1,4)} de litre.`},
+ {code:"N27 · PR8.A",lvl:"moyen",html:()=>`<p class="story">Léo a ${F(17,5)} kg de farine. Entre quels nombres entiers de kilos se trouve cette quantité ?</p>
+   <div class="big">${inp(3)} kg &lt; ${F(17,5)} kg &lt; ${inp(4)} kg</div>`,
+  hint:`Décompose ${F(17,5)} : combien de fois 5 dans 17 ?`,explain:`${F(17,5)} = 3 + ${F(2,5)}, donc 3 kg &lt; ${F(17,5)} kg &lt; 4 kg.`},
+ {code:"N19 · PR8.A",lvl:"moyen",html:()=>`<p class="story">Le ruban de la boulangerie mesure ${F(23,10)} m. Écris cette longueur avec un entier et une fraction.</p>
+   <div class="big">${F(23,10)} m = ${inp(2)} m + ${finp(3,10)} m</div>`,
+  hint:"Combien de fois 10 dans 23 ?",explain:`23 = 2 × 10 + 3, donc ${F(23,10)} m = 2 m + ${F(3,10)} m.`},
+ {code:"N20 · PR8.A",lvl:"CM2",html:()=>`<p class="story">La classe a mangé <b>3 pizzas entières et 5 parts</b>. Toutes les pizzas sont coupées en 8 parts. Quelle fraction de pizza la classe a-t-elle mangée ?</p>
+   <div class="big">3 + ${F(5,8)} = ${finp(29,8)}</div>`,
+  hint:"Combien de parts dans 3 pizzas ? Ajoute les 5 parts.",explain:`3 × 8 = 24, + 5 = 29 : la classe a mangé ${F(29,8)} de pizza.`},
+ {code:"N19 · PR8.A",lvl:"CM2",html:()=>`<p class="story">Le chef a préparé <b>5 tartes</b> coupées en 6 parts. Les invités ont mangé <b>22 parts</b>. Quelle quantité de tarte reste-t-il ?</p>
+   <ol class="steps"><li>Au départ, il y avait ${inp(30)} parts.</li><li>Il reste ${inp(8)} parts, soit ${fnum(8,6)} de tarte.</li><li>${F(8,6)} = ${inp(1)} + ${finp(2,6)}</li></ol>`,
+  hint:"5 tartes de 6 parts, puis enlève les parts mangées.",explain:`5 × 6 = 30 parts, 30 − 22 = 8 parts : ${F(8,6)} = 1 + ${F(2,6)}. Il reste 1 tarte entière et ${F(2,6)} de tarte.`},
+ {code:"N20 · N24 · PR8.A",lvl:"CM2",html:()=>`<p class="story">Ana a ${F(11,4)} tablettes de chocolat. Ben a 2 + ${F(1,4)} tablettes. Cléo a 3 tablettes.</p>
+   <ol class="steps"><li>Ben a ${fnum(9,4)} de tablette.</li><li>Cléo a ${fnum(12,4)} de tablette.</li><li>Qui a le plus de chocolat ?</li></ol>${choices(["Ana","Ben","Cléo"],2)}`,
+  hint:"Écris les trois quantités en quarts, puis compare les numérateurs.",explain:`Ben : 2 + ${F(1,4)} = ${F(9,4)}. Cléo : 3 = ${F(12,4)}. ${F(12,4)} &gt; ${F(11,4)} &gt; ${F(9,4)} : c'est Cléo.`}
+];
+
+// ================= SAUVEGARDE (sur l'appareil) =================
+const KEY="atelier-fractions-v1";
+let S={};try{S=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){S={}}
+S.sk=S.sk||{};S.stairs=S.stairs||{solved:[]};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const rec=(sk,L)=>{S.sk[sk]=S.sk[sk]||{};S.sk[sk][L]=S.sk[sk][L]||{scores:[]};return S.sk[sk][L]};
+const best=(sk,L)=>{const r=S.sk[sk]&&S.sk[sk][L];return r&&r.scores.length?Math.max(...r.scores):null};
+const earned=(sk,L)=>(best(sk,L)||0)>=5;
+
+// ================= INTERFACE =================
+const $nav=document.getElementById("nav"),$main=document.getElementById("main");
+let view="home",level=1,series=null;
+function renderNav(){
+  const tabs=[["home","Mon carnet",""],...Object.keys(SKILLS).map(k=>[k,SKILLS[k].tab,k]),["prob","Problèmes","escalier"]];
+  $nav.innerHTML=tabs.map(([id,name,code])=>`<button class="tab ${view===id?"on":""}" data-v="${id}">${name}${code?`<span class="code">${code}</span>`:""}</button>`).join("");
+}
+$nav.addEventListener("click",e=>{const b=e.target.closest(".tab");if(!b)return;go(b.dataset.v)});
+function go(v,L){view=v;series=null;if(L)level=L;renderNav();
+  if(v==="home")renderHome();else if(v==="prob")renderStairs();else renderSkill();}
+
+function renderHome(){
+  const solved=S.stairs.solved.length;
+  $main.innerHTML=`<section class="card">
+    <h2>Mon carnet de pâtissier</h2>
+    <p class="note">Chaque macaron = un niveau réussi (au moins 5 bonnes réponses sur 6). Clique sur une page pour t'entraîner.</p>
+    <div class="book">${Object.keys(SKILLS).map(k=>`<div class="page">
+      <h3>${SKILLS[k].tab}<span class="code">${k}</span></h3>
+      <p class="note">${SKILLS[k].txt}</p>
+      <div class="macs">${[1,2,3].map(L=>`<div>${macaron(L,earned(k,L))}<span>${LEVELS[L-1][0]}${best(k,L)!==null?" · "+best(k,L)+"/6":""}</span></div>`).join("")}</div>
+      <div><button class="btn small soft" data-go="${k}">S'entraîner</button></div></div>`).join("")}
+      <div class="page"><h3>L'escalier des problèmes</h3>
+      <p class="note">Résous les problèmes pour monter les 10 marches, du plus facile au niveau CM2.</p>
+      <p style="margin:0;font-family:var(--title);font-weight:800;font-size:1.3rem">${solved} / 10 marches</p>
+      <div><button class="btn small soft" data-go="prob">Monter l'escalier</button></div></div>
+    </div>
+    <div class="confirm" id="resetZone"><button class="btn small soft" id="reset">Effacer toute ma progression</button></div>
+  </section>`;
+  $main.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
+  document.getElementById("reset").onclick=()=>{document.getElementById("resetZone").innerHTML=`<span>Tout effacer (macarons et escalier) ?</span>
+    <button class="btn small" id="yes">Oui, effacer</button><button class="btn small soft" id="no">Non</button>`;
+    document.getElementById("yes").onclick=()=>{S={sk:{},stairs:{solved:[]}};save();renderHome()};
+    document.getElementById("no").onclick=renderHome;};
+}
+
+function compBox(k){return `<div class="comp"><span class="badge">${k}</span><div><p><b>${SKILLS[k].txt}</b></p><p class="ex">${SKILLS[k].ex()}</p></div></div>`}
+function renderSkill(){
+  const k=view;
+  $main.innerHTML=`<section class="card">
+    <h2>${SKILLS[k].tab}</h2>${compBox(k)}
+    <div class="levels">${[1,2,3].map(L=>`<button class="lvl ${L===level?"on":""}" data-l="${L}">${macaron(L,earned(k,L))}<span>${LEVELS[L-1][0]}<small>${LEVELS[L-1][1]}</small></span></button>`).join("")}</div>
+    <div id="zone"></div></section>`;
+  $main.querySelectorAll(".lvl").forEach(b=>b.onclick=()=>{level=+b.dataset.l;series=null;renderSkill()});
+  renderLevelStart();
+}
+function renderLevelStart(){
+  const k=view,r=rec(k,level),b=best(k,level);
+  document.getElementById("zone").innerHTML=`<div class="row">
+      <button class="btn" id="startS">${r.scores.length?"Recommencer":"Commencer"} le ${LEVELS[level-1][0].toLowerCase()}</button>
+      ${b!==null?`<span class="note">Meilleur score : <b>${b}/6</b></span>`:`<span class="note">6 questions, avec une aide si tu te trompes.</span>`}</div>
+    ${r.scores.length?chart(r.scores):""}`;
+  document.getElementById("startS").onclick=startSeries;
+}
+function startSeries(){series={qs:SKILLS[view].gen(level),i:0,score:0,res:[]};renderQ()}
+function renderQ(){
+  const s=series,q=s.qs[s.i];s.tries=0;s.done=false;
+  document.getElementById("zone").innerHTML=`<div class="dots" aria-label="Question ${s.i+1} sur ${N}">${s.qs.map((_,j)=>`<i class="${j<s.i?(s.res[j]?"ok":"no"):j===s.i?"cur":""}"></i>`).join("")}</div>
+    <p class="note">Question ${s.i+1} sur ${N}</p>
+    <div id="qbox" style="display:flex;flex-direction:column;gap:12px">${q.html}</div>
+    <p class="fb" id="fb" hidden></p>
+    <div class="row"><button class="btn green" id="chk">Vérifier</button><button class="btn" id="nxt" hidden>${s.i<N-1?"Question suivante":"Voir mon résultat"}</button></div>`;
+  wire(document.getElementById("qbox"),()=>checkQ());
+  document.getElementById("chk").onclick=checkQ;
+  document.getElementById("nxt").onclick=()=>{s.i++;s.i<N?renderQ():endSeries()};
+  const first=document.querySelector("#qbox input");if(first)first.focus({preventScroll:true});
+}
+function checkQ(){
+  const s=series;if(s.done)return;const q=s.qs[s.i],box=document.getElementById("qbox"),fb=document.getElementById("fb");
+  const ok=check(box);s.tries++;fb.hidden=false;
+  if(ok){s.done=true;if(s.tries===1)s.score++;s.res[s.i]=s.tries===1;
+    fb.className="fb good";fb.innerHTML=`<b>${pick(["Bravo !","Super !","Excellent !","C'est ça !"])}</b>${s.tries>1?" Tu as bien corrigé.":""} ${q.explain}`;lock(box);finishBtns();}
+  else if(s.tries===1){fb.className="fb try";fb.innerHTML=`<b>Presque !</b> Regarde les cases en rouge. Petite aide : ${q.hint}`;}
+  else{s.done=true;s.res[s.i]=false;reveal(box);fb.className="fb show";fb.innerHTML=`<b>Voici la réponse :</b> ${q.explain} Tu y arriveras à la prochaine !`;finishBtns();}
+}
+function finishBtns(){document.getElementById("chk").hidden=true;const n=document.getElementById("nxt");n.hidden=false;n.focus({preventScroll:true})}
+function endSeries(){
+  const s=series,r=rec(view,level),prev=r.scores.length?r.scores[r.scores.length-1]:null,wasEarned=earned(view,level);
+  r.scores.push(s.score);save();
+  const got=s.score>=5;
+  let msg;
+  if(s.score===6)msg="Parfait, 6 sur 6 ! Tu es un vrai chef pâtissier.";
+  else if(got)msg="Bravo, tu as gagné le macaron de ce niveau !";
+  else if(prev!==null&&s.score>prev)msg=`Tu progresses : ${prev}/6 la dernière fois, ${s.score}/6 aujourd'hui ! Encore une série pour gagner le macaron.`;
+  else msg="Bel entraînement ! Recommence : chaque série te fait progresser. Il faut 5 bonnes réponses pour gagner le macaron.";
+  document.getElementById("zone").innerHTML=`<div class="result">
+      ${macaron(level,got||wasEarned)}
+      <div class="score">${s.score}/6</div>
+      <p class="fb ${got?"good":"try"}" style="margin:0">${msg}</p>
+      ${chart(r.scores)}
+      <div class="row" style="justify-content:center"><button class="btn" id="again">Nouvelle série</button>
+      ${got&&level<3?`<button class="btn green" id="up">Passer au niveau ${level+1}</button>`:""}</div></div>`;
+  document.getElementById("again").onclick=startSeries;
+  const up=document.getElementById("up");if(up)up.onclick=()=>{level++;series=null;renderSkill()};
+  renderSkillLevelsOnly();
+  if(got&&!wasEarned)confetti();
+}
+function renderSkillLevelsOnly(){document.querySelectorAll(".lvl").forEach(b=>{const L=+b.dataset.l;b.querySelector("svg").outerHTML=macaron(L,earned(view,L))})}
+function chart(scores){const last=scores.slice(-8);
+  return `<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:4px"><p class="note" style="align-self:flex-start">Mes dernières séries</p><div class="chart">${last.map((v,j)=>`<div class="bar ${j===last.length-1?"last":""} ${v>=5?"full":""}"><span>${v}</span><i style="height:${Math.max(6,v*15)}px"></i></div>`).join("")}</div></div>`}
+
+// ---------- vérification ----------
+function wire(box,onEnter){
+  box.addEventListener("click",e=>{const b=e.target.closest(".sg button,.choices button");if(!b||box.dataset.locked)return;
+    const g=b.parentElement;g.querySelectorAll("button").forEach(x=>x.classList.toggle("sel",x===b));g.classList.remove("ok","ko")});
+  box.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();onEnter()}});
+  box.addEventListener("input",e=>{if(e.target.matches("input.dot"))e.target.classList.remove("ok","ko")});
+}
+const val=i=>i.value.trim().replace(/\s/g,"");
+function mark(el,ok){el.classList.toggle("ok",ok);el.classList.toggle("ko",!ok)}
+function check(box){
+  let all=true;
+  box.querySelectorAll("input.dot[data-ans]").forEach(i=>{const ok=val(i)===i.dataset.ans;mark(i,ok);all=all&&ok});
+  box.querySelectorAll(".fin").forEach(g=>{const[a,b]=g.querySelectorAll("input"),n=+val(a),d=+val(b);
+    const ok=val(a)!==""&&val(b)!==""&&d>0&&n*(+g.dataset.d)===(+g.dataset.n)*d;mark(a,ok);mark(b,ok);all=all&&ok});
+  box.querySelectorAll(".sg,.choices").forEach(g=>{const s=g.querySelector(".sel"),ok=!!s&&s.dataset.v===g.dataset.ans;
+    g.classList.toggle("ok",ok);g.classList.toggle("ko",!ok);all=all&&ok});
+  return all;
+}
+function reveal(box){
+  box.querySelectorAll("input.dot[data-ans]").forEach(i=>{i.value=i.dataset.ans;mark(i,true)});
+  box.querySelectorAll(".fin").forEach(g=>{const[a,b]=g.querySelectorAll("input");a.value=g.dataset.n;b.value=g.dataset.d;mark(a,true);mark(b,true)});
+  box.querySelectorAll(".sg,.choices").forEach(g=>{g.querySelectorAll("button").forEach(x=>x.classList.toggle("sel",x.dataset.v===g.dataset.ans));g.classList.remove("ko");g.classList.add("ok")});
+  lock(box);
+}
+function lock(box){box.dataset.locked="1";box.querySelectorAll("input").forEach(i=>i.readOnly=true)}
+
+// ---------- escalier ----------
+function stairsSVG(cur){
+  const solved=new Set(S.stairs.solved),W=560,H=250,w=50,h=20;
+  const cols=["#F2557A","#FF8FAB","#FFB4C6","#FFD166","#FFC14D","#F9A03F","#5DB075","#7CC48D","#5B7BE0","#8DA2EC"];
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Escalier des problèmes"><rect x="0" y="${H-10}" width="${W}" height="10" fill="#F0D6DF"/>`;
+  for(let k=0;k<10;k++){const x=20+k*w,y=H-10-(k+1)*h,on=solved.has(k),open=k<=Math.max(cur,...solved,-1)||on;
+    s+=`<g class="step" data-k="${k}" tabindex="${open?0:-1}" aria-label="Marche ${k+1}${on?", réussie":""}"><rect x="${x}" y="${y}" width="${w}" height="${(k+1)*h}" fill="${on?cols[k]:open?"#FFF":"#F6EEF1"}" stroke="#E0C8D2" stroke-width="2"/>
+      <text x="${x+w/2}" y="${y+16}" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="15" fill="${on?"#fff":"#B79AA8"}">${k+1}</text></g>`;}
+  const ck=Math.min(cur,9),cx=20+ck*w+w/2-17,cy=H-10-(ck+1)*h-36;
+  s+=`<g transform="translate(${cx} ${cy}) scale(.36)">${chef().replace('<svg class="chef" viewBox="0 0 100 100" aria-hidden="true">',"").replace("</svg>","")}</g>`;
+  return s+`</svg>`;
+}
+function firstUnsolved(){for(let k=0;k<10;k++)if(!S.stairs.solved.includes(k))return k;return 10}
+let curStep=null;
+function renderStairs(){
+  if(curStep===null||curStep>9)curStep=Math.min(firstUnsolved(),9);
+  const all=S.stairs.solved.length===10,p=PROBS[curStep];
+  $main.innerHTML=`<section class="card">
+    <h2>L'escalier des problèmes</h2>
+    <div class="comp"><span class="badge">N19 · N20 · N24 · N27 · PR8.A</span><div><p><b>Je résous des problèmes en décomposant et en recomposant des fractions.</b></p><p class="ex">PR8.A : déterminer des parts, identifier une fraction d'un tout.</p></div></div>
+    <div class="stairs">${stairsSVG(curStep)}</div>
+    ${all?`<p class="fb good">Tu as monté les 10 marches, bravo chef ! Clique sur une marche pour refaire un problème.</p>`:""}
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="row"><b style="font-family:var(--title);font-size:1.25rem">Marche ${curStep+1}</b><span class="ptag">${p.lvl}</span><span class="ptag" style="background:var(--butter-soft);color:#7A5300">${p.code}</span></div>
+      <div id="qbox" style="display:flex;flex-direction:column;gap:12px">${p.html()}</div>
+      <p class="fb" id="fb" hidden></p>
+      <div class="row"><button class="btn green" id="chk">Vérifier</button><button class="btn" id="nxt" hidden>Marche suivante</button></div>
+    </div></section>`;
+  $main.querySelectorAll("g.step").forEach(g=>{const go2=()=>{const k=+g.dataset.k;if(g.getAttribute("tabindex")==="0"){curStep=k;renderStairs()}};
+    g.addEventListener("click",go2);g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go2()}})});
+  const box=document.getElementById("qbox");let tries=0,done=false;
+  const doCheck=()=>{if(done)return;const fb=document.getElementById("fb"),ok=check(box);tries++;fb.hidden=false;
+    if(ok){done=true;lock(box);fb.className="fb good";fb.innerHTML=`<b>Bravo, tu montes d'une marche !</b> ${p.explain}`;
+      if(!S.stairs.solved.includes(curStep)){S.stairs.solved.push(curStep);save();if(S.stairs.solved.length===10)confetti()}
+      document.getElementById("chk").hidden=true;const n=document.getElementById("nxt");
+      if(curStep<9){n.hidden=false;n.onclick=()=>{curStep++;renderStairs()}}
+      $main.querySelector(".stairs").innerHTML=stairsSVG(Math.min(curStep+1,9));}
+    else if(tries===1){fb.className="fb try";fb.innerHTML=`<b>Pas encore !</b> Regarde les cases en rouge. Petite aide : ${p.hint}`}
+    else{fb.className="fb try";fb.innerHTML=`<b>Courage, tu restes sur ta marche !</b> ${p.hint} Corrige les cases en rouge et vérifie encore.`+(tries>=3?` <button class="btn small soft" id="sol">Voir la solution</button>`:"");
+      const sb=document.getElementById("sol");if(sb)sb.onclick=()=>{done=true;reveal(box);fb.className="fb show";fb.innerHTML=`<b>Voici la solution :</b> ${p.explain} Relis-la, puis réessaie ce problème plus tard pour monter la marche.`;document.getElementById("chk").hidden=true}}};
+  wire(box,doCheck);document.getElementById("chk").onclick=doCheck;
+}
+
+// ---------- confettis ----------
+function confetti(){
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;try{document.createElement("canvas").getContext("2d").fillRect}catch(e){return}
+  const cv=document.getElementById("confetti");cv.hidden=false;const ctx=cv.getContext("2d");cv.width=innerWidth;cv.height=innerHeight;
+  const cols=["#F2557A","#FFD166","#5DB075","#5B7BE0","#B48CE0","#7B4A2E"];
+  const P=Array.from({length:120},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,c:pick(cols),a:Math.random()*6,r:Math.random()<.5}));
+  let t=0;(function f(){ctx.clearRect(0,0,cv.width,cv.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.c;
+    if(p.r){ctx.beginPath();ctx.arc(0,0,5,0,7);ctx.fill()}else ctx.fillRect(-5,-3,10,6);ctx.restore()});
+    if(++t<200)requestAnimationFrame(f);else{ctx.clearRect(0,0,cv.width,cv.height);cv.hidden=true}})();
+}
+
+go("home");
+</script>
+</body>
+</html>
