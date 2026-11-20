@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L'atelier des fractions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#fff8f0;--ink:#3b2a24;--muted:#7a655c;--choco:#5a3320;--pink:#f26d9b;--pinkd:#d94a7c;--pinkl:#ffe1ec;--mint:#5cc4a6;--mintl:#dcf5ed;--lav:#a586e0;--lavl:#efe7fb;--lemon:#ffe58a;--peach:#ffc9a3;--sky:#bfe0fa;--pista:#cfe8a6;--gold:#e6a91a;--blue:#3a7be0;--orange:#f08a24;--green:#2a9d61}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Andika',system-ui,-apple-system,sans-serif;font-size:20px;color:var(--ink);line-height:1.45;-webkit-text-size-adjust:100%;
+  background-color:var(--cream);
+  background-image:radial-gradient(#f9c6d8 2px,transparent 2.5px),radial-gradient(#bfe8dc 2px,transparent 2.5px),radial-gradient(#ffe08a 2px,transparent 2.5px);
+  background-size:70px 70px,90px 90px,110px 110px;background-position:0 0,35px 45px,60px 15px}
+h1,h2,h3,.btn,nav button,.fred{font-family:'Fredoka','Andika',sans-serif}
+/* ---- vitrine / store ---- */
+header{position:sticky;top:0;z-index:10;background:#fffaf3;box-shadow:0 3px 10px rgba(90,51,32,.12)}
+.awning{height:20px;background:repeating-linear-gradient(90deg,var(--pink) 0 40px,#fff 40px 80px);position:relative}
+.awning::after{content:'';position:absolute;left:0;right:0;bottom:-11px;height:11px;
+  background:radial-gradient(circle at 20px 0,var(--pink) 11px,transparent 12px) 0 0/80px 11px repeat-x,radial-gradient(circle at 60px 0,#fff 11px,transparent 12px) 0 0/80px 11px repeat-x}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 14px 6px;flex-wrap:wrap}
+h1{margin:0;font-size:1.45rem;color:var(--choco);font-weight:700}
+h1 small{display:block;font-family:'Andika';font-weight:400;font-size:.8rem;color:var(--muted)}
+.tqc{display:flex;align-items:center;gap:6px;background:var(--pinkl);border:2px solid #f7b6cc;border-radius:999px;padding:2px 14px 2px 6px;font-weight:700;color:var(--choco)}
+.tqc.pop{animation:pop .5s}
+@keyframes pop{30%{transform:scale(1.25)}100%{transform:scale(1)}}
+nav{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 10px 0}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;border:0;font-size:.95rem;font-weight:600;padding:9px 14px;border-radius:14px 14px 0 0;cursor:pointer;color:var(--choco);opacity:.85}
+nav button.on{opacity:1;color:#fff;box-shadow:inset 0 -4px 0 rgba(0,0,0,.12)}
+nav button[data-t=comprendre]{background:var(--pinkl)} nav button[data-t=comprendre].on{background:var(--pink)}
+nav button[data-t=vitrine]{background:var(--mintl)} nav button[data-t=vitrine].on{background:var(--mint)}
+nav button[data-t=defi]{background:#ffe9d6} nav button[data-t=defi].on{background:#f39a5b}
+nav button[data-t=placer]{background:var(--lavl)} nav button[data-t=placer].on{background:var(--lav)}
+nav button[data-t=trouver]{background:#e2f0fd} nav button[data-t=trouver].on{background:#5aa6e6}
+nav button[data-t=ecrire]{background:#eef7dd} nav button[data-t=ecrire].on{background:#8cbf4a}
+nav button[data-t=comparer]{background:#fff3c4} nav button[data-t=comparer].on{background:#e0b220}
+nav button[data-t=bilan]{background:#f6e7c8} nav button[data-t=bilan].on{background:var(--choco)}
+main{max-width:1000px;margin:0 auto;padding:18px 12px 70px}
+section{display:none}
+section.on{display:block}
+.card{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 3px 12px rgba(90,51,32,.08);margin-bottom:16px;border:3px solid #ffe6ee}
+h2{margin:0 0 8px;font-size:1.3rem;color:var(--choco)}
+h3{margin:0 0 6px;font-size:1.1rem;color:var(--choco)}
+p{margin:.4em 0}
+.intro{color:var(--muted)}
+/* ---- compétences ---- */
+.code{display:inline-block;background:var(--choco);color:#fff;border-radius:999px;padding:1px 11px;font-weight:700;font-size:.85rem;font-family:'Fredoka',sans-serif;letter-spacing:.02em;vertical-align:middle}
+.comps{display:flex;flex-direction:column;gap:6px;background:#fff7fa;border:2px dashed #f7b6cc;border-radius:16px;padding:8px 12px;margin-bottom:12px}
+.comp{display:flex;align-items:center;gap:10px;font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;font-size:.9rem;color:var(--muted)}
+.toque{flex:0 0 auto;display:block}
+.toque.gold{filter:drop-shadow(0 0 6px rgba(240,190,40,.7))}
+.shine{animation:shine 1.2s ease 2}
+@keyframes shine{0%{transform:scale(1) rotate(0)}40%{transform:scale(1.25) rotate(-8deg)}100%{transform:scale(1) rotate(0)}}
+/* ---- fractions ---- */
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 .12em;font-weight:700}
+.frac>span{padding:0 .18em;text-align:center}
+.frac .fn{border-bottom:.09em solid currentColor}
+.frac.big{font-size:1.6em}
+.frac.huge{font-size:2.4em}
+/* ---- droite ---- */
+.nlhost{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:6px 0}
+.nlhost svg{display:block;width:100%;min-width:600px;height:auto}
+svg.pick{cursor:pointer;touch-action:manipulation}
+.axis{stroke:var(--choco);stroke-width:5}
+.arrow{fill:var(--choco)}
+.tick{stroke:var(--choco);stroke-width:3}
+.tick.big{stroke-width:5}
+.ilbl{font-size:44px;font-weight:700;text-anchor:middle;fill:var(--choco);font-family:'Andika',sans-serif}
+.flbl{font-size:36px;font-weight:700;text-anchor:middle;font-family:'Andika',sans-serif}
+.jnum{font-size:26px;font-weight:700;text-anchor:middle;font-family:'Andika',sans-serif}
+.pnum{font-size:26px;font-weight:700;text-anchor:middle;fill:#9a6b00;font-family:'Andika',sans-serif}
+.letter{font-size:42px;font-weight:700;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:9px;font-family:'Andika',sans-serif}
+.jump{fill:none;stroke-width:5;stroke-linecap:round}
+@keyframes draw{to{stroke-dashoffset:0}}
+.fadein{opacity:0;animation:fade .3s forwards}
+@keyframes fade{to{opacity:1}}
+/* ---- boutons ---- */
+.btn{font-weight:600;border:0;border-radius:16px;padding:12px 20px;background:var(--pink);color:#fff;cursor:pointer;font-size:1rem;touch-action:manipulation;box-shadow:0 3px 0 var(--pinkd)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--pinkd)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.soft{background:#fff;color:var(--pinkd);border:2px solid #f7b6cc;box-shadow:none}
+.btn.help{background:var(--lemon);color:#6b4b00;box-shadow:0 3px 0 #d9b94a}
+.btn.green{background:var(--mint);box-shadow:0 3px 0 #3e9c82}
+.btn.choco{background:var(--choco);box-shadow:0 3px 0 #2f1a10}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.prompt{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:.95rem}
+.fb{border-radius:16px;padding:12px 14px;margin-top:12px}
+.fb.ok{background:#e1f6ec;border:2px solid #9fdcc2}
+.fb.ko{background:#fff0e3;border:2px solid #f6c28f}
+.fb.info{background:#f2ecfc;border:2px solid #d6c6f3}
+.prog{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-weight:700;color:var(--choco)}
+.prog .bar{flex:1;height:14px;background:#f6e7d6;border-radius:8px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:repeating-linear-gradient(45deg,var(--pink) 0 10px,#f79bbb 10px 20px);border-radius:8px;transition:width .3s}
+.prog .mini{display:flex;align-items:center;gap:4px}
+.choices{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.choices.words{grid-template-columns:repeat(2,1fr)}
+@media (max-width:560px){.choices{grid-template-columns:repeat(2,1fr)}.choices.words{grid-template-columns:1fr}}
+.choice{font:inherit;font-size:1.5rem;background:#fff;border:3px solid #f3d7e1;border-radius:18px;padding:10px 6px;cursor:pointer;color:var(--ink);touch-action:manipulation}
+.choices.words .choice{font-size:1.2rem;font-weight:700}
+.choice.good{border-color:var(--green);background:#e1f6ec}
+.choice.bad{border-color:var(--orange);background:#fff0e3}
+.choice:disabled{cursor:default}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}
+.dots{display:flex;gap:6px}
+.dots i{width:14px;height:14px;border-radius:50%;background:#f3d7e1;display:block}
+.dots i.on{background:var(--pink)}
+.steptext{font-size:1.1rem;min-height:4.5em}
+.method{background:#fffaf0;border:3px dashed #f1c27d}
+.method ol{margin:.3em 0 0 0;padding-left:1.4em}
+.method li{margin:.25em 0}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;margin-top:8px}
+.stepper-ctl{display:inline-flex;align-items:center;gap:8px;background:var(--pinkl);border-radius:16px;padding:6px 10px}
+.stepper-ctl button{font:inherit;font-weight:700;font-size:1.3rem;width:44px;height:44px;border-radius:12px;border:0;background:#fff;color:var(--choco);cursor:pointer;box-shadow:0 2px 0 #f2b8cb;touch-action:manipulation}
+.stepper-ctl b{min-width:2ch;text-align:center;font-size:1.3rem}
+.ctlrow{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.reps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.reps .card{margin:0}
+.rep{display:block;width:100%;max-height:210px;height:auto}
+.shapehost .rep{max-height:260px}
+.shapehost.click svg{cursor:pointer;touch-action:manipulation}
+.words{font-size:1.4rem;font-weight:700;color:var(--pinkd)}
+.fin{display:inline-flex;flex-direction:column;align-items:center;gap:4px}
+input.n{font:inherit;font-size:1.6rem;font-weight:700;width:3.2em;text-align:center;border:3px solid #f3c6d6;border-radius:14px;padding:4px;color:var(--ink);background:#fff}
+input.n:focus{outline:none;border-color:var(--pink)}
+.fin .fbar{width:4em;height:5px;background:var(--ink);border-radius:3px}
+.answerrow{display:flex;align-items:center;gap:12px;font-size:1.6rem;font-weight:700;margin:8px 0;flex-wrap:wrap}
+.cmp{display:flex;align-items:center;justify-content:center;gap:14px;font-size:1.3rem;margin:10px 0;flex-wrap:wrap}
+.cmp .sym{font:inherit;font-size:2rem;font-weight:700;width:70px;height:64px;border-radius:16px;border:3px solid #f3d7e1;background:#fff;cursor:pointer;color:var(--ink);touch-action:manipulation}
+.cmp .sym.good{border-color:var(--green);background:#e1f6ec}
+.cmp .sym.bad{border-color:var(--orange);background:#fff0e3}
+.cmp .one{font-size:2.2em;font-weight:700}
+.tagA{color:var(--blue);font-weight:700}
+.tagB{color:var(--orange);font-weight:700}
+.result{text-align:center}
+.result .score{font-size:2.6rem;font-weight:700;color:var(--pinkd);font-family:'Fredoka'}
+.rescomp{display:flex;align-items:center;gap:14px;text-align:left;background:#fffaf3;border-radius:18px;padding:10px 14px;margin:10px auto;max-width:640px;border:2px solid #f6e2c4}
+.rescomp.gold{background:#fff8dc;border-color:#f3d36b}
+.linelabel{font-weight:700;color:var(--muted);font-size:.95rem;margin-top:8px}
+.start{text-align:center}
+.start .bigtoques{display:flex;justify-content:center;gap:6px;margin:8px 0}
+/* ---- bilan ---- */
+.bsum{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.bsum .num{font-family:'Fredoka';font-size:2rem;font-weight:700;color:var(--choco)}
+.bgroup h3{display:flex;align-items:center;gap:8px}
+.bitem{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:2px dotted #f3d7e1}
+.bitem:first-of-type{border-top:0}
+.bitem .bt{flex:1}
+.bitem .det{font-size:.9rem;color:var(--muted)}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.85rem;font-weight:700}
+.pill.ok{background:#fff1b8;color:#7a5800}
+.pill.redo{background:#ffe3cf;color:#9a4b00}
+.pill.part{background:#e6f4ff;color:#245a8a}
+.pill.todo{background:#eee;color:#666}
+.confirm{display:none;gap:10px;align-items:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<!-- dégradés partagés pour les toques -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c2"/><stop offset=".45" stop-color="#f6c83f"/><stop offset="1" stop-color="#c88a08"/></linearGradient>
+  </defs>
+</svg>
+
+<header>
+  <div class="awning"></div>
+  <div class="hbar">
+    <h1>🧁 L'atelier des fractions<small>Gagne des toques… et dore-les en réussissant les compétences !</small></h1>
+    <div class="tqc" id="tqc"><span id="tqIcon"></span><span><b id="tqn">0</b> toques</span></div>
+  </div>
+  <nav id="tabs">
+    <button data-t="comprendre">📖 La recette</button>
+    <button data-t="vitrine">🍰 La vitrine</button>
+    <button data-t="defi">🎂 Défi vitrine</button>
+    <button data-t="placer">📍 Je place</button>
+    <button data-t="trouver">🔎 Je trouve</button>
+    <button data-t="ecrire">✏️ J'écris</button>
+    <button data-t="comparer">⚖️ Je compare</button>
+    <button data-t="bilan">🏆 Mon bilan</button>
+  </nav>
+</header>
+<main>
+
+<!-- 1 LA RECETTE -->
+<section id="comprendre">
+  <div class="card">
+    <h2>📖 La recette pour lire une fraction sur une droite graduée</h2>
+    <div class="chips">Compétences : <span class="code">N22</span><span class="code">N23</span><span class="code">N24</span><span class="code">N19</span></div>
+    <div class="nlhost" id="stepLine"></div>
+    <div class="steptext" id="stepText"></div>
+    <div class="stepper">
+      <button class="btn soft" id="stepPrev">◀ Retour</button>
+      <div class="dots" id="stepDots"></div>
+      <button class="btn" id="stepNext">Suivant ▶</button>
+    </div>
+    <div class="actions"><button class="btn help" id="stepNew">🔄 Un autre exemple</button></div>
+  </div>
+  <div class="card method">
+    <h3>👩‍🍳 Ma recette en 3 étapes</h3>
+    <ol>
+      <li>Je repère <b>0</b> et <b>1</b> : c'est l'<b>unité</b>.</li>
+      <li>Je compte en combien de <b>parts égales</b> l'unité est partagée → c'est le <b>dénominateur</b> (en bas).</li>
+      <li>Je pars de 0 et je compte les <b>sauts</b> jusqu'au point → c'est le <b>numérateur</b> (en haut).</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2>🔍 J'explore</h2>
+    <p class="intro">Choisis en combien de parts l'unité est partagée, puis touche un trait de la droite.</p>
+    <div class="ctlrow">
+      <span>Parts dans l'unité :</span>
+      <span class="stepper-ctl"><button id="exMinus">−</button><b id="exD">4</b><button id="exPlus">+</button></span>
+    </div>
+    <div class="nlhost" id="exLine"></div>
+    <div id="exInfo" class="fb info">Touche un trait de la droite.</div>
+  </div>
+</section>
+
+<!-- 2 LA VITRINE -->
+<section id="vitrine">
+  <div class="card">
+    <h2>🍰 La vitrine : une fraction, plein de façons de la montrer</h2>
+    <div class="chips">Compétences : <span class="code">N16</span><span class="code">N17</span><span class="code">N18</span><span class="code">N19</span></div>
+    <p class="intro">Change le numérateur et le dénominateur : toutes les images montrent la <b>même fraction</b>.</p>
+    <div class="ctlrow" style="margin-top:8px">
+      <div>
+        <div class="ctlrow"><span>Numérateur :</span><span class="stepper-ctl"><button id="rnMinus">−</button><b id="rn">3</b><button id="rnPlus">+</button></span></div>
+        <div class="ctlrow" style="margin-top:8px"><span>Dénominateur :</span><span class="stepper-ctl"><button id="rdMinus">−</button><b id="rd">4</b><button id="rdPlus">+</button></span></div>
+      </div>
+      <div id="rBig" style="margin:0 auto;color:var(--pinkd)"></div>
+    </div>
+  </div>
+  <div class="reps">
+    <div class="card"><h3>🍕 Les pizzas</h3><div id="repPizza"></div><p class="hint" id="repPizzaTxt"></p></div>
+    <div class="card"><h3>🍫 Les tablettes de chocolat</h3><div id="repChoco"></div><p class="hint" id="repChocoTxt"></p></div>
+    <div class="card"><h3>🍬 Les bandes de pâte</h3><div id="repBande"></div><p class="hint" id="repBandeTxt"></p></div>
+    <div class="card"><h3>🗣️ En lettres</h3><p class="words" id="repWords"></p><div id="repDecomp"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>➡️ La droite graduée</h3><div class="nlhost" id="repLine"></div><p class="hint" id="repLineTxt"></p></div>
+</section>
+
+<section id="defi"><div id="vq"></div></section>
+<section id="placer"><div id="q1"></div></section>
+<section id="trouver"><div id="q2"></div></section>
+<section id="ecrire"><div id="q3"></div></section>
+<section id="comparer"><div id="q4"></div></section>
+<section id="bilan"><div id="bil"></div></section>
+
+</main>
+
+<script>
+/* ================= outils ================= */
+const $=s=>document.querySelector(s);
+const rint=(a,b)=>a>=b?a:a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const F=(n,d,cls='')=>`<span class="frac ${cls}"><span class="fn">${n}</span><span class="fd">${d}</span></span>`;
+const COL={A:'#3a7be0',B:'#f08a24',pt:'#e0457b',try:'#8e6bd8',ok:'#2a9d61',gray:'#9aa0ad',jump:'#8e6bd8'};
+
+let lastD=0;
+const DENS=[2,3,4,5,6,7,8,9,10,12];
+function pickDen(list=DENS){let d;do{d=pick(list)}while(d===lastD);lastD=d;return d}
+function unitsFor(d){return d<=4?3:d<=10?2:1}
+function pickNum(d,units,allowWhole=false){
+  const total=d*units;
+  if(allowWhole&&units>1)return d*rint(1,units-1);
+  if(units===1||Math.random()<.5)return rint(1,d-1);
+  let n;do{n=rint(d+1,total-1)}while(n%d===0);return n;
+}
+const W0=['zéro','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze','treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+function nw(n){if(n<20)return W0[n];const t=Math.floor(n/10),u=n%10;const T={2:'vingt',3:'trente'}[t];return u===0?T:(u===1?T+' et un':T+'-'+W0[u])}
+const DN={2:['demi','demis'],3:['tiers','tiers'],4:['quart','quarts'],5:['cinquième','cinquièmes'],6:['sixième','sixièmes'],7:['septième','septièmes'],8:['huitième','huitièmes'],9:['neuvième','neuvièmes'],10:['dixième','dixièmes'],11:['onzième','onzièmes'],12:['douzième','douzièmes']};
+const words=(n,d)=>nw(n)+' '+DN[d][n>1?1:0];
+
+/* ================= compétences & toques ================= */
+const COMP={
+  N16:'Je sais lire et nommer des fractions simples.',
+  N17:'Je sais représenter une fraction simple sur un dessin.',
+  N18:'Je sais écrire la fraction qui correspond à un dessin colorié.',
+  N19:'Je sais décomposer une fraction (entier + fraction restante).',
+  N22:'Je sais lire / repérer une fraction simple sur une ligne graduée.',
+  N23:'Je sais placer une fraction simple sur une ligne graduée.',
+  N24:'Je sais dire si une fraction est plus petite, égale ou plus grande que 1.',
+  N25:'Je sais comparer deux fractions simples entre elles.'
+};
+const CODES=Object.keys(COMP);
+const EP={
+  defi:{name:'Défi vitrine',icon:'🎂',codes:['N16','N17','N18','N19']},
+  placer:{name:'Je place',icon:'📍',codes:['N23']},
+  trouver:{name:'Je trouve',icon:'🔎',codes:['N22']},
+  ecrire:{name:"J'écris",icon:'✏️',codes:['N22']},
+  comparer:{name:'Je compare',icon:'⚖️',codes:['N24','N25']}
+};
+const GOLD=0.75; // 75 % de réussite pour dorer la toque
+
+const STORE='atelierFractions_v1';
+let DB={toques:0,ep:{}};
+try{const s=localStorage.getItem(STORE);if(s){const o=JSON.parse(s);if(o&&o.ep)DB=o}}catch(e){}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(DB))}catch(e){}}
+
+function toque(state,size=46,extra=''){
+  const fill=state==='gold'?'url(#gGold)':state==='white'?'#ffffff':'#ecebe7';
+  const st=state==='gold'?'#a8740a':state==='white'?'#e09ab4':'#c9c4bb';
+  return `<svg class="toque ${state} ${extra}" width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true">
+    <g fill="${fill}" stroke="${st}" stroke-width="2.5" stroke-linejoin="round">
+      <circle cx="19" cy="27" r="12"/><circle cx="45" cy="27" r="12"/><circle cx="32" cy="19" r="14"/>
+      <rect x="17" y="27" width="30" height="19" rx="2"/>
+      <rect x="14" y="44" width="36" height="11" rx="3"/>
+    </g>
+    <g stroke="${st}" stroke-width="1.8" stroke-linecap="round"><line x1="26" y1="33" x2="26" y2="43"/><line x1="32" y1="33" x2="32" y2="43"/><line x1="38" y1="33" x2="38" y2="43"/></g>
+    ${state==='gold'?'<path d="M24 13 q4 -5 10 -4" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>':''}
+  </svg>`;
+}
+function epState(ep,code){const r=DB.ep[ep]&&DB.ep[ep][code];return !r?'none':r.gold?'gold':'white'}
+function banner(ep){
+  return `<div class="comps">${EP[ep].codes.map(c=>`<div class="comp">${toque(epState(ep,c),40)}<span class="code">${c}</span><span>${COMP[c]}</span></div>`).join('')}</div>`;
+}
+function updateCounter(pop){
+  $('#tqn').textContent=DB.toques;$('#tqIcon').innerHTML=toque('white',30);
+  if(pop){const e=$('#tqc');e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')}
+}
+function earn(S){DB.toques++;save();updateCounter(true);if(S)S.toques=(S.toques||0)+1}
+function record(ep,res){
+  DB.ep[ep]=DB.ep[ep]||{};const out={};
+  for(const code in res){
+    const [c,t]=res[code];if(!t)continue;
+    const r=c/t,gold=r>=GOLD,prev=DB.ep[ep][code];
+    const best=prev&&prev.best&&prev.best[0]/prev.best[1]>=r?prev.best:[c,t];
+    DB.ep[ep][code]={last:[c,t],best,gold:!!((prev&&prev.gold)||gold)};
+    out[code]={c,t,gold,wasGold:!!(prev&&prev.gold)};
+  }
+  save();return out;
+}
+function progress(i,N,S){return `<div class="prog"><span>Question ${i+1} / ${N}</span><div class="bar"><i style="width:${i/N*100}%"></i></div><span class="mini">${toque('white',28)} ${S.toques||0}</span></div>`}
+function finish(host,ep,res,retry,extra=''){
+  const out=record(ep,res);
+  let ok=0,tot=0;for(const c in res){ok+=res[c][0];tot+=res[c][1]}
+  const rows=EP[ep].codes.filter(c=>out[c]).map(c=>{const o=out[c];
+    const msg=o.gold?'🌟 <b>Ta toque devient dorée !</b> Compétence réussie.'
+      :o.wasGold?'Ta toque reste dorée, car tu l\'as déjà gagnée. Cette fois, c\'était plus difficile : continue de t\'entraîner !'
+      :'Ta toque reste blanche : <b>compétence à retravailler</b>. Recommence pour la dorer !';
+    return `<div class="rescomp ${o.gold||o.wasGold?'gold':''}">${toque(o.gold||o.wasGold?'gold':'white',72,o.gold?'shine':'')}<div><span class="code">${c}</span> ${COMP[c]}<br><b>${o.c} / ${o.t}</b> — ${msg}</div></div>`}).join('');
+  const r=ok/tot;
+  const head=r>=.8?'👩‍🍳 Bravo, grand chef !':r>=.5?'🧁 Beau travail, petit chef !':'🌱 Tu progresses ! Relis « La recette » et réessaie.';
+  host.innerHTML=`<div class="card result"><h2>Fin de l'épreuve !</h2><div class="score">${ok} / ${tot}</div><p style="font-size:1.15rem">${head}</p>${rows}${extra}
+    <div class="actions" style="justify-content:center"><button class="btn green" id="${host.id}retry">🔄 Recommencer</button><button class="btn choco" id="${host.id}bil">🏆 Voir mon bilan</button></div></div>`;
+  $('#'+host.id+'retry').onclick=retry;
+  $('#'+host.id+'bil').onclick=()=>{location.hash='bilan'};
+}
+function startScreen(host,ep,title,desc,N,go){
+  host.innerHTML=`<div class="card start"><h2>${EP[ep].icon} ${title}</h2>${banner(ep)}<p>${desc}</p>
+    <p class="hint">${N} questions · chaque bonne réponse te fait gagner une toque.<br>Réussis au moins 3 questions sur 4 pour <b>dorer</b> la toque d'une compétence.</p>
+    <div class="actions" style="justify-content:center"><button class="btn" id="${host.id}go">C'est parti ! 👩‍🍳</button></div></div>`;
+  $('#'+host.id+'go').onclick=go;
+}
+
+/* ================= droite graduée ================= */
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function txt(parent,x,y,s,cls,fill){const t=el('text',{x,y,class:cls},parent);if(fill)t.setAttribute('fill',fill);t.textContent=s;return t}
+function NumberLine(host,{d,units,onPick=null}){
+  const W=1000,H=265,L=60,R=925,Y=170,total=d*units;
+  const X=i=>L+(R-L)*i/total;
+  host.innerHTML='';
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,class:onPick?'pick':''},host);
+  const gHl=el('g',{},svg),gParts=el('g',{},svg),gJ=el('g',{},svg),gG=el('g',{},svg),gBase=el('g',{},svg),gM=el('g',{},svg);
+  el('line',{x1:L-35,y1:Y,x2:R+40,y2:Y,class:'axis'},gBase);
+  el('path',{d:`M${R+38} ${Y-13} L${R+62} ${Y} L${R+38} ${Y+13} Z`,class:'arrow'},gBase);
+  for(let i=0;i<=total;i++){
+    const big=i%d===0;
+    el('line',{x1:X(i),x2:X(i),y1:Y-(big?30:16),y2:Y+(big?30:16),class:big?'tick big':'tick'},gBase);
+    if(big)txt(gBase,X(i),Y+80,String(i/d),'ilbl');
+  }
+  if(onPick){
+    el('rect',{x:0,y:0,width:W,height:H,fill:'transparent'},svg);
+    svg.addEventListener('click',e=>{
+      const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+      const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+      let i=Math.round((p.x-L)/(R-L)*total);i=Math.max(0,Math.min(total,i));onPick(i);
+    });
+  }
+  function fracLabel(g,x,n,dd,color){
+    const w=Math.max(String(n).length,String(dd).length)*22+30,yT=4;
+    el('line',{x1:x,x2:x,y1:yT+92,y2:Y-18,stroke:color,'stroke-width':3,'stroke-dasharray':'6 6'},g);
+    el('rect',{x:x-w/2,y:yT,width:w,height:92,rx:12,fill:'#fff',stroke:color,'stroke-width':3},g);
+    txt(g,x,yT+36,String(n),'flbl',color);
+    el('line',{x1:x-w/2+9,x2:x+w/2-9,y1:yT+46,y2:yT+46,stroke:color,'stroke-width':4},g);
+    txt(g,x,yT+82,String(dd),'flbl',color);
+  }
+  return {svg,X,Y,d,units,total,
+    clear(){gM.innerHTML='';gJ.innerHTML='';gHl.innerHTML='';gParts.innerHTML='';gG.innerHTML=''},
+    clearMarks(){gM.innerHTML=''},
+    marker(i,color,{letter=null,frac=null,letterY=Y-58}={}){
+      const g=el('g',{},gM);
+      if(frac)fracLabel(g,X(i),frac[0],frac[1],color);
+      el('circle',{cx:X(i),cy:Y,r:15,fill:color,stroke:'#fff','stroke-width':4},g);
+      if(letter)txt(g,X(i),letterY,letter,'letter',color);
+      return g;
+    },
+    unit(k=0){el('rect',{x:X(k*d),y:Y-46,width:X(d)-X(0),height:92,rx:12,fill:'#ffefb3'},gHl)},
+    circleLabels(list){list.forEach(v=>el('circle',{cx:X(v*d),cy:Y+66,r:36,fill:'none',stroke:COL.pt,'stroke-width':5},gHl))},
+    parts(k=0){
+      for(let j=0;j<d;j++){
+        const a=X(k*d+j),b=X(k*d+j+1);
+        el('line',{x1:a+3,x2:b-3,y1:Y,y2:Y,stroke:j%2?'#f2b600':'#ffd34d','stroke-width':14,'stroke-linecap':'round'},gParts);
+        txt(gParts,(a+b)/2,Y+46,String(j+1),'pnum');
+      }
+    },
+    jumps(from,to,{color=COL.jump,numbers=true,animate=true,step=.22}={}){
+      gJ.innerHTML='';
+      const sp=X(1)-X(0),h=Math.min(62,sp*.95+8);
+      for(let k=from;k<to;k++){
+        const x1=X(k),x2=X(k+1),delay=(k-from)*step;
+        const p=el('path',{d:`M${x1+2} ${Y-6} Q ${(x1+x2)/2} ${Y-6-h*1.6} ${x2-2} ${Y-6}`,class:'jump',stroke:color},gJ);
+        if(animate){const len=p.getTotalLength?p.getTotalLength():0;if(len>0){p.style.strokeDasharray=len;p.style.strokeDashoffset=len;p.style.animation=`draw .25s ease ${delay}s forwards`}}
+        if(numbers){const t=txt(gJ,(x1+x2)/2,Y-6-h*.8-12,String(k-from+1),'jnum',color);if(animate){t.classList.add('fadein');t.style.animationDelay=delay+'s'}}
+      }
+    },
+    guide(i,color){el('line',{x1:X(i),x2:X(i),y1:0,y2:265,stroke:color,'stroke-width':3,'stroke-dasharray':'10 8'},gG)}
+  };
+}
+
+/* ================= dessins (pizza, chocolat, bande) ================= */
+const SHAPE={pizza:{one:'la pizza',many:'les pizzas',u:'pizza',us:'pizzas'},choco:{one:'la tablette de chocolat',many:'les tablettes de chocolat',u:'tablette',us:'tablettes'},bande:{one:'la bande de pâte',many:'les bandes de pâte',u:'bande',us:'bandes'}};
+function grid(d){let r=1;for(let i=1;i*i<=d;i++)if(d%i===0)r=i;return [r,d/r]}
+function shapeSVG(type,d,count,isF){
+  if(type==='pizza'){
+    const Rr=70,S=170;let s=`<svg viewBox="0 0 ${count*S} ${S}" class="rep">`;
+    for(let k=0;k<count;k++){
+      const cx=k*S+S/2,cy=S/2;s+=`<circle cx="${cx}" cy="${cy}" r="${Rr+7}" fill="#e2b06b"/>`;
+      for(let j=0;j<d;j++){
+        const idx=k*d+j,f=isF(idx);
+        const a0=(-90+360*j/d)*Math.PI/180,a1=(-90+360*(j+1)/d)*Math.PI/180;
+        const x0=cx+Rr*Math.cos(a0),y0=cy+Rr*Math.sin(a0),x1=cx+Rr*Math.cos(a1),y1=cy+Rr*Math.sin(a1);
+        s+=`<path data-p="${idx}" d="M${cx} ${cy} L${x0.toFixed(1)} ${y0.toFixed(1)} A${Rr} ${Rr} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${f?'#f0642b':'#fff3d6'}" stroke="#8a5a2b" stroke-width="2.5"/>`;
+        if(f){const am=(a0+a1)/2;s+=`<circle data-p="${idx}" cx="${(cx+Rr*.62*Math.cos(am)).toFixed(1)}" cy="${(cy+Rr*.62*Math.sin(am)).toFixed(1)}" r="${Math.min(9,30/d+4).toFixed(1)}" fill="#9b1c17"/>`}
+      }
+    }
+    return s+'</svg>';
+  }
+  if(type==='choco'){
+    const [rows,cols]=grid(d),q=40,g=5,p=10,tw=cols*(q+g)-g+2*p,th=rows*(q+g)-g+2*p;
+    let s=`<svg viewBox="0 0 ${count*(tw+16)} ${th}" class="rep">`;
+    for(let k=0;k<count;k++){
+      const ox=k*(tw+16);s+=`<rect x="${ox}" y="0" width="${tw}" height="${th}" rx="10" fill="#5a3320"/>`;
+      for(let j=0;j<d;j++){const idx=k*d+j,f=isF(idx),r=Math.floor(j/cols),c=j%cols;
+        s+=`<rect data-p="${idx}" x="${ox+p+c*(q+g)}" y="${p+r*(q+g)}" width="${q}" height="${q}" rx="6" fill="${f?'#8b5a36':'#f1e3d3'}" stroke="${f?'#3d1f10':'#c8a988'}" stroke-width="2"/>`}
+    }
+    return s+'</svg>';
+  }
+  const w=400,h=48;let s=`<svg viewBox="0 0 ${w+10} ${count*64}" class="rep">`;
+  for(let k=0;k<count;k++)for(let j=0;j<d;j++){const idx=k*d+j,f=isF(idx);
+    s+=`<rect data-p="${idx}" x="${5+j*w/d}" y="${k*64+6}" width="${w/d}" height="${h}" fill="${f?'#f26d9b':'#ffeef4'}" stroke="#b3416b" stroke-width="2.5"/>`}
+  return s+'</svg>';
+}
+
+/* ================= 1. LA RECETTE ================= */
+const C={step:0,ex:null,L:null};
+function newExample(){const d=pickDen([3,4,5,6,8]);C.ex={d,n:rint(2,d-1),n2:d+rint(1,d-1)}}
+const STEPS=[
+  (L,e)=>{L.circleLabels([0,1]);return `<b>Voici une droite graduée.</b> Elle commence à <b>0</b>. Les grands traits montrent les nombres entiers : 0, 1, 2…`},
+  (L,e)=>{L.unit();return `<b>L'unité</b>, c'est l'espace entre <b>0</b> et <b>1</b>. Ici, elle est coloriée en jaune, comme une part de gâteau entière.`},
+  (L,e)=>{L.unit();L.parts();return `L'unité est partagée en <b>${e.d} parts égales</b>. Ce nombre, c'est le <b>dénominateur</b> : il s'écrit en bas. Chaque petit saut vaut ${F(1,e.d)} (un ${DN[e.d][0]}).`},
+  (L,e)=>{L.unit();L.marker(e.n,COL.pt,{letter:'A'});L.jumps(0,e.n);return `Voici le point <b>A</b>. On part de <b>0</b> et on compte les sauts jusqu'à A : <b>${e.n} sauts</b>. Ce nombre, c'est le <b>numérateur</b> : il s'écrit en haut.`},
+  (L,e)=>{L.marker(e.n,COL.pt,{frac:[e.n,e.d]});L.jumps(0,e.n,{animate:false});return `Le point A est donc à ${F(e.n,e.d,'big')}<div class="legend"><span>${F(e.n,'&nbsp;')}</span><span>→ ${e.n} sauts depuis 0</span><span>${F('&nbsp;',e.d)}</span><span>→ ${e.d} parts dans l'unité</span></div>`},
+  (L,e)=>{L.marker(e.n2,COL.B,{frac:[e.n2,e.d]});L.jumps(0,e.n2);return `<b>Et après 1 ?</b> On continue à compter ! ${F(e.d,e.d)} = 1. Le point B est à <b>${e.n2} sauts</b> : B = ${F(e.n2,e.d)} = 1 + ${F(e.n2-e.d,e.d)}.<br>Quand le <b>numérateur est plus grand que le dénominateur</b>, la fraction est <b>plus grande que 1</b>.`},
+  (L,e)=>{L.marker(e.n,COL.A,{frac:[e.n,e.d]});L.marker(e.n2,COL.B,{frac:[e.n2,e.d]});return `<b>Comparer :</b> plus un point est à <b>droite</b>, plus la fraction est <b>grande</b>.<br>B est à droite de A, donc ${F(e.n,e.d)} <b>&lt;</b> ${F(e.n2,e.d)}.`}
+];
+function renderStep(){
+  const e=C.ex;C.L=NumberLine($('#stepLine'),{d:e.d,units:2});
+  $('#stepText').innerHTML=STEPS[C.step](C.L,e);
+  $('#stepDots').innerHTML=STEPS.map((_,i)=>`<i class="${i===C.step?'on':''}"></i>`).join('');
+  $('#stepPrev').disabled=C.step===0;
+  $('#stepNext').textContent=C.step===STEPS.length-1?'Recommencer ↺':'Suivant ▶';
+}
+$('#stepPrev').onclick=()=>{if(C.step>0){C.step--;renderStep()}};
+$('#stepNext').onclick=()=>{C.step=C.step===STEPS.length-1?0:C.step+1;renderStep()};
+$('#stepNew').onclick=()=>{newExample();C.step=0;renderStep()};
+const EX={d:4,L:null};
+function renderExplore(){
+  $('#exD').textContent=EX.d;
+  EX.L=NumberLine($('#exLine'),{d:EX.d,units:EX.d<=4?3:2,onPick:i=>{
+    const d=EX.d;EX.L.clear();EX.L.marker(i,COL.pt,{frac:[i,d]});EX.L.jumps(0,i,{step:.12});
+    let s=`Ce point est à ${F(i,d,'big')} : <b>${i} saut${i>1?'s':''}</b> de ${F(1,d)} depuis 0.`;
+    if(i===0)s+=` C'est 0.`;else if(i%d===0)s+=` ${F(i,d)} = <b>${i/d}</b> : c'est un nombre entier !`;
+    else if(i>d)s+=` ${F(i,d)} = ${Math.floor(i/d)} + ${F(i%d,d)} : plus grand que 1.`;else s+=` C'est plus petit que 1.`;
+    $('#exInfo').innerHTML=s;
+  }});
+  $('#exInfo').innerHTML='Touche un trait de la droite.';
+}
+$('#exMinus').onclick=()=>{if(EX.d>2){EX.d--;renderExplore()}};
+$('#exPlus').onclick=()=>{if(EX.d<12){EX.d++;renderExplore()}};
+
+/* ================= 2. LA VITRINE ================= */
+const R={n:3,d:4};
+function renderReps(){
+  const {n,d}=R,c=Math.max(1,Math.ceil(n/d)),f=i=>i<n;
+  $('#rn').textContent=n;$('#rd').textContent=d;$('#rBig').innerHTML=F(n,d,'huge');
+  $('#repPizza').innerHTML=shapeSVG('pizza',d,c,f);
+  $('#repPizzaTxt').innerHTML=`Chaque pizza est coupée en ${d} parts égales. On en colorie ${n}.`;
+  $('#repChoco').innerHTML=shapeSVG('choco',d,c,f);
+  $('#repChocoTxt').innerHTML=`Chaque tablette a ${d} carrés. On en prend ${n}.`;
+  $('#repBande').innerHTML=shapeSVG('bande',d,c,f);
+  $('#repBandeTxt').innerHTML=`Chaque bande est partagée en ${d} parts égales. On en colorie ${n}.`;
+  $('#repWords').textContent=words(n,d);
+  let dec;
+  if(n<d)dec=`${F(n,d)} est <b>plus petit que 1</b> : le numérateur est plus petit que le dénominateur.`;
+  else if(n===d)dec=`${F(n,d)} = <b>1</b> : c'est une unité entière !`;
+  else if(n%d===0)dec=`${F(n,d)} = <b>${n/d}</b> : c'est un nombre entier !`;
+  else dec=`${F(n,d)} = ${Math.floor(n/d)} + ${F(n%d,d)} : c'est <b>plus grand que 1</b>.`;
+  $('#repDecomp').innerHTML=`<p>${dec}</p>`;
+  const L=NumberLine($('#repLine'),{d,units:c});
+  L.marker(n,COL.pt,{frac:[n,d]});L.jumps(0,n,{numbers:n<=24,step:.1});
+  $('#repLineTxt').innerHTML=`L'unité est partagée en ${d} parts. On fait ${n} sauts depuis 0.`;
+}
+$('#rnMinus').onclick=()=>{if(R.n>1){R.n--;renderReps()}};
+$('#rnPlus').onclick=()=>{if(R.n<3*R.d){R.n++;renderReps()}};
+$('#rdMinus').onclick=()=>{if(R.d>2){R.d--;R.n=Math.min(R.n,3*R.d);renderReps()}};
+$('#rdPlus').onclick=()=>{if(R.d<12){R.d++;renderReps()}};
+
+/* ================= 3. DÉFI VITRINE (N16 N17 N18 N19) ================= */
+const V={N:16};
+const VD=[2,3,4,5,6,8,10];
+function vIntro(){startScreen($('#vq'),'defi','Le défi de la vitrine','Lis, colorie, écris et décompose des fractions avec des pizzas, du chocolat et des bandes de pâte.',V.N,vStart)}
+function vStart(){
+  V.i=0;V.S={toques:0};V.res={N16:[0,0],N17:[0,0],N18:[0,0],N19:[0,0]};
+  V.seq=shuffle([].concat(...['N16','N17','N18','N19'].map(c=>[c,c,c,c])));vNext();
+}
+function vNext(){
+  const host=$('#vq');
+  if(V.i>=V.N)return finish(host,'defi',V.res,vStart);
+  const code=V.seq[V.i],q=V.q={code,done:false};
+  const head=`${progress(V.i,V.N,V.S)}<div class="card"><div class="chips"><span class="code">${code}</span> ${COMP[code]}</div>`;
+  const d=q.d=pickDen(VD);
+  if(code==='N16'){
+    const n=q.n=Math.random()<.75?rint(1,d-1):rint(d+1,2*d-1);
+    const toW=Math.random()<.5,seen=new Set([n+'/'+d]),opts=[[n,d]];
+    for(const [a,b] of shuffle([[n,d+1],[n,d-1],[d,n],[n+1,d],[n-1,d],[n,d+2],[n+2,d]])){
+      if(a<1||!DN[b]||seen.has(a+'/'+b))continue;seen.add(a+'/'+b);opts.push([a,b]);if(opts.length===4)break;}
+    shuffle(opts);
+    host.innerHTML=head+`<p class="prompt">${toW?`Comment se lit ${F(n,d,'huge')} ?`:`Quelle fraction se lit « <span class="words">${words(n,d)}</span> » ?`}</p>
+      <div class="choices ${toW?'words':''}">${opts.map(([a,b])=>`<button class="choice" data-a="${a}" data-b="${b}">${toW?words(a,b):F(a,b)}</button>`).join('')}</div><div id="vfb"></div></div>`;
+    host.querySelectorAll('.choice').forEach(btn=>btn.onclick=()=>{
+      if(q.done)return;q.done=true;const ok=+btn.dataset.a===n&&+btn.dataset.b===d;
+      host.querySelectorAll('.choice').forEach(c=>{c.disabled=true;if(+c.dataset.a===n&&+c.dataset.b===d)c.classList.add('good')});
+      if(!ok)btn.classList.add('bad');
+      vDone(ok,ok?`<b>Bravo !</b> ${F(n,d)} se lit « ${words(n,d)} ».`:`${F(n,d)} se lit « <b>${words(n,d)}</b> » : le nombre du haut (${nw(n)}) puis le nom des parts (des ${DN[d][1]}).`);
+    });
+  }
+  else if(code==='N17'){
+    const big=Math.random()<.3,n=q.n=big?rint(d+1,2*d-1):rint(1,d-1),cnt=big?2:1,type=q.type=pick(['pizza','choco','bande']);
+    q.cnt=cnt;q.st=new Array(cnt*d).fill(false);
+    host.innerHTML=head+`<p class="prompt">Colorie ${F(n,d,'big')} ${big?`avec ${SHAPE[type].many} :`:`de ${SHAPE[type].one}.`}</p>
+      <p class="hint">Touche les parts pour les colorier. Touche encore pour effacer.${big?` Chaque ${SHAPE[type].u} est partagée en ${d} parts.`:''}</p>
+      <div class="shapehost click" id="vshape"></div><p><b>Parts coloriées : <span id="vcnt">0</span></b></p>
+      <div class="actions"><button class="btn" id="vok">Valider</button></div><div id="vfb"></div></div>`;
+    const draw=()=>{$('#vshape').innerHTML=shapeSVG(type,d,cnt,i=>q.st[i]);$('#vcnt').textContent=q.st.filter(Boolean).length};
+    draw();
+    $('#vshape').onclick=e=>{if(q.done)return;const p=e.target.closest('[data-p]');if(!p)return;const i=+p.getAttribute('data-p');q.st[i]=!q.st[i];draw()};
+    $('#vok').onclick=()=>{
+      if(q.done)return;const c=q.st.filter(Boolean).length;q.done=true;$('#vok').disabled=true;const ok=c===n;
+      if(!ok)$('#vshape').innerHTML=shapeSVG(type,d,cnt,i=>i<n);
+      vDone(ok,ok?`<b>Bravo !</b> ${n} part${n>1?'s':''} de ${F(1,d)}, c'est bien ${F(n,d)}.`:`Tu as colorié ${c} part${c>1?'s':''}. Pour ${F(n,d)}, il faut colorier <b>${n} parts</b> de ${F(1,d)}. Voici une bonne réponse.`);
+    };
+  }
+  else if(code==='N18'){
+    const big=Math.random()<.3,n=q.n=big?rint(d+1,2*d-1):rint(1,d-1),cnt=big?2:1,type=pick(['pizza','choco','bande']);
+    host.innerHTML=head+`<p class="prompt">Quelle fraction ${big?`de ${SHAPE[type].u} `:''}est coloriée ?</p>
+      ${big?`<p class="hint">Chaque ${SHAPE[type].u} est une unité.</p>`:''}
+      <div class="shapehost">${shapeSVG(type,d,cnt,i=>i<n)}</div>
+      <div class="answerrow"><span class="fin"><input class="n" id="vn" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="numérateur"><span class="fbar"></span><input class="n" id="vd" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="dénominateur"></span></div>
+      <div class="actions"><button class="btn" id="vok">Valider</button></div><div id="vfb"></div></div>`;
+    const check=()=>{
+      if(q.done)return;const a=parseInt($('#vn').value,10),b=parseInt($('#vd').value,10);
+      if(isNaN(a)||isNaN(b)||b===0){$('#vfb').innerHTML=`<div class="fb info">Écris un nombre en haut <b>et</b> un nombre en bas (pas 0 en bas).</div>`;return}
+      q.done=true;$('#vok').disabled=true;$('#vn').disabled=$('#vd').disabled=true;
+      const ok=a*d===b*n;let m;
+      if(ok)m=a===n&&b===d?`<b>Bravo !</b> C'est ${F(n,d)} : ${n} parts coloriées, et chaque ${SHAPE[type].u} a ${d} parts.`:`<b>Bravo, c'est juste !</b> ${F(a,b)} = ${F(n,d)}.`;
+      else if(a===d&&b===n)m=`Tu as inversé ! <b>En bas</b> : le nombre de parts dans une ${SHAPE[type].u}. <b>En haut</b> : le nombre de parts coloriées. C'était ${F(n,d)}.`;
+      else if(big&&b===cnt*d)m=`Attention : le dénominateur, c'est le nombre de parts dans <b>une seule</b> ${SHAPE[type].u} (${d}). C'était ${F(n,d)}.`;
+      else m=`C'était ${F(n,d)} : chaque ${SHAPE[type].u} est partagée en <b>${d} parts</b> (en bas) et <b>${n} parts</b> sont coloriées (en haut).`;
+      vDone(ok,m);
+    };
+    $('#vok').onclick=check;['#vn','#vd'].forEach(s=>$(s).addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  }
+  else{ // N19
+    let n;do{n=rint(d+1,3*d-1)}while(n%d===0);q.n=n;const E=Math.floor(n/d),r=n%d;
+    host.innerHTML=head+`<p class="prompt">Décompose la fraction : un nombre entier + une fraction plus petite que 1.</p>
+      <div class="answerrow">${F(n,d,'big')} = <input class="n" id="ve" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="nombre entier"> + <span class="fin"><input class="n" id="vr" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="numérateur"><span class="fbar"></span><b>${d}</b></span></div>
+      <p class="hint">Rappel : ${F(d,d)} = 1.</p>
+      <div class="actions"><button class="btn" id="vok">Valider</button></div><div id="vfb"></div></div>`;
+    const check=()=>{
+      if(q.done)return;const e=parseInt($('#ve').value,10),rr=parseInt($('#vr').value,10);
+      if(isNaN(e)||isNaN(rr)){$('#vfb').innerHTML=`<div class="fb info">Remplis les deux cases.</div>`;return}
+      q.done=true;$('#vok').disabled=true;$('#ve').disabled=$('#vr').disabled=true;
+      const ok=e===E&&rr===r;
+      const det=`${F(n,d)} = ${Array(E).fill(F(d,d)).join(' + ')} + ${F(r,d)} = <b>${E} + ${F(r,d)}</b>`;
+      vDone(ok,(ok?'<b>Bravo !</b> ':'Regarde bien : ')+det+`<div class="shapehost" style="margin-top:8px">${shapeSVG('pizza',d,E+1,i=>i<n)}</div>`);
+    };
+    $('#vok').onclick=check;['#ve','#vr'].forEach(s=>$(s).addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  }
+}
+function vDone(ok,msg){
+  const code=V.q.code;V.res[code][1]++;if(ok){V.res[code][0]++;earn(V.S)}
+  $('#vfb').innerHTML=`<div class="fb ${ok?'ok':'ko'}">${msg}</div><div class="actions"><button class="btn" id="vnext">Question suivante ➜</button></div>`;
+  $('#vnext').onclick=()=>{V.i++;vNext()};
+}
+
+/* ================= 4. JE PLACE (N23) ================= */
+const Q1={N:10};
+function q1Intro(){startScreen($('#q1'),'placer','Je place la fraction','Une fraction est donnée : touche la droite graduée à l\'endroit où elle se trouve.',Q1.N,q1Start)}
+function q1Start(){Q1.i=0;Q1.score=0;Q1.S={toques:0};q1Next()}
+function q1Next(){
+  const host=$('#q1');
+  if(Q1.i>=Q1.N)return finish(host,'placer',{N23:[Q1.score,Q1.N]},q1Start);
+  const d=pickDen(),units=unitsFor(d),n=pickNum(d,units,Math.random()<.12);
+  const q=Q1.q={d,units,n,pick:null,done:false};
+  host.innerHTML=`${progress(Q1.i,Q1.N,Q1.S)}<div class="card">${banner('placer')}
+    <p class="prompt">Place la fraction ${F(n,d,'big')} sur la droite graduée.</p>
+    <p class="hint">Touche un trait de la droite. Tu peux changer d'avis, puis appuie sur « Valider ».</p>
+    <div class="nlhost" id="q1line"></div>
+    <div class="actions"><button class="btn" id="q1ok" disabled>Valider</button></div><div id="q1fb"></div></div>`;
+  Q1.L=NumberLine($('#q1line'),{d,units,onPick:i=>{if(q.done)return;q.pick=i;Q1.L.clearMarks();Q1.L.marker(i,COL.try,{letter:'?'});$('#q1ok').disabled=false}});
+  $('#q1ok').onclick=q1Check;
+}
+function q1Check(){
+  const q=Q1.q,L=Q1.L;if(q.pick===null||q.done)return;q.done=true;L.clear();
+  const ok=q.pick===q.n;if(ok){Q1.score++;earn(Q1.S)}
+  let s;
+  if(ok){L.marker(q.n,COL.ok,{frac:[q.n,q.d]});L.jumps(0,q.n,{color:COL.ok,step:.12});
+    s=`<b>Bravo !</b> ${F(q.n,q.d)}, c'est ${q.n} saut${q.n>1?'s':''} de ${F(1,q.d)} depuis 0. Tu gagnes une toque !`;}
+  else{L.marker(q.pick,COL.gray,{letter:'toi',letterY:L.Y+58});L.marker(q.n,COL.ok,{frac:[q.n,q.d]});L.jumps(0,q.n,{color:COL.ok,step:.12});
+    s=`<b>Pas tout à fait.</b> Ton point (en gris) est sur ${F(q.pick,q.d)}.<br>L'unité est partagée en <b>${q.d} parts</b> : chaque saut vaut ${F(1,q.d)}. Pour ${F(q.n,q.d)}, on compte <b>${q.n} sauts</b> depuis 0.`;}
+  if(q.n%q.d===0)s+=`<br>${F(q.n,q.d)} = <b>${q.n/q.d}</b> : c'est un nombre entier !`;
+  else if(q.n>q.d)s+=`<br>Le numérateur est plus grand que le dénominateur : ${F(q.n,q.d)} est plus grand que 1.`;
+  $('#q1fb').innerHTML=`<div class="fb ${ok?'ok':'ko'}">${s}</div><div class="actions"><button class="btn" id="q1next">Question suivante ➜</button></div>`;
+  $('#q1ok').disabled=true;$('#q1next').onclick=()=>{Q1.i++;q1Next()};
+}
+
+/* ================= 5. JE TROUVE (N22) ================= */
+const Q2={N:10};
+function distractors(n,d){
+  const v=n/d,pool=shuffle([[n,d+1],[n,d-1],[n,d+2],[d,n],[n+1,d+1],[n-1,d-1],[n+1,d-1],[n-1,d+1],[n,d+3],[n+2,d+2],[n+1,d+2],[n,d-2]]);
+  const out=[],used=new Set([d]);
+  for(const [a,b] of pool){
+    if(a<1||b<2||b>16||used.has(b))continue;if(Math.abs(a/b-v)<1e-9)continue;
+    if(out.some(([x,y])=>Math.abs(x/y-a/b)<1e-9))continue;out.push([a,b]);used.add(b);if(out.length===3)break;
+  }
+  let g=0;while(out.length<3&&g++<200){const b=rint(2,16),a=rint(1,2*b);if(!used.has(b)&&Math.abs(a/b-v)>1e-9){out.push([a,b]);used.add(b)}}
+  return out;
+}
+function q2Intro(){startScreen($('#q2'),'trouver','Je trouve la bonne fraction','Un point est placé sur la droite : choisis la fraction qui lui correspond.',Q2.N,q2Start)}
+function q2Start(){Q2.i=0;Q2.score=0;Q2.S={toques:0};q2Next()}
+function q2Next(){
+  const host=$('#q2');
+  if(Q2.i>=Q2.N)return finish(host,'trouver',{N22:[Q2.score,Q2.N]},q2Start);
+  const d=pickDen(),units=unitsFor(d),n=pickNum(d,units);const q=Q2.q={d,units,n,done:false};
+  const opts=shuffle([[n,d],...distractors(n,d)]);
+  host.innerHTML=`${progress(Q2.i,Q2.N,Q2.S)}<div class="card">${banner('trouver')}
+    <p class="prompt">À quelle fraction correspond le point <span style="color:${COL.pt}">A</span> ?</p>
+    <div class="nlhost" id="q2line"></div>
+    <div class="choices">${opts.map(([a,b])=>`<button class="choice" data-a="${a}" data-b="${b}">${F(a,b)}</button>`).join('')}</div>
+    <div class="actions"><button class="btn help" id="q2hint">💡 Indice</button></div><div id="q2fb"></div></div>`;
+  Q2.L=NumberLine($('#q2line'),{d,units});Q2.L.marker(n,COL.pt,{letter:'A'});
+  $('#q2hint').onclick=()=>{if(q.done)return;Q2.L.unit();Q2.L.parts();$('#q2hint').disabled=true;
+    $('#q2fb').innerHTML=`<div class="fb info">Regarde l'unité en jaune : en combien de parts est-elle partagée ? Puis compte les sauts depuis 0 jusqu'au point A.</div>`};
+  host.querySelectorAll('.choice').forEach(b=>b.onclick=()=>q2Answer(b));
+}
+function q2Answer(btn){
+  const q=Q2.q;if(q.done)return;q.done=true;
+  const a=+btn.dataset.a,b=+btn.dataset.b,ok=a===q.n&&b===q.d;if(ok){Q2.score++;earn(Q2.S)}
+  document.querySelectorAll('#q2 .choice').forEach(c=>{c.disabled=true;if(+c.dataset.a===q.n&&+c.dataset.b===q.d)c.classList.add('good')});
+  if(!ok)btn.classList.add('bad');
+  const L=Q2.L;L.clear();L.unit();L.marker(q.n,COL.ok,{frac:[q.n,q.d]});L.jumps(0,q.n,{color:COL.ok,step:.12});$('#q2hint').disabled=true;
+  let s=ok?`<b>Bravo !</b> L'unité est partagée en ${q.d} parts et il y a ${q.n} sauts depuis 0 : A = ${F(q.n,q.d)}. Tu gagnes une toque !`
+    :`<b>Ce n'est pas ${F(a,b)}.</b> Regarde l'unité : elle est partagée en <b>${q.d} parts</b>, donc le dénominateur est ${q.d}. Depuis 0, il y a <b>${q.n} sauts</b> jusqu'au point A : A = ${F(q.n,q.d)}.`;
+  if(q.n>q.d)s+=`<br>Le numérateur est plus grand que le dénominateur : A est après 1.`;
+  $('#q2fb').innerHTML=`<div class="fb ${ok?'ok':'ko'}">${s}</div><div class="actions"><button class="btn" id="q2next">Question suivante ➜</button></div>`;
+  $('#q2next').onclick=()=>{Q2.i++;q2Next()};
+}
+
+/* ================= 6. J'ÉCRIS (N22) ================= */
+const Q3={N:10};
+function q3Intro(){startScreen($('#q3'),'ecrire','J\'écris la fraction','Écris toi-même la fraction qui correspond au point. Si tu bloques, des coups de pouce t\'attendent… mais pour dorer la toque, il faut trouver <b>tout seul</b> !',Q3.N,q3Start)}
+function q3Start(){Q3.i=0;Q3.alone=0;Q3.helped=0;Q3.seen=0;Q3.S={toques:0};q3Next()}
+function q3Next(){
+  const host=$('#q3');
+  if(Q3.i>=Q3.N){
+    const extra=`<p>✅ Trouvé tout seul : <b>${Q3.alone}</b><br>💡 Trouvé avec un coup de pouce : <b>${Q3.helped}</b><br>👀 Réponse regardée : <b>${Q3.seen}</b></p>`;
+    return finish(host,'ecrire',{N22:[Q3.alone,Q3.N]},q3Start,extra);
+  }
+  const d=pickDen(),units=unitsFor(d),n=pickNum(d,units);const q=Q3.q={d,units,n,aide:0,tries:0,done:false};
+  host.innerHTML=`${progress(Q3.i,Q3.N,Q3.S)}<div class="card">${banner('ecrire')}
+    <p class="prompt">Écris la fraction qui correspond au point <span style="color:${COL.pt}">A</span>.</p>
+    <div class="nlhost" id="q3line"></div>
+    <div class="answerrow"><span style="color:${COL.pt}">A</span> = <span class="fin"><input class="n" id="q3n" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="numérateur"><span class="fbar"></span><input class="n" id="q3d" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="dénominateur"></span></div>
+    <div class="actions"><button class="btn" id="q3ok">Vérifier</button><button class="btn help" id="q3help">💡 Coup de pouce</button><button class="btn soft" id="q3show" style="display:none">👀 Voir la réponse</button></div>
+    <div id="q3aide"></div><div id="q3fb"></div></div>`;
+  Q3.L=NumberLine($('#q3line'),{d,units});Q3.L.marker(n,COL.pt,{letter:'A'});
+  $('#q3ok').onclick=q3Check;$('#q3help').onclick=q3Help;$('#q3show').onclick=q3Show;
+  ['#q3n','#q3d'].forEach(s=>$(s).addEventListener('keydown',e=>{if(e.key==='Enter')q3Check()}));
+}
+const AIDES=[
+  (L,q)=>{L.unit();return `<b>Coup de pouce 1 :</b> regarde l'unité en jaune (de 0 à 1). En combien de <b>parts égales</b> est-elle partagée ? Ce nombre va <b>en bas</b> : c'est le dénominateur.`},
+  (L,q)=>{L.unit();L.parts();return `<b>Coup de pouce 2 :</b> les parts de l'unité sont numérotées. Combien y en a-t-il ?`},
+  (L,q)=>{L.unit();L.parts();L.jumps(0,q.n,{numbers:false});return `<b>Coup de pouce 3 :</b> pars de 0 et compte les sauts violets jusqu'au point A. Ce nombre va <b>en haut</b> : c'est le numérateur.`}
+];
+function q3Help(){
+  const q=Q3.q;if(q.done||q.aide>=AIDES.length)return;
+  Q3.L.clear();Q3.L.marker(q.n,COL.pt,{letter:'A'});
+  $('#q3aide').innerHTML=`<div class="fb info">${AIDES[q.aide](Q3.L,q)}</div>`;q.aide++;
+  if(q.aide>=AIDES.length){$('#q3help').disabled=true;$('#q3show').style.display=''}
+}
+function q3Finish(kind,msg){
+  const q=Q3.q;q.done=true;
+  if(kind==='alone')Q3.alone++;else if(kind==='helped')Q3.helped++;else Q3.seen++;
+  if(kind!=='seen')earn(Q3.S);
+  const L=Q3.L,c=kind==='seen'?COL.B:COL.ok;L.clear();L.unit();L.marker(q.n,c,{frac:[q.n,q.d]});L.jumps(0,q.n,{color:c,step:.12});
+  $('#q3aide').innerHTML='';['#q3ok','#q3help'].forEach(s=>$(s).disabled=true);$('#q3show').style.display='none';
+  $('#q3n').disabled=$('#q3d').disabled=true;
+  $('#q3fb').innerHTML=`<div class="fb ${kind==='seen'?'info':'ok'}">${msg}</div><div class="actions"><button class="btn" id="q3next">Point suivant ➜</button></div>`;
+  $('#q3next').onclick=()=>{Q3.i++;q3Next()};
+}
+function q3Show(){const q=Q3.q;if(q.done)return;
+  q3Finish('seen',`Voici la réponse : l'unité est partagée en <b>${q.d} parts</b> et il y a <b>${q.n} sauts</b> depuis 0. A = ${F(q.n,q.d,'big')}`)}
+function q3Check(){
+  const q=Q3.q;if(q.done)return;
+  const a=parseInt($('#q3n').value,10),b=parseInt($('#q3d').value,10);
+  if(isNaN(a)||isNaN(b)){$('#q3fb').innerHTML=`<div class="fb info">Écris un nombre en haut <b>et</b> un nombre en bas.</div>`;return}
+  if(b===0){$('#q3fb').innerHTML=`<div class="fb info">Le nombre du bas ne peut pas être 0 : c'est le nombre de parts dans l'unité.</div>`;return}
+  if(a*q.d===b*q.n){
+    const kind=q.aide===0?'alone':'helped';
+    let msg=`<b>Bravo !</b> A = ${F(q.n,q.d,'big')}`;
+    if(!(a===q.n&&b===q.d))msg=`<b>Bravo, c'est juste !</b> ${F(a,b)} = ${F(q.n,q.d)}. Sur cette droite, on lit ${F(q.n,q.d)} car l'unité est partagée en ${q.d} parts.`;
+    msg+=kind==='alone'?` Tu as trouvé tout seul ! ✅`:` Tu as trouvé avec un coup de pouce. 💡`;
+    return q3Finish(kind,msg);
+  }
+  q.tries++;let m;
+  if(a===q.d&&b===q.n)m=`Attention, tu as inversé ! <b>En bas</b> : le nombre de parts dans l'unité. <b>En haut</b> : le nombre de sauts depuis 0.`;
+  else if(b===q.d*q.units&&b!==q.d)m=`Attention : on compte les parts dans <b>une seule unité</b> (de 0 à 1), pas sur toute la droite.`;
+  else if(b===q.d+1)m=`Presque ! Compte les <b>parts</b> (les espaces entre les traits), pas les traits.`;
+  else if(b===q.d&&a===q.n+1)m=`Presque ! Compte les <b>sauts</b>, pas les traits : le 0 ne compte pas.`;
+  else if(b===q.d)m=`Le nombre du bas est juste ! 👍 Recompte les sauts depuis 0 jusqu'au point A.`;
+  else if(a===q.n)m=`Le nombre du haut est juste ! 👍 Vérifie en combien de parts l'unité est partagée.`;
+  else m=`Ce n'est pas encore ça. Tu peux réessayer ou prendre un coup de pouce.`;
+  $('#q3fb').innerHTML=`<div class="fb ko">${m}</div>`;
+  if(q.tries>=2)$('#q3show').style.display='';
+}
+
+/* ================= 7. JE COMPARE (N24 N25) ================= */
+const Q4={N:10};
+const PAIRS=[[2,4],[2,6],[3,6],[4,8],[5,10],[2,8],[3,4],[4,5],[2,3],[3,5],[4,6],[6,8],[4,12],[3,12],[2,5],[3,9],[5,6]];
+function newTwo(){
+  if(Math.random()<.4){
+    const d=pickDen(),units=unitsFor(d),t=d*units;let a=rint(1,t-1),b;do{b=rint(1,t-1)}while(b===a);
+    return {kind:'two',same:true,d1:d,d2:d,units,a,b};
+  }
+  let p;do{p=pick(PAIRS)}while(p[0]===lastD||p[1]===lastD);
+  if(Math.random()<.5)p=[p[1],p[0]];
+  const [d1,d2]=p;lastD=d2;const units=Math.min(unitsFor(d1),unitsFor(d2));
+  let a,b;const eqs=[];for(let x=1;x<d1*units;x++)if((x*d2)%d1===0&&x%d1!==0)eqs.push(x);
+  if(eqs.length&&Math.random()<.35){a=pick(eqs);b=a*d2/d1}
+  else{let g=0;do{a=rint(1,d1*units-1);b=rint(1,d2*units-1);g++}while(g<200&&(a*d2===b*d1||Math.abs(a/d1-b/d2)<.1))}
+  return {kind:'two',same:false,d1,d2,units,a,b};
+}
+function newOne(){
+  const d=pickDen(),r=Math.random();
+  const a=r<.4?rint(1,d-1):r<.6?d:rint(d+1,2*d-1);
+  return {kind:'one',same:true,d1:d,units:2,a};
+}
+function q4Intro(){startScreen($('#q4'),'comparer','Je compare','Place les fractions sur la droite, puis compare-les : avec 1, ou entre elles.',Q4.N,q4Start)}
+function q4Start(){Q4.i=0;Q4.S={toques:0};Q4.res={N24:[0,0],N25:[0,0]};Q4.seq=shuffle(['one','one','one','one','two','two','two','two','two','two']);q4Next()}
+function q4Next(){
+  const host=$('#q4');
+  if(Q4.i>=Q4.N)return finish(host,'comparer',Q4.res,q4Start);
+  const q=Q4.q=Object.assign(Q4.seq[Q4.i]==='one'?newOne():newTwo(),{phase:0,pick:null});
+  const code=q.kind==='one'?'N24':'N25';
+  host.innerHTML=`${progress(Q4.i,Q4.N,Q4.S)}<div class="card">
+    <p class="prompt">${q.kind==='one'?`Compare <span class="tagA">A = ${F(q.a,q.d1,'big')}</span> et le nombre <b style="font-size:1.4em">1</b>`:`Compare <span class="tagA">A = ${F(q.a,q.d1,'big')}</span> et <span class="tagB">B = ${F(q.b,q.d2,'big')}</span>`}</p>
+    <div class="chips"><span class="code">${code}</span> ${COMP[code]}</div>
+    <p class="hint" id="q4step"></p>
+    ${q.same?'':`<div class="linelabel">Droite de A</div>`}
+    <div class="nlhost" id="q4l1"></div>
+    ${q.same?'':`<div class="linelabel">Droite de B</div><div class="nlhost" id="q4l2"></div>`}
+    <div class="actions" id="q4act"><button class="btn" id="q4ok" disabled>Valider</button></div>
+    <div id="q4cmp"></div><div id="q4fb"></div></div>`;
+  Q4.L1=NumberLine($('#q4l1'),{d:q.d1,units:q.units,onPick:i=>q4Pick(i,1)});
+  Q4.L2=q.same?Q4.L1:NumberLine($('#q4l2'),{d:q.d2,units:q.units,onPick:i=>q4Pick(i,2)});
+  $('#q4ok').onclick=q4Validate;q4StepText();
+}
+function q4StepText(){
+  const q=Q4.q;
+  $('#q4step').innerHTML=q.phase===0?`<b>1.</b> Place le point <span class="tagA">A</span>${q.same?'':' sur la droite de A'}, puis valide.`
+    :q.phase===1?`<b>2.</b> Place le point <span class="tagB">B</span>${q.same?'':' sur la droite de B'}, puis valide.`
+    :`<b>${q.kind==='one'?2:3}.</b> Compare.`;
+}
+function q4Draw(tent){
+  const q=Q4.q;Q4.L1.clearMarks();if(!q.same)Q4.L2.clearMarks();
+  if(q.phase>=1)Q4.L1.marker(q.a,COL.A,{letter:'A'});
+  if(q.kind==='two'&&q.phase>=2)Q4.L2.marker(q.b,COL.B,{letter:'B',letterY:q.same?Q4.L2.Y-108:Q4.L2.Y-58});
+  if(tent!=null){const L=q.phase===0?Q4.L1:Q4.L2;L.marker(tent,COL.try,{letter:'?',letterY:q.same&&q.phase===1?L.Y-108:L.Y-58})}
+}
+function q4Pick(i,line){
+  const q=Q4.q;if(q.phase>1)return;
+  const want=q.same?1:(q.phase===0?1:2);if(line!==want)return;
+  q.pick=i;q4Draw(i);$('#q4ok').disabled=false;
+}
+function q4Validate(){
+  const q=Q4.q;if(q.pick===null||q.phase>1)return;
+  const target=q.phase===0?q.a:q.b,d=q.phase===0?q.d1:q.d2,name=q.phase===0?'A':'B';
+  const fb=q.pick===target?`<div class="fb ok">👍 Le point ${name} est bien placé.</div>`
+    :`<div class="fb ko">Ton point était sur ${F(q.pick,d)}. ${name} = ${F(target,d)} : ${target} sauts depuis 0. Je le place pour toi.</div>`;
+  q.phase+=(q.kind==='one'&&q.phase===0)?2:1;q.pick=null;q4Draw(null);$('#q4fb').innerHTML=fb;q4StepText();$('#q4ok').disabled=true;
+  if(q.phase===2){
+    $('#q4act').style.display='none';
+    Q4.L1.guide(q.a,COL.A);
+    let right;
+    if(q.kind==='one'){Q4.L1.guide(q.d1,COL.gray);right=`<span class="one">1</span>`}
+    else{Q4.L2.guide(q.b,COL.B);right=`<span class="tagB">${F(q.b,q.d2,'big')}</span>`}
+    $('#q4cmp').innerHTML=`<div class="cmp"><span class="tagA">${F(q.a,q.d1,'big')}</span>
+      <button class="sym" data-s="<">&lt;</button><button class="sym" data-s="=">=</button><button class="sym" data-s=">">&gt;</button>${right}</div>`;
+    document.querySelectorAll('#q4 .sym').forEach(b=>b.onclick=()=>q4Compare(b));
+  }
+}
+function q4Compare(btn){
+  const q=Q4.q;if(q.phase!==2)return;q.phase=3;
+  const l=q.kind==='one'?q.a:q.a*q.d2,r=q.kind==='one'?q.d1:q.b*q.d1,good=l<r?'<':l>r?'>':'=';
+  const ok=btn.dataset.s===good,code=q.kind==='one'?'N24':'N25';
+  Q4.res[code][1]++;if(ok){Q4.res[code][0]++;earn(Q4.S)}
+  document.querySelectorAll('#q4 .sym').forEach(b=>{b.disabled=true;if(b.dataset.s===good)b.classList.add('good')});
+  if(!ok)btn.classList.add('bad');
+  const A=F(q.a,q.d1);let s;
+  if(q.kind==='one'){
+    if(good==='<')s=`A est <b>avant 1</b> sur la droite. Le numérateur (${q.a}) est plus petit que le dénominateur (${q.d1}), donc ${A} <b>&lt; 1</b>.`;
+    else if(good==='>')s=`A est <b>après 1</b> sur la droite. Le numérateur (${q.a}) est plus grand que le dénominateur (${q.d1}), donc ${A} <b>&gt; 1</b>.`;
+    else s=`A est <b>sur le 1</b> ! Le numérateur est égal au dénominateur, donc ${A} <b>= 1</b>.`;
+  }else{
+    const B=F(q.b,q.d2);
+    if(good==='=')s=`A et B sont <b>au même endroit</b> : ${A} = ${B}. Ce sont des <b>fractions égales</b> !`;
+    else if(good==='<')s=`B est plus à droite que A, donc ${A} <b>&lt;</b> ${B}.`;
+    else s=`A est plus à droite que B, donc ${A} <b>&gt;</b> ${B}.`;
+  }
+  $('#q4fb').innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?'<b>Bravo !</b> ':''}${s}</div><div class="actions"><button class="btn" id="q4next">Question suivante ➜</button></div>`;
+  $('#q4next').onclick=()=>{Q4.i++;q4Next()};
+}
+
+/* ================= 8. MON BILAN ================= */
+function codeStatus(code){
+  const eps=Object.keys(EP).filter(e=>EP[e].codes.includes(code));
+  const recs=eps.map(e=>({e,r:DB.ep[e]&&DB.ep[e][code]}));
+  const done=recs.filter(x=>x.r),gold=done.filter(x=>x.r.gold);
+  let st;
+  if(!done.length)st='todo';
+  else if(gold.length===eps.length)st='ok';
+  else if(done.length>gold.length)st='redo';
+  else st='part';
+  const next=(recs.find(x=>!x.r||!x.r.gold)||recs[0]).e;
+  return {st,recs,next};
+}
+function renderBilan(){
+  const host=$('#bil');const all=CODES.map(c=>Object.assign({code:c},codeStatus(c)));
+  const nGold=all.filter(x=>x.st==='ok').length;
+  const item=x=>{
+    const tq=x.st==='ok'?'gold':x.st==='todo'?'none':'white';
+    const det=x.recs.map(({e,r})=>`${EP[e].icon} ${EP[e].name} : ${r?`meilleur score <b>${r.best[0]}/${r.best[1]}</b>${r.gold?' 🌟':''}`:'pas encore fait'}`).join('<br>');
+    const pill={ok:'<span class="pill ok">🌟 Réussie</span>',redo:'<span class="pill redo">🔁 À retravailler</span>',part:'<span class="pill part">⏳ Bien commencée</span>',todo:'<span class="pill todo">Pas encore travaillée</span>'}[x.st];
+    const btn=x.st==='ok'?'':`<div class="actions" style="margin-top:6px"><button class="btn soft" data-go="${x.next}">${x.st==='todo'?'Commencer':'M\'entraîner'} : ${EP[x.next].icon} ${EP[x.next].name} ➜</button></div>`;
+    return `<div class="bitem">${toque(tq,58)}<div class="bt"><span class="code">${x.code}</span> ${pill}<br><b>${COMP[x.code]}</b><div class="det">${det}</div>${btn}</div></div>`;
+  };
+  const group=(st,title,emoji)=>{const l=all.filter(x=>x.st===st);return l.length?`<div class="card bgroup"><h3>${emoji} ${title} (${l.length})</h3>${l.map(item).join('')}</div>`:''};
+  host.innerHTML=`<div class="card"><h2>🏆 Mon bilan de petit chef</h2>
+      <div class="bsum">${toque('white',56)}<div><span class="num">${DB.toques}</span> toques gagnées</div>${toque('gold',56)}<div><span class="num">${nGold} / ${CODES.length}</span> toques dorées (compétences réussies)</div></div>
+      <p class="hint">Une compétence est réussie quand tu as doré sa toque dans toutes ses épreuves (au moins 3 bonnes réponses sur 4).</p></div>
+    ${group('ok','Compétences réussies','🌟')}
+    ${group('redo','Compétences à retravailler','🔁')}
+    ${group('part','Compétences bien commencées','⏳')}
+    ${group('todo','Compétences pas encore travaillées','⚪')}
+    <div class="card"><div class="actions" style="margin:0"><button class="btn soft" id="bReset">🗑️ Effacer mon bilan</button>
+      <span class="confirm" id="bConf">Tu es sûr ? Tout sera effacé. <button class="btn choco" id="bYes">Oui, effacer</button><button class="btn soft" id="bNo">Non</button></span></div></div>`;
+  host.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{location.hash=b.dataset.go});
+  $('#bReset').onclick=()=>{$('#bConf').style.display='inline-flex'};
+  $('#bNo').onclick=()=>{$('#bConf').style.display='none'};
+  $('#bYes').onclick=()=>{DB={toques:0,ep:{}};save();updateCounter(false);renderBilan();
+    ['defi','placer','trouver','ecrire','comparer'].forEach(t=>{delete done[t]})};
+}
+
+/* ================= onglets ================= */
+const INIT={
+  comprendre:()=>{newExample();renderStep();renderExplore()},
+  vitrine:renderReps,
+  defi:vIntro,placer:q1Intro,trouver:q2Intro,ecrire:q3Intro,comparer:q4Intro,
+  bilan:renderBilan
+};
+const done={};
+function show(t){
+  if(!INIT[t])t='comprendre';
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  if(t==='bilan')renderBilan();
+  else if(!done[t]){done[t]=1;INIT[t]()}
+  const btn=document.querySelector(`#tabs button[data-t="${t}"]`);if(btn&&btn.scrollIntoView)btn.scrollIntoView({block:'nearest',inline:'nearest'});
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{location.hash=b.dataset.t});
+window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
+updateCounter(false);
+show(location.hash.slice(1));
+</script>
+</body>
+</html>
