@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'addition des entiers – Fiche 5 (entraînement)</title>
+<style>
+  :root{
+    --violet:#4b2c6f; --violet-clair:#efe8f7; --violet-moyen:#8a6bb0;
+    --vert:#1f8a4c; --vert-clair:#e3f5ea; --rouge:#c0392b; --rouge-clair:#fdecea;
+    --jaune:#fff4cc; --or:#f5b301; --texte:#222; --gris:#f6f6f8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--texte);background:var(--gris);font-size:20px;line-height:1.4}
+  header{background:var(--violet);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header .num{background:#fff;color:var(--violet);font-weight:800;border-radius:8px;padding:4px 12px;font-size:26px}
+  header h1{margin:0;font-size:26px}
+  header p{margin:0;font-size:18px;opacity:.9}
+  .compteur{margin-left:auto;background:#fff;color:var(--violet);border-radius:14px;padding:6px 16px;font-size:24px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .compteur .etoiles{letter-spacing:2px}
+  nav.principal{display:flex;gap:8px;padding:14px 24px 0;flex-wrap:wrap}
+  nav.principal button{font-size:20px;padding:12px 22px;border:2px solid var(--violet);background:#fff;color:var(--violet);border-radius:12px 12px 0 0;cursor:pointer;font-weight:600}
+  nav.principal button.actif{background:var(--violet);color:#fff}
+  main{background:#fff;margin:0 24px 24px;border:2px solid var(--violet);border-radius:0 14px 14px 14px;padding:24px;min-height:70vh}
+  .onglet{display:none}.onglet.actif{display:block}
+  h2{margin:0 0 6px;color:var(--violet);font-size:26px}
+  .consigne{font-size:22px;margin:0 0 10px}
+  .regle{font-size:18px;color:#6b5a00;background:var(--jaune);border-radius:8px;padding:6px 12px;display:inline-block;margin-bottom:12px}
+  .code{display:inline-block;background:#fff4cc;border:2px solid #c9a400;color:#7a6200;border-radius:8px;padding:2px 10px;font-size:17px;font-weight:700;margin-left:8px;vertical-align:middle}
+  nav.series{display:flex;gap:8px;margin:6px 0 14px;flex-wrap:wrap}
+  nav.series button{font-size:19px;padding:8px 18px;border-radius:999px;border:2px solid var(--violet-moyen);background:#fff;color:var(--violet);cursor:pointer;font-weight:700}
+  nav.series button.actif{background:var(--violet-clair);border-color:var(--violet)}
+  .serie{display:none}.serie.actif{display:block}
+  .btn{font-size:19px;padding:10px 18px;border-radius:10px;border:none;cursor:pointer;font-weight:600;margin:4px 6px 4px 0}
+  .btn-verif{background:var(--violet);color:#fff}
+  .btn-corr{background:#fff;color:var(--violet);border:2px solid var(--violet)}
+  .btn-suiv{background:var(--vert);color:#fff}
+  .btn:disabled{opacity:.4;cursor:default}
+  .cache{display:none!important}
+  .etape{background:var(--violet-clair);border-left:6px solid var(--violet);border-radius:10px;padding:14px 18px;margin:16px 0}
+  .etape .titre{font-weight:700;color:var(--violet);font-size:21px;margin-bottom:6px}
+  .msg{margin-top:8px;font-weight:600;min-height:1.4em}
+  .msg.ok{color:var(--vert)} .msg.ko{color:var(--rouge)}
+  .bravo{background:var(--vert-clair);border:2px solid var(--vert);color:var(--vert);border-radius:12px;padding:14px 18px;font-weight:700;font-size:22px;margin-top:16px}
+  .resultat{border-radius:12px;padding:14px 18px;font-weight:700;font-size:22px;margin-top:16px}
+  .resultat.gagne{background:#fff7d6;border:3px solid var(--or);color:#7a5a00}
+  .resultat.perdu{background:var(--violet-clair);border:2px solid var(--violet-moyen);color:var(--violet)}
+  .grosse-etoile{font-size:44px;vertical-align:middle;margin-right:8px;display:inline-block;animation:pop .6s ease}
+  @keyframes pop{0%{transform:scale(0) rotate(-90deg)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+  input.case{font-size:24px;text-align:center;border:2px solid var(--violet-moyen);border-radius:8px;font-weight:700;color:var(--violet)}
+  input.case:disabled{background:#f3f3f3;border-color:#ccc}
+  input.ok{background:var(--vert-clair)!important;border-color:var(--vert)!important;color:var(--vert)!important}
+  input.ko{background:var(--rouge-clair)!important;border-color:var(--rouge)!important;color:var(--rouge)!important}
+
+  /* Pyramide */
+  .pyramide{display:flex;flex-direction:column;align-items:center;gap:6px;margin:10px 0 6px}
+  .rangee{display:flex;gap:6px}
+  .brique{width:118px;height:62px;border:2px solid #555;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px;font-weight:600;background:#fff;position:relative}
+  .brique.donnee{background:#fafafa}
+  .brique.active{box-shadow:0 0 0 4px var(--jaune);border-color:#c9a400}
+  .brique input{width:96px;height:42px}
+  .brique .calc{position:absolute;bottom:-22px;font-size:15px;color:var(--violet);font-weight:600;white-space:nowrap}
+  .rangee.avec-calc{margin-bottom:18px}
+
+  /* Opérations posées */
+  .ops{display:flex;gap:40px;flex-wrap:wrap}
+  .op{flex:1;min-width:400px}
+  table.grille{border-collapse:collapse;margin:16px 0 10px}
+  table.grille td{width:62px;height:62px;border:2px solid #777;text-align:center;font-size:30px;font-weight:600;position:relative}
+  table.grille tr.res td{border-top:4px solid #333}
+  table.grille td.signe{border-left:none}
+  table.grille td.colact{background:var(--jaune)}
+  table.grille td input{width:48px;height:46px;font-size:28px}
+  .retenue{position:absolute;top:1px;left:3px;font-size:16px;color:var(--rouge);font-weight:700;line-height:1}
+  .entetes td{border:none!important;height:26px!important;font-size:16px!important;color:#666;font-weight:600}
+
+  /* Ordres de grandeur */
+  .ligne3{border:2px solid var(--violet-clair);border-radius:12px;padding:12px 16px;margin-bottom:14px}
+  .ligne3 .haut{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .calcul{font-size:24px;font-weight:700;min-width:330px}
+  .choix{display:flex;gap:8px;flex-wrap:wrap;background:var(--violet);padding:6px;border-radius:14px}
+  .choix button{font-size:21px;padding:8px 14px;border-radius:10px;border:none;background:#fff;cursor:pointer;min-width:120px;font-weight:600}
+  .choix button.bon{background:#7bd39b}
+  .choix button.faux{background:#f3a59d;text-decoration:line-through}
+  .pas{margin-top:8px;font-size:20px}
+  .pas div{background:var(--violet-clair);border-radius:8px;padding:6px 12px;margin:4px 0}
+</style>
+</head>
+<body>
+<header>
+  <span class="num">5</span>
+  <div><h1>Calculs et opérations</h1><p>L'addition des entiers — Entraînement</p></div>
+  <div class="compteur">Mes étoiles : <span class="etoiles" id="etoiles"></span> <span id="nbEtoiles">0 / 9</span></div>
+</header>
+<nav class="principal">
+  <button class="actif" data-tab="ex1">Exercice 1</button>
+  <button data-tab="ex2">Exercice 2</button>
+  <button data-tab="ex3">Exercice 3</button>
+</nav>
+<main>
+  <section class="onglet actif" id="ex1">
+    <h2>Exercice 1</h2>
+    <p class="consigne">Complète le tableau. Chaque brique est la <b>somme des deux briques</b> posées au-dessus d'elle.</p>
+    <div class="regle">⭐ Pour gagner l'étoile : termine la pyramide sans utiliser « Voir la correction ».</div>
+    <nav class="series"></nav>
+  </section>
+  <section class="onglet" id="ex2">
+    <h2>Exercice 2 <span class="code">Livret : A1-c · A2-c</span></h2>
+    <p class="consigne">Complète les opérations. On travaille <b>colonne par colonne</b>, en commençant par les unités.</p>
+    <div class="regle">⭐ Pour gagner l'étoile : termine les deux opérations sans utiliser « Voir la correction ».</div>
+    <nav class="series"></nav>
+  </section>
+  <section class="onglet" id="ex3">
+    <h2>Exercice 3 <span class="code">Livret : OP1</span></h2>
+    <p class="consigne">Colorie l'ordre de grandeur qui correspond au résultat. Clique sur ta réponse.</p>
+    <div class="regle">⭐ Pour gagner l'étoile : trouve les 5 réponses avec 1 erreur au maximum, sans ouvrir la correction avant d'avoir trouvé.</div>
+    <nav class="series"></nav>
+  </section>
+</main>
+
+<script>
+const fmt=n=>n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+const lire=v=>parseInt(String(v).replace(/\s/g,''),10);
+
+/* ---------- Onglets principaux ---------- */
+document.querySelectorAll('nav.principal button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('nav.principal button').forEach(x=>x.classList.remove('actif'));
+    document.querySelectorAll('.onglet').forEach(x=>x.classList.remove('actif'));
+    b.classList.add('actif');document.getElementById(b.dataset.tab).classList.add('actif');
+  };
+});
+
+/* ---------- Étoiles ---------- */
+const gagnees={};
+function majEtoiles(){
+  const n=Object.keys(gagnees).length;
+  document.getElementById('etoiles').textContent='⭐'.repeat(n)+'☆'.repeat(9-n);
+  document.getElementById('nbEtoiles').textContent=n+' / 9';
+}
+majEtoiles();
+
+/* Crée les 3 séries d'un exercice. construire(div, donnees, fin) appelle fin(reussi) une seule fois. */
+function creerSeries(exId,listeDonnees,construire){
+  const sec=document.getElementById(exId),nav=sec.querySelector('nav.series');
+  listeDonnees.forEach((donnees,i)=>{
+    const cle=exId+'-'+i;
+    const bt=document.createElement('button');bt.textContent='Série '+(i+1)+' ☆';nav.appendChild(bt);
+    const div=document.createElement('div');div.className='serie';sec.appendChild(div);
+    function lancer(){
+      div.innerHTML='';
+      const zone=document.createElement('div');div.appendChild(zone);
+      construire(zone,donnees,reussi=>{
+        const r=document.createElement('div');
+        if(reussi){
+          const deja=gagnees[cle];gagnees[cle]=true;majEtoiles();bt.textContent='Série '+(i+1)+' ⭐';
+          r.className='resultat gagne';
+          r.innerHTML='<span class="grosse-etoile">⭐</span>'+(deja?'Bravo, tu as encore réussi !':'Bravo ! Tu gagnes une étoile !')+
+            (Object.keys(gagnees).length===9?'<br>🏆 Tu as gagné les 9 étoiles !':'');
+        }else{
+          r.className='resultat perdu';
+          r.innerHTML='Série terminée. Tu as eu besoin d\'aide : recommence pour gagner l\'étoile ! ';
+        }
+        const b=document.createElement('button');b.className='btn btn-verif';b.textContent='↻ Recommencer cette série';b.onclick=lancer;
+        r.appendChild(document.createElement('br'));r.appendChild(b);
+        div.appendChild(r);
+      });
+    }
+    bt.onclick=()=>{
+      nav.querySelectorAll('button').forEach(x=>x.classList.remove('actif'));
+      sec.querySelectorAll('.serie').forEach(x=>x.classList.remove('actif'));
+      bt.classList.add('actif');div.classList.add('actif');
+    };
+    lancer();
+    if(i===0)bt.click();
+  });
+}
+
+/* ================= EXERCICE 1 : pyramides ================= */
+function construirePyramide(zone,base,fin){
+  const rangs=[base];
+  for(let r=1;r<5;r++){const p=rangs[r-1],n=[];for(let i=0;i<p.length-1;i++)n.push(p[i]+p[i+1]);rangs.push(n);}
+  zone.innerHTML='<div class="pyramide"></div><div class="etape"><div class="titre"></div><div class="texte"></div>'+
+    '<div style="margin-top:10px"><button class="btn btn-verif">Vérifier</button><button class="btn btn-corr">Voir la correction</button>'+
+    '<button class="btn btn-suiv cache">Étape suivante ➜</button></div><div class="msg"></div></div>';
+  const pyr=zone.querySelector('.pyramide'),bloc=zone.querySelector('.etape');
+  const titre=bloc.querySelector('.titre'),texte=bloc.querySelector('.texte'),msg=bloc.querySelector('.msg');
+  const [bV,bC,bS]=bloc.querySelectorAll('button');
+  const cellules=[];
+  rangs.forEach((rang,r)=>{
+    const div=document.createElement('div');div.className='rangee';cellules[r]=[];
+    rang.forEach((v,i)=>{
+      const b=document.createElement('div');b.className='brique';
+      if(r===0||(r===1&&i===0)){
+        b.classList.add('donnee');b.textContent=fmt(v);
+        if(r===1){const c=document.createElement('span');c.className='calc';c.textContent=base[0]+' + '+base[1];b.appendChild(c);div.classList.add('avec-calc');}
+      }else{
+        const inp=document.createElement('input');inp.className='case';inp.inputMode='numeric';inp.disabled=true;b.appendChild(inp);
+      }
+      cellules[r][i]=b;div.appendChild(b);
+    });
+    pyr.appendChild(div);
+  });
+  const etapes=[
+    {r:1,titre:'Étape 1 – La 2e rangée',texte:'Exemple : '+base[0]+' + '+base[1]+' = '+fmt(base[0]+base[1])+'. Fais de même : additionne chaque fois les <b>deux briques</b> au-dessus.'},
+    {r:2,titre:'Étape 2 – La 3e rangée',texte:'Utilise maintenant les résultats de la 2e rangée.'},
+    {r:3,titre:'Étape 3 – La 4e rangée',texte:'Continue avec les résultats de la 3e rangée.'},
+    {r:4,titre:'Étape 4 – Le sommet',texte:'Dernière addition : les deux briques de la 4e rangée.'}
+  ];
+  let e=0,aide=false;
+  const inputs=()=>cellules[etapes[e].r].map((b,i)=>({b,i,inp:b.querySelector('input')})).filter(o=>o.inp);
+  function lancer(){
+    titre.textContent=etapes[e].titre;texte.innerHTML=etapes[e].texte;msg.textContent='';msg.className='msg';
+    bV.disabled=false;bC.disabled=false;bS.classList.add('cache');
+    inputs().forEach(o=>{o.inp.disabled=false;o.b.classList.add('active');});
+  }
+  function terminer(){
+    const r=etapes[e].r;
+    inputs().forEach(o=>{
+      o.inp.disabled=true;o.b.classList.remove('active');
+      if(!o.b.querySelector('.calc')){const c=document.createElement('span');c.className='calc';c.textContent=fmt(rangs[r-1][o.i])+' + '+fmt(rangs[r-1][o.i+1]);o.b.appendChild(c);o.b.parentNode.classList.add('avec-calc');}
+    });
+    bV.disabled=true;bC.disabled=true;
+    if(e<etapes.length-1)bS.classList.remove('cache');
+    else{bloc.classList.add('cache');const f=document.createElement('div');f.className='bravo';f.textContent='La pyramide est complète : le sommet vaut '+fmt(rangs[4][0])+'.';zone.appendChild(f);fin(!aide);}
+  }
+  bV.onclick=()=>{
+    const r=etapes[e].r;let tout=true,vide=false;
+    inputs().forEach(o=>{
+      const v=lire(o.inp.value);
+      if(isNaN(v)){vide=true;tout=false;o.inp.classList.remove('ok','ko');return;}
+      const bon=v===rangs[r][o.i];o.inp.classList.toggle('ok',bon);o.inp.classList.toggle('ko',!bon);if(!bon)tout=false;
+    });
+    if(tout){msg.textContent='✔ Tout est juste !';msg.className='msg ok';terminer();}
+    else if(vide){msg.textContent='Remplis toutes les briques en jaune.';msg.className='msg ko';}
+    else{msg.textContent='✘ Les briques en rouge sont à revoir. Refais l\'addition.';msg.className='msg ko';}
+  };
+  bC.onclick=()=>{
+    aide=true;const r=etapes[e].r;
+    inputs().forEach(o=>{o.inp.value=fmt(rangs[r][o.i]);o.inp.classList.remove('ko');o.inp.classList.add('ok');});
+    msg.textContent='Voici la correction : regarde le calcul sous chaque brique.';msg.className='msg ok';terminer();
+  };
+  bS.onclick=()=>{e++;lancer();};
+  lancer();
+}
+creerSeries('ex1',[
+  [48,35,67,124,29],
+  [75,56,38,143,61],
+  [93,27,154,46,88]
+],construirePyramide);
+
+/* ================= EXERCICE 2 : opérations à trous ================= */
+const NOMS_COL=['unités','dizaines','centaines','unités de mille','dizaines de mille','centaines de mille','unités de million'];
+const ABR_COL=['u','d','c','m','dm','cm','u.M'];
+/* cfg : {nom, code, a, b, caches:[[ligne,k]]} ligne = 'a', 'b' ou 'r' ; k = rang (0 = unités) */
+function creerOperation(el,cfg,quandFini){
+  const somme=cfg.a+cfg.b;
+  const dA=String(cfg.a).split('').reverse().map(Number),dB=String(cfg.b).split('').reverse().map(Number),dR=String(somme).split('').reverse().map(Number);
+  const n=dR.length;
+  const cach={};cfg.caches.forEach(([l,k])=>cach[l+k]=true);
+  // retenues
+  const retIn=[0];for(let k=0;k<n;k++){const s=(retIn[k]||0)+(dA[k]||0)+(dB[k]||0);retIn[k+1]=s>=10?1:0;}
+  el.innerHTML='<div class="etape" style="margin-top:0;padding:8px 14px"><div class="titre" style="margin:0">'+cfg.nom+' <span class="code">'+cfg.code+'</span></div></div>';
+  const tbl=document.createElement('table');tbl.className='grille';
+  const trH=document.createElement('tr');trH.className='entetes';
+  trH.appendChild(document.createElement('td'));
+  for(let j=n-1;j>=0;j--){const td=document.createElement('td');td.textContent=ABR_COL[j];trH.appendChild(td);}
+  tbl.appendChild(trH);
+  const inputs={},tds=[];
+  [['a',dA],['b',dB],['r',dR]].forEach(([l,d],li)=>{
+    const tr=document.createElement('tr');if(l==='r')tr.className='res';tds[li]=[];
+    const ts=document.createElement('td');ts.className='signe';ts.textContent=l==='b'?'+':'';tr.appendChild(ts);
+    for(let k=n-1;k>=0;k--){
+      const td=document.createElement('td');
+      if(d[k]!==undefined){
+        if(cach[l+k]){const inp=document.createElement('input');inp.className='case';inp.inputMode='numeric';inp.maxLength=1;inp.disabled=true;td.appendChild(inp);inputs[l+k]={inp,val:d[k]};}
+        else td.textContent=d[k];
+      }
+      if(l==='a'&&retIn[k]){const s=document.createElement('span');s.className='retenue';s.textContent='(1)';td.appendChild(s);}
+      tds[li][k]=td;tr.appendChild(td);
+    }
+    tbl.appendChild(tr);
+  });
+  el.appendChild(tbl);
+
+  // étapes générées colonne par colonne
+  const etapes=[];
+  for(let k=0;k<n;k++){
+    if(dA[k]===undefined&&dB[k]===undefined)continue; // colonne de la dernière retenue
+    const c=retIn[k],a=dA[k],b=dB[k],s=c+(a||0)+(b||0),r=s%10,co=s>=10,dernier=(k===Math.max(dA.length,dB.length)-1);
+    const termes=[];if(c)termes.push({t:'1',id:null});if(a!==undefined)termes.push({t:String(a),id:'a'+k});if(b!==undefined)termes.push({t:String(b),id:'b'+k});
+    const trou=termes.find(x=>x.id&&cach[x.id]);
+    const ecrit=(rep)=>termes.map(x=>x===trou?rep:x.t).join(' + ');
+    const note=co?(dernier?' : on écrit '+r+' et le 1 va dans la colonne suivante.':' : on écrit '+r+' et on retient 1.'):(c?'.':'. Pas de retenue.');
+    const NOM=NOMS_COL[k][0].toUpperCase()+NOMS_COL[k].slice(1);
+    const et={k,titre:'Étape '+(etapes.length+1)+' – Les '+NOMS_COL[k]};
+    if(trou){
+      const connus=termes.filter(x=>x!==trou).reduce((p,x)=>p+Number(x.t),0);
+      et.id=trou.id;
+      et.texte=(c?'N\'oublie pas la retenue ! ':'')+'Le résultat est '+r+(co?' et il y a une retenue au-dessus de la colonne suivante : il faut donc arriver à '+s:'')+'.<br>'+ecrit('<b>?</b>')+' = '+s+'. Quel chiffre manque ?';
+      et.indice='Cherche combien il faut ajouter à '+connus+' pour arriver à '+s+'.';
+      et.corr=ecrit('<b>'+trou.t+'</b>')+' = '+s+note;
+    }else if(cach['r'+k]){
+      et.id='r'+k;
+      et.texte=ecrit()+' = <b>?</b>'+(c?' N\'oublie pas la retenue !':'')+(co?' Écris seulement le chiffre des '+NOMS_COL[k]+'.':'');
+      et.indice='Additionne tous les chiffres de la colonne'+(c?', sans oublier la retenue':'')+'.';
+      et.corr=ecrit()+' = '+s+note.replace(' on écrit '+r,' on écrit <b>'+r+'</b>');
+      if(!co)et.corr=ecrit()+' = <b>'+s+'</b>'+note;
+    }else{
+      et.texte='Dans cette colonne, tout est écrit. Vérifie le calcul.';
+      et.corr=ecrit()+' = '+s+note;
+    }
+    etapes.push(et);
+  }
+
+  const zone=document.createElement('div');zone.className='etape';
+  zone.innerHTML='<div class="titre"></div><div class="texte"></div><div style="margin-top:10px">'+
+    '<button class="btn btn-verif">Vérifier</button><button class="btn btn-corr">Voir la correction</button>'+
+    '<button class="btn btn-suiv cache">Étape suivante ➜</button></div><div class="msg"></div>';
+  el.appendChild(zone);
+  const tt=zone.querySelector('.titre'),tx=zone.querySelector('.texte'),msg=zone.querySelector('.msg');
+  const [bV,bC,bS]=zone.querySelectorAll('button');
+  let e=0,aide=false;
+  function surligner(k){tds.forEach(l=>Object.keys(l).forEach(kk=>l[kk].classList.toggle('colact',+kk===k)));}
+  function lancer(){
+    const et=etapes[e];surligner(et.k);tt.textContent=et.titre;tx.innerHTML=et.texte;msg.textContent='';msg.className='msg';bS.classList.add('cache');
+    if(et.id){const o=inputs[et.id];o.inp.disabled=false;bV.classList.remove('cache');bC.classList.remove('cache');bV.disabled=false;bC.disabled=false;}
+    else{bV.classList.add('cache');bC.classList.add('cache');msg.innerHTML=et.corr;msg.className='msg ok';suite();}
+  }
+  function suite(){
+    if(e<etapes.length-1)bS.classList.remove('cache');
+    else{surligner(-1);zone.classList.add('cache');const f=document.createElement('div');f.className='bravo';f.textContent=fmt(cfg.a)+' + '+fmt(cfg.b)+' = '+fmt(somme);el.appendChild(f);quandFini(!aide);}
+  }
+  function finir(){inputs[etapes[e].id].inp.disabled=true;bV.disabled=true;bC.disabled=true;suite();}
+  bV.onclick=()=>{
+    const et=etapes[e],o=inputs[et.id],v=lire(o.inp.value);
+    if(isNaN(v)){msg.textContent='Écris un chiffre dans la case.';msg.className='msg ko';return;}
+    if(v===o.val){o.inp.classList.remove('ko');o.inp.classList.add('ok');msg.innerHTML='✔ Juste ! '+et.corr;msg.className='msg ok';finir();}
+    else{o.inp.classList.add('ko');msg.textContent='✘ Ce n\'est pas ça. '+et.indice;msg.className='msg ko';}
+  };
+  bC.onclick=()=>{
+    aide=true;const et=etapes[e],o=inputs[et.id];
+    o.inp.value=o.val;o.inp.classList.remove('ko');o.inp.classList.add('ok');msg.innerHTML='Correction : '+et.corr;msg.className='msg ok';finir();
+  };
+  bS.onclick=()=>{e++;lancer();};
+  lancer();
+}
+function construireOps(zone,ops,fin){
+  zone.innerHTML='<div class="ops"></div>';
+  const box=zone.querySelector('.ops');let restants=ops.length,ok=true;
+  ops.forEach(cfg=>{
+    const d=document.createElement('div');d.className='op';box.appendChild(d);
+    creerOperation(d,cfg,reussi=>{if(!reussi)ok=false;restants--;if(restants===0)fin(ok);});
+  });
+}
+creerSeries('ex2',[
+  [{nom:'Opération A',code:'A1-c',a:4523,b:3264,caches:[['a',2],['b',1],['r',3]]},
+   {nom:'Opération B',code:'A2-c',a:6708,b:2595,caches:[['a',0],['b',1],['a',2],['b',3]]}],
+  [{nom:'Opération A',code:'A1-c',a:25341,b:42315,caches:[['r',0],['a',1],['b',3],['r',4]]},
+   {nom:'Opération B',code:'A2-c',a:7486,b:5768,caches:[['a',0],['b',1],['a',2],['b',3]]}],
+  [{nom:'Opération A',code:'A1-c',a:312405,b:156273,caches:[['b',0],['a',2],['r',3],['a',5]]},
+   {nom:'Opération B',code:'A2-c',a:48359,b:37864,caches:[['a',0],['b',1],['r',2],['a',3],['b',4]]}]
+],construireOps);
+
+/* ================= EXERCICE 3 : ordres de grandeur ================= */
+function construireOrdres(zone,lignes,fin){
+  let restants=lignes.length,erreurs=0,aideAvant=false;
+  lignes.forEach((d,k)=>{
+    const exact=d.a+d.b,approx=d.ra+d.rb;
+    const pas=[
+      'J\'arrondis : '+fmt(d.a)+' ≈ '+fmt(d.ra)+' et '+fmt(d.b)+' ≈ '+fmt(d.rb)+'.',
+      'J\'additionne : '+fmt(d.ra)+' + '+fmt(d.rb)+' = '+fmt(approx)+'.',
+      (approx===d.bon?'Je colorie <b>'+fmt(d.bon)+'</b>.':'Le nombre le plus proche est <b>'+fmt(d.bon)+'</b>.')+' (Résultat exact : '+fmt(exact)+')'
+    ];
+    const L=document.createElement('div');L.className='ligne3';
+    L.innerHTML='<div class="haut"><span class="calcul">'+(k+1)+') '+fmt(d.a)+' + '+fmt(d.b)+' →</span><div class="choix"></div></div>'+
+      '<div class="msg"></div><button class="btn btn-corr">Correction pas à pas (étape 1/3)</button><div class="pas"></div>';
+    const choix=L.querySelector('.choix'),msg=L.querySelector('.msg'),bC=L.querySelector('.btn-corr'),zp=L.querySelector('.pas');
+    let n=0,trouve=false;
+    function terminerLigne(){restants--;if(restants===0)fin(erreurs<=1&&!aideAvant);}
+    bC.onclick=()=>{
+      if(n>=3)return;
+      if(!trouve&&n===0)aideAvant=true;
+      const div=document.createElement('div');div.innerHTML='Étape '+(n+1)+' : '+pas[n];zp.appendChild(div);n++;
+      if(n<3)bC.textContent='Étape suivante ('+(n+1)+'/3)';else bC.classList.add('cache');
+      if(n===3&&!trouve){trouve=true;choix.querySelectorAll('button').forEach(b=>{if(+b.dataset.v===d.bon)b.classList.add('bon');});terminerLigne();}
+    };
+    d.choix.forEach(v=>{
+      const b=document.createElement('button');b.textContent=fmt(v);b.dataset.v=v;
+      b.onclick=()=>{
+        if(trouve||b.classList.contains('faux'))return;
+        if(v===d.bon){trouve=true;b.classList.add('bon');msg.textContent='✔ Bravo ! Regarde la correction pour vérifier ta méthode.';msg.className='msg ok';terminerLigne();}
+        else{erreurs++;b.classList.add('faux');msg.textContent='✘ Ce n\'est pas le bon ordre de grandeur. Arrondis les deux nombres puis additionne-les.';msg.className='msg ko';}
+      };
+      choix.appendChild(b);
+    });
+    zone.appendChild(L);
+  });
+}
+creerSeries('ex3',[
+  [{a:4875,b:2190,ra:5000,rb:2000,choix:[70000,7000,5000,9000],bon:7000},
+   {a:310450,b:495600,ra:300000,rb:500000,choix:[8000000,600000,800000,1000000],bon:800000},
+   {a:12900,b:6150,ra:13000,rb:6000,choix:[10000,20000,30000,200000],bon:20000},
+   {a:47800,b:21950,ra:48000,rb:22000,choix:[60000,50000,70000,700000],bon:70000},
+   {a:1205300,b:698900,ra:1200000,rb:700000,choix:[1000000,3000000,2000000,20000000],bon:2000000}],
+  [{a:3120,b:5840,ra:3000,rb:6000,choix:[90000,6000,9000,12000],bon:9000},
+   {a:450200,b:349700,ra:450000,rb:350000,choix:[700000,800000,8000000,600000],bon:800000},
+   {a:15300,b:24800,ra:15000,rb:25000,choix:[30000,50000,40000,400000],bon:40000},
+   {a:6950,b:27100,ra:7000,rb:27000,choix:[35000,25000,45000,350000],bon:35000},
+   {a:2487000,b:1509000,ra:2500000,rb:1500000,choix:[3000000,4000000,5000000,40000000],bon:4000000}],
+  [{a:6980,b:1050,ra:7000,rb:1000,choix:[8000,6000,80000,10000],bon:8000},
+   {a:199800,b:602300,ra:200000,rb:600000,choix:[600000,900000,8000000,800000],bon:800000},
+   {a:38400,b:11700,ra:38000,rb:12000,choix:[40000,50000,60000,500000],bon:50000},
+   {a:9870,b:55120,ra:10000,rb:55000,choix:[55000,75000,65000,650000],bon:65000},
+   {a:3102500,b:2896000,ra:3100000,rb:2900000,choix:[5000000,6000000,7000000,60000000],bon:6000000}]
+],construireOrdres);
+</script>
+</body>
+</html>
