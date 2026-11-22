@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mission Futur 🚀</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --space:#0b0e2e; --space2:#232a7a;
+  --card:#fffaf0; --ink:#1c1c36; --muted:#5b5b78;
+  --rad:#FFE082; --irr:#FFB74D; --rmark:#D32F2F; --rbg:#FFCDD2; --term:#81D4FA;
+  --ok:#2e7d32; --okbg:#e8f5e9; --ko:#c62828; --kobg:#ffebee;
+  --violet:#7c4dff;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:Andika,"Comic Sans MS",Verdana,Arial,sans-serif;font-size:20px;line-height:1.45;color:var(--ink);min-height:100vh;background:transparent}
+html{
+  min-height:100%;background-color:#0b0e2e;
+  background:
+    radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),
+    radial-gradient(1px 1px at 120px 80px,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 200px 160px,#ffe9a8,transparent),
+    radial-gradient(1px 1px at 60px 200px,#fff,transparent),
+    radial-gradient(1px 1px at 260px 40px,#cfe3ff,transparent),
+    radial-gradient(ellipse at top, var(--space2), var(--space) 65%);
+  background-size:300px 240px,300px 240px,300px 240px,300px 240px,300px 240px,100% 900px;
+  background-repeat:repeat,repeat,repeat,repeat,repeat,no-repeat;
+  background-color:#0b0e2e;
+}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none}
+input,textarea,select{font-family:inherit;font-size:22px}
+header{
+  position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+  padding:8px 12px;background:rgba(11,14,46,.92);color:#fff;border-bottom:2px solid #3d47b5;
+}
+#logo{font-weight:700;font-size:24px;user-select:none;background:none;color:#fff;padding:4px}
+.hbtns{display:flex;gap:6px;flex-wrap:wrap}
+.hbtn{background:#2d357f;color:#fff;border-radius:999px;padding:6px 12px;font-size:17px}
+.hbtn.on{background:#ffca28;color:#1c1c36;font-weight:700}
+#app{max-width:860px;margin:0 auto;padding:14px 12px 60px}
+.card{background:var(--card);border-radius:22px;padding:18px 18px 22px;box-shadow:0 8px 26px rgba(0,0,0,.35);margin-bottom:16px}
+h1,h2,h3{margin:.2em 0 .4em;line-height:1.2}
+h1{font-size:32px} h2{font-size:27px} h3{font-size:23px}
+.white{color:#fff}
+.center{text-align:center}
+.big{font-size:26px}
+.small{font-size:17px;color:var(--muted)}
+.btn{background:var(--violet);color:#fff;border-radius:16px;padding:12px 20px;font-weight:700;margin:6px 4px;box-shadow:0 4px 0 #4a2ab8}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #4a2ab8}
+.btn.green{background:#43a047;box-shadow:0 4px 0 #2e7d32}
+.btn.grey{background:#8e8eaa;box-shadow:0 4px 0 #66667f}
+.btn.yellow{background:#ffca28;color:#1c1c36;box-shadow:0 4px 0 #c79a00}
+.spk{background:#ffca28;border-radius:50%;width:46px;height:46px;font-size:24px;line-height:46px;padding:0;vertical-align:middle;margin:0 6px;flex:none;box-shadow:0 3px 0 #c79a00}
+.spk.speaking{animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+.speaking-block{outline:3px dashed #ffca28;outline-offset:4px;border-radius:8px}
+.w.hl{background:#fff176;border-radius:4px}
+.row{display:flex;align-items:center;gap:6px}
+.inibo{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
+.inibo .av{flex:none;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#7c4dff,#00bcd4);display:flex;align-items:center;justify-content:center;font-size:30px;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.3)}
+.inibo .bub{background:#ede7f6;border-radius:16px;padding:10px 14px;position:relative;flex:1}
+.inibo .bub b.n{color:#5e35b1}
+/* code couleur */
+.rad{background:var(--rad);border-radius:6px;padding:0 2px}
+.rad.irr{background:var(--irr)}
+.rm{color:var(--rmark);background:var(--rbg);font-weight:700;border-radius:4px;padding:0 1px}
+.te{background:var(--term);border-radius:6px;padding:0 2px}
+.mute{color:#6a1b9a;font-weight:700;text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:3px}
+.pr{font-weight:700;color:#283593}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:16px;margin-top:8px}
+.legend span{padding:2px 8px;border-radius:8px}
+table.conj{border-collapse:separate;border-spacing:0 6px;font-size:24px;margin:6px auto}
+table.conj td{padding:2px 10px}
+table.conj td:first-child{text-align:right}
+.tables{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.tbox{background:#fff;border-radius:16px;padding:8px 12px;border:2px solid #e0dcef}
+.tbox h4{margin:4px 0;text-align:center;font-size:22px}
+/* map */
+.map{position:relative;padding:10px 0}
+.map:before{content:"";position:absolute;left:50%;top:30px;bottom:30px;border-left:4px dotted rgba(255,255,255,.4);z-index:0}
+.planet{position:relative;z-index:1;display:flex;align-items:center;gap:14px;width:88%;margin:18px auto;padding:10px 14px;border-radius:24px;background:#1d2366;color:#fff;text-align:left;border:2px solid rgba(255,255,255,.15)}
+.planet:nth-child(even){flex-direction:row-reverse;text-align:right}
+.planet .orb{flex:none;width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:inset -10px -10px 0 rgba(0,0,0,.18),0 0 18px rgba(255,255,255,.25)}
+.planet .pn{font-size:23px;font-weight:700}
+.planet .ps{font-size:17px;opacity:.9}
+.planet .st{font-size:17px;margin-top:2px}
+.planet.locked{color:#8d93c9}
+.planet.locked .orb{filter:grayscale(.8) brightness(.7)}
+.planet.current{border-color:#ffca28;background:#3b3a52}
+.planet.current .orb{animation:glow 1.6s infinite}
+@keyframes glow{50%{box-shadow:inset -10px -10px 0 rgba(0,0,0,.18),0 0 34px #ffca28}}
+.pass{display:inline-block;background:#ffca28;color:#1c1c36;font-weight:700;border-radius:12px;padding:4px 12px;letter-spacing:1px}
+/* tabs */
+.ptitle{display:flex;align-items:center;gap:12px;color:#fff;margin-bottom:10px}
+.ptitle .orb{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.tab{background:#2d357f;color:#fff;border-radius:16px 16px 8px 8px;padding:10px 4px;font-size:18px;font-weight:700;line-height:1.15}
+.tab .ic{display:block;font-size:26px}
+.tab.active{background:var(--card);color:var(--ink)}
+.tab .ck{color:#69f0ae}
+.tab.active .ck{color:var(--ok)}
+/* exercises */
+.sent{font-size:26px;line-height:1.6;background:#fff;border-radius:14px;padding:12px 14px;border:2px solid #e0dcef;flex:1}
+.blank{display:inline-block;min-width:110px;border-bottom:3px solid #7c4dff;text-align:center}
+.inf{color:var(--muted);font-size:21px}
+.tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0}
+.tile{font-size:26px;padding:10px 18px;border-radius:14px;border:3px solid rgba(0,0,0,.12);box-shadow:0 4px 0 rgba(0,0,0,.18);min-width:70px;color:var(--ink)}
+.tile.r-tile{background:var(--rad)} .tile.r-tile.irr{background:var(--irr)}
+.tile.t-tile{background:var(--term)}
+.tile.choice{background:#fff;border-color:#b39ddb}
+.tile.good{outline:4px solid var(--ok)}
+.tile.bad{opacity:.35;animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.ans{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:12px}
+.ans input{padding:10px 12px;border-radius:12px;border:3px solid #b39ddb;width:260px;max-width:100%}
+.fb{margin-top:12px;border-radius:14px;padding:10px 14px;font-size:20px}
+.fb.ok{background:var(--okbg);color:var(--ok);border:2px solid #a5d6a7}
+.fb.ko{background:var(--kobg);color:#8e1b1b;border:2px solid #ef9a9a}
+.fb.info{background:#e3f2fd;color:#0d47a1;border:2px solid #90caf9}
+.prog{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.dot{width:20px;height:20px;border-radius:50%;background:#d1c4e9}
+.dot.cur{background:#7c4dff;transform:scale(1.2)}
+.dot.y{background:#43a047} .dot.n{background:#ef5350}
+.when-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.when-btns .tile{background:#fff;min-width:140px}
+mark{background:#fff176;border-radius:4px;padding:0 3px}
+.slide{min-height:260px}
+.sdots{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.timeline{display:flex;justify-content:space-around;text-align:center;margin:14px 0;gap:6px}
+.timeline div{flex:1;border-radius:14px;padding:10px 4px;font-size:21px}
+.eq{font-size:28px;text-align:center;margin:10px 0}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:center;justify-content:center;padding:14px}
+.modal{background:var(--card);border-radius:22px;padding:18px;max-width:560px;width:100%;max-height:90vh;overflow:auto}
+.textq{font-size:23px;line-height:2.1;background:#fff;border-radius:14px;padding:12px 14px;border:2px solid #e0dcef}
+.textq input,.textq select{font-size:21px;width:150px;padding:2px 6px;border-radius:8px;border:2px solid #b39ddb}
+.textq input.good,.textq select.good{border-color:var(--ok);background:var(--okbg)}
+.textq input.bad,.textq select.bad{border-color:var(--ko);background:var(--kobg)}
+.corr{color:var(--ok);font-weight:700;font-size:19px}
+.badge-big{font-size:80px;text-align:center;animation:pop .6s}
+@keyframes pop{0%{transform:scale(.2)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+textarea{width:100%;min-height:140px;border-radius:14px;border:3px solid #b39ddb;padding:10px}
+@media (max-width:560px){
+  body{font-size:19px}
+  .tab{font-size:15px} .tab .ic{font-size:22px}
+  .sent{font-size:23px}
+  .planet .orb{width:62px;height:62px;font-size:30px}
+  .planet .pn{font-size:20px}
+  h1{font-size:27px}
+}
+</style>
+</head>
+<body>
+<header>
+  <button id="logo" aria-label="Mission Futur">🚀 Mission Futur</button>
+  <div class="hbtns">
+    <button class="hbtn" id="hpass" style="display:none">🔑 Mot de passe</button>
+    <button class="hbtn" id="hauto">🔊 Lecture auto</button>
+    <button class="hbtn" id="hslow">🐢 Lent</button>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+"use strict";
+/* =========================================================
+   DONNÉES
+   ========================================================= */
+const END=['ai','as','a','ons','ez','ont'];
+const PLAB=['je','tu','il / elle','nous','vous','ils / elles'];
+const PRON=[{p:'je',k:0},{p:'tu',k:1},{p:'il',k:2},{p:'elle',k:2},{p:'on',k:2},{p:'nous',k:3},{p:'vous',k:4},{p:'ils',k:5},{p:'elles',k:5}];
+const ADV=['Demain,','Lundi prochain,','L\'année prochaine,','Ce soir,','Bientôt,','Dans dix ans,','Plus tard,','Cet été,','La semaine prochaine,','Après la récréation,'];
+
+const VERBS=[
+ // Planète 1 : 1er groupe régulier
+ {inf:'chanter',rad:'chante',pl:1,comp:['une chanson','dans la chorale']},
+ {inf:'parler',rad:'parle',pl:1,comp:['à la directrice','en anglais']},
+ {inf:'danser',rad:'danse',pl:1,comp:['au spectacle','toute la soirée']},
+ {inf:'regarder',rad:'regarde',pl:1,comp:['les étoiles','un film']},
+ {inf:'marcher',rad:'marche',pl:1,comp:['jusqu\'au parc','dans la forêt']},
+ {inf:'manger',rad:'mange',pl:1,comp:['une pizza','à la cantine']},
+ {inf:'aimer',rad:'aime',pl:1,comp:['ce nouveau livre','la mer']},
+ {inf:'écouter',rad:'écoute',pl:1,comp:['la musique','l\'histoire']},
+ {inf:'chercher',rad:'cherche',pl:1,comp:['un trésor','les clés']},
+ {inf:'ranger',rad:'range',pl:1,comp:['la classe','les livres']},
+ {inf:'dessiner',rad:'dessine',pl:1,comp:['une fusée','un dragon']},
+ {inf:'briller',rad:'brille',pl:1,comp:['sur scène','au concours']},
+ // Planète 2 : 2e groupe + e muet
+ {inf:'finir',rad:'fini',pl:2,comp:['le puzzle','les exercices']},
+ {inf:'choisir',rad:'choisi',pl:2,comp:['un livre','une couleur']},
+ {inf:'grandir',rad:'grandi',pl:2,comp:['très vite','à la campagne']},
+ {inf:'réussir',rad:'réussi',pl:2,comp:['l\'évaluation','ce défi']},
+ {inf:'remplir',rad:'rempli',pl:2,comp:['la gourde','le seau']},
+ {inf:'obéir',rad:'obéi',pl:2,comp:['aux règles','au capitaine']},
+ {inf:'jouer',rad:'joue',pl:2,mute:1,reg:'jour',comp:['au football','aux échecs']},
+ {inf:'crier',rad:'crie',pl:2,mute:1,reg:'crir',comp:['de joie','très fort']},
+ {inf:'oublier',rad:'oublie',pl:2,mute:1,reg:'oublir',comp:['le rendez-vous','le parapluie']},
+ {inf:'continuer',rad:'continue',pl:2,mute:1,reg:'continur',comp:['la course','l\'histoire']},
+ {inf:'remercier',rad:'remercie',pl:2,mute:1,reg:'remercir',comp:['les invités','la maîtresse']},
+ {inf:'saluer',rad:'salue',pl:2,mute:1,reg:'salur',comp:['les voisins','le public']},
+ // Planète 3 : être, avoir
+ {inf:'être',rad:'se',pl:3,irr:1,reg:'aur',wrong:['êt','au'],comp:['en vacances','au collège','à l\'heure']},
+ {inf:'avoir',rad:'au',pl:3,irr:1,reg:'ser',wrong:['avoi','se'],comp:['un vélo','de la chance','le temps']},
+ // Planète 4 : aller, faire, dire, prendre
+ {inf:'aller',rad:'i',pl:4,irr:1,reg:'aller',wrong:['alle','va'],comp:['au cinéma','à la mer']},
+ {inf:'faire',rad:'fe',pl:4,irr:1,reg:'fair',wrong:['fai','fais'],comp:['un gâteau','du vélo']},
+ {inf:'dire',rad:'di',pl:4,re:1,wrong:['dire','dis'],comp:['la vérité','bonjour']},
+ {inf:'prendre',rad:'prend',pl:4,re:1,wrong:['prendre','pren'],comp:['le train','le bus']},
+ {inf:'comprendre',rad:'comprend',pl:4,re:1,wrong:['comprendre','compren'],comp:['la leçon','l\'exercice']},
+ {inf:'apprendre',rad:'apprend',pl:4,re:1,wrong:['apprendre','appren'],comp:['une poésie','à nager']},
+ // Planète 5 : pouvoir, voir, venir, vouloir
+ {inf:'pouvoir',rad:'pour',pl:5,irr:1,reg:'pouvoir',wrong:['pouvoi','peu'],comp:['jouer dehors','partir tôt']},
+ {inf:'voir',rad:'ver',pl:5,irr:1,reg:'voir',wrong:['voi','vo'],comp:['la tour Eiffel','un arc-en-ciel']},
+ {inf:'venir',rad:'viend',pl:5,irr:1,reg:'venir',wrong:['veni','vien'],comp:['à la fête','en avance']},
+ {inf:'vouloir',rad:'voud',pl:5,irr:1,reg:'vouloir',wrong:['vouloi','veu'],comp:['une glace','un chocolat chaud']},
+ {inf:'revenir',rad:'reviend',pl:5,irr:1,reg:'revenir',wrong:['reveni','revien'],comp:['à la maison','de vacances']},
+ // Planète 6 : radical qui change
+ {inf:'appeler',rad:'appelle',pl:6,irr:1,reg:'appeler',wrong:['appele','appel'],comp:['le docteur','les pompiers']},
+ {inf:'jeter',rad:'jette',pl:6,irr:1,reg:'jeter',wrong:['jete','jet'],comp:['les papiers à la poubelle','la balle']},
+ {inf:'rappeler',rad:'rappelle',pl:6,irr:1,reg:'rappeler',wrong:['rappele','rappel'],comp:['le dentiste','la boulangerie']},
+ {inf:'acheter',rad:'achète',pl:6,irr:1,reg:'acheter',wrong:['achete','achet'],comp:['du pain','un cadeau']},
+ {inf:'lever',rad:'lève',pl:6,irr:1,reg:'lever',wrong:['leve','lev'],comp:['la main','le drapeau']},
+ {inf:'enlever',rad:'enlève',pl:6,irr:1,reg:'enlever',wrong:['enleve','enlev'],comp:['les bottes','le manteau']},
+ {inf:'envoyer',rad:'enver',pl:6,irr:1,reg:'envoyer',wrong:['envoye','envoie'],comp:['une lettre','un message']},
+ {inf:'nettoyer',rad:'nettoie',pl:6,irr:1,reg:'nettoyer',wrong:['nettoye','nettoy'],comp:['le tableau','la cuisine']},
+ {inf:'essuyer',rad:'essuie',pl:6,irr:1,reg:'essuyer',wrong:['essuye','essuy'],comp:['la vaisselle','la table']},
+];
+const VBY={}; VERBS.forEach(v=>VBY[v.inf]=v);
+
+const PLANETS=[
+ {name:'Planète Horloge',emoji:'🕰️',color:'#B39DDB',sub:'Passé, présent ou futur ?'},
+ {name:'Planète R',emoji:'🔴',color:'#EF9A9A',sub:'chanter, parler, manger…'},
+ {name:'Planète Finir',emoji:'🌱',color:'#A5D6A7',sub:'finir, choisir, jouer, oublier…'},
+ {name:'Planète Jumelle',emoji:'👯',color:'#FFF59D',sub:'être et avoir'},
+ {name:'Planète Radicaux',emoji:'🌋',color:'#FFCC80',sub:'aller, faire, dire, prendre'},
+ {name:'Planète Double R',emoji:'🪐',color:'#80CBC4',sub:'pouvoir, voir, venir, vouloir'},
+ {name:'Planète Métamorphose',emoji:'🦋',color:'#F48FB1',sub:'appeler, jeter, acheter, envoyer…'},
+ {name:'Station CM2',emoji:'🛰️',color:'#90CAF9',sub:'Phrases et textes au futur'},
+];
+
+/* Codes du Livret de Réussite (Étude de la langue CM 2026-2027)
+   ev = évalué dans le Défi ; tr = travaillé (Découvrir, Guidé, Seul) */
+const CODES={
+ F:'Je sais conjuguer les verbes fréquents au futur.',
+ F1:'Je sais conjuguer un verbe en -er au futur.',
+ F2:'Je sais conjuguer un verbe en -ir au futur.',
+ F3:'Je sais conjuguer le verbe être au futur.',
+ F4:'Je sais conjuguer le verbe avoir au futur.',
+ F5:'Je sais conjuguer le verbe aller au futur.',
+ F6:'Je sais conjuguer le verbe faire au futur.',
+ F7:'Je sais conjuguer le verbe dire au futur.',
+ F8:'Je sais conjuguer le verbe venir au futur.',
+ F9:'Je sais conjuguer le verbe vouloir au futur.',
+ F10:'Je sais conjuguer le verbe voir au futur.',
+ F11:'Je sais conjuguer le verbe prendre au futur.',
+ F12:'Je sais conjuguer le verbe pouvoir au futur.',
+ C3:'Je sais retrouver la forme infinitive du verbe.',
+ G29:'Je sais identifier et distinguer : verbe à l\'infinitif / verbe conjugué.',
+ G31:'Je sais identifier un sujet.',
+ G32:'Identifier les différents types de sujets (PP, GN, plusieurs noms).',
+ G33:'CM2 : J\'identifie le sujet même quand il est inversé.',
+ ACC1:'Je sais accorder le verbe et son sujet dans une phrase simple.',
+ ACC2:'Je sais accorder le verbe et son sujet dans une phrase complexe.',
+ ACC10:'Je transforme à l\'écrit des phrases en faisant varier le temps.',
+ O2:'Je sais orthographier les verbes en -yer/-eter/-eler (au présent dans le livret).',
+};
+const PCODES=[
+ {ev:[],tr:['G29']},
+ {ev:['F1'],tr:['C3','ACC1']},
+ {ev:['F2','F1'],tr:['C3','ACC1']},
+ {ev:['F3','F4'],tr:['ACC1']},
+ {ev:['F5','F6','F7','F11'],tr:['C3','ACC1']},
+ {ev:['F8','F9','F10','F12'],tr:['C3','ACC1']},
+ {ev:['F1'],tr:['O2','C3','ACC1']},
+ {ev:['F','ACC10','ACC2'],tr:['G31','G32','G33','ACC1']},
+];
+function codeChips(list,withLabel){
+  if(!list.length) return '';
+  if(withLabel) return list.map(c=>`<div style="margin:4px 0"><span class="pass" style="font-size:17px">${c}</span> <span class="small">${esc(CODES[c])}</span></div>`).join('');
+  return list.map(c=>`<span class="pass" style="font-size:16px;margin:2px" title="${esc(CODES[c])}">${c}</span>`).join(' ');
+}
+function livretLine(p){
+  const ev=PCODES[p].ev; if(!ev.length) return '';
+  return `<p class="small">📘 Dans ton livret : ${codeChips(ev)}</p>`;
+}
+
+/* Phrases : passé / présent / futur */
+const WHEN=[
+ ['Demain, nous irons à la piscine.','futur','Demain'],
+ ['Hier, j\'ai mangé une pomme.','passé','Hier'],
+ ['En ce moment, il pleut.','présent','En ce moment'],
+ ['L\'année prochaine, tu seras au collège.','futur','L\'année prochaine'],
+ ['Autrefois, les enfants allaient à l\'école à pied.','passé','Autrefois'],
+ ['Aujourd\'hui, je lis un livre.','présent','Aujourd\'hui'],
+ ['Ce soir, maman préparera une soupe.','futur','Ce soir'],
+ ['La semaine dernière, nous avons visité un musée.','passé','La semaine dernière'],
+ ['Maintenant, vous écoutez la maîtresse.','présent','Maintenant'],
+ ['Dans dix ans, je serai astronaute.','futur','Dans dix ans'],
+ ['Hier soir, il a regardé les étoiles.','passé','Hier soir'],
+ ['Tous les jours, elle prend le bus.','présent','Tous les jours'],
+ ['Bientôt, les fleurs pousseront.','futur','Bientôt'],
+ ['Plus tard, nous partirons en voyage.','futur','Plus tard'],
+ ['L\'été dernier, tu as nagé dans la mer.','passé','L\'été dernier'],
+ ['Lundi prochain, vous visiterez le château.','futur','Lundi prochain'],
+];
+const WHICH=[
+ ['Je chanterai.','Je chante.','J\'ai chanté.'],
+ ['Nous jouerons.','Nous jouons.','Nous avons joué.'],
+ ['Tu mangeras.','Tu manges.','Tu as mangé.'],
+ ['Ils parleront.','Ils parlent.','Ils ont parlé.'],
+ ['Elle dansera.','Elle danse.','Elle a dansé.'],
+ ['Vous regarderez.','Vous regardez.','Vous avez regardé.'],
+ ['On marchera.','On marche.','On a marché.'],
+ ['Je finirai.','Je finis.','J\'ai fini.'],
+ ['Tu iras.','Tu vas.','Tu es allé.'],
+ ['Nous serons.','Nous sommes.','Nous avons été.'],
+];
+
+/* Station CM2 : phrases */
+const CM2=[
+ ['Les enfants de la voisine ____ au cinéma.','aller',5],
+ ['Demain ____ les correspondants anglais.','venir',5],
+ ['Ma sœur et moi ____ une cabane.','faire',3],
+ ['Toi et Inès, vous ____ sortir.','pouvoir',4],
+ ['Le directeur et la maîtresse ____ le spectacle.','voir',5],
+ ['Chaque élève ____ un livre.','avoir',2],
+ ['Mes amis et moi ____ prêts pour le départ.','être',3],
+ ['Ce matin-là, les oiseaux du jardin ____.','chanter',5],
+ ['Où ____-vous cet été ?','aller',4],
+ ['Les feuilles que tu ____ iront au compost.','jeter',1],
+ ['Je vous ____ demain.','appeler',0],
+ ['Mamie nous ____ un colis.','envoyer',2],
+ ['Ma mère nous ____ des billets.','acheter',2],
+ ['Tom et toi ____ le jeu.','choisir',4],
+ ['Les élèves de CM2 ____ le car.','prendre',5],
+ ['Lucas, tu ____ sûrement un chien.','vouloir',1],
+ ['Bientôt, mon petit frère ____ à lire.','apprendre',2],
+ ['Dans le ciel ____ mille étoiles.','briller',5],
+ ['Nina et Paul ____ la vaisselle.','essuyer',5],
+ ['Vous ____ le tableau après la classe.','nettoyer',4],
+ ['Dans la cour, les petits ____ de joie.','crier',5],
+ ['Mon cousin et moi ____ au football.','jouer',3],
+ ['Les parents de Malik ____ à la réunion.','venir',5],
+ ['Plus tard, mes camarades et moi ____ la vérité.','dire',3],
+];
+
+/* Station CM2 : textes à transposer */
+const TEXTS=[
+ {title:'La sortie au planétarium',
+  present:'Demain, nous allons au planétarium. Le bus vient nous chercher à huit heures. Les élèves prennent leur goûter. La guide dit des choses étonnantes et nous voyons les planètes. Tu peux poser des questions. Le soir, je suis fatigué, mais très content !',
+  seg:['Demain, nous ',['aller',3],' au planétarium. Le bus ',['venir',2],' nous chercher à huit heures. Les élèves ',['prendre',5],' leur goûter. La guide ',['dire',2],' des choses étonnantes et nous ',['voir',3],' les planètes. Tu ',['pouvoir',1],' poser des questions. Le soir, je ',['être',0],' fatigué, mais très content !']},
+ {title:'L\'été des cousins',
+  present:'Cet été, mes cousins viennent à la maison. Nous faisons des gâteaux et vous jouez au ballon dans le jardin. Ma tante achète des glaces. Le soir, j\'appelle ma grand-mère et je lui envoie des photos. Tout le monde a le sourire !',
+  seg:['Cet été, mes cousins ',['venir',5],' à la maison. Nous ',['faire',3],' des gâteaux et vous ',['jouer',4],' au ballon dans le jardin. Ma tante ',['acheter',2],' des glaces. Le soir, j\'',['appeler',0],' ma grand-mère et je lui ',['envoyer',0],' des photos. Tout le monde ',['avoir',2],' le sourire !']},
+ {title:'Dans dix ans',
+  present:'Dans dix ans, je suis au lycée. Mon frère veut devenir pilote. Mes parents choisissent une maison près de la mer. Vous venez nous voir et, ensemble, nous nettoyons la plage. Le soir, tu regardes le coucher du soleil.',
+  seg:['Dans dix ans, je ',['être',0],' au lycée. Mon frère ',['vouloir',2],' devenir pilote. Mes parents ',['choisir',5],' une maison près de la mer. Vous ',['venir',4],' nous voir et, ensemble, nous ',['nettoyer',3],' la plage. Le soir, tu ',['regarder',1],' le coucher du soleil.']},
+];
+VBY['regarder']=VBY['regarder']; // déjà présent
+
+/* =========================================================
+   OUTILS
+   ========================================================= */
+const app=()=>document.getElementById('app');
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const form=(v,k)=>v.rad+'r'+END[k];
+const VOW=/^[aeiouyéèêàâîïôûh]/i;
+function colorForm(v,k){
+  let r=esc(v.rad);
+  if(v.mute){r=esc(v.rad.slice(0,-1))+'<span class="mute">e</span>';}
+  return `<span class="rad${v.irr?' irr':''}">${r}</span><span class="rm">r</span><span class="te">${END[k]}</span>`;
+}
+function pronFor(k,f){ if(k===0) return VOW.test(f)?"j'":'je'; return ['je','tu','il','nous','vous','ils'][k]; }
+function tableHTML(v,title){
+  const rows=[0,1,2,3,4,5].map(k=>{const f=form(v,k);const p=k===2?'il, elle, on':k===5?'ils, elles':pronFor(k,f);return `<tr><td class="pr">${esc(p)}</td><td>${colorForm(v,k)}</td></tr>`;}).join('');
+  const say=[0,1,2,3,4,5].map(k=>{const f=form(v,k);const p=k===0&&VOW.test(f)?"j'"+f:(['je','tu','il','nous','vous','ils'][k]+' '+f);return p;}).join(', ')+'.';
+  return `<div class="tbox"><h4>${esc(title||v.inf)} ${spk(say)}</h4><table class="conj">${rows}</table></div>`;
+}
+const LEGEND=`<div class="legend"><span class="rad">radical</span><span class="rad irr">radical qui change : à apprendre par cœur</span><span class="rm">r = marque du futur</span><span class="te">terminaison</span></div>`;
+function spk(say,target){return `<button class="spk" aria-label="Écouter" ${say?`data-say="${esc(say)}"`:''} ${target?`data-target="${target}"`:''}>🔊</button>`;}
+const PRAISE=['Bravo !','Super, astronaute !','Mission réussie !','Exact !','Parfait !','Bien joué !'];
+
+/* =========================================================
+   SAUVEGARDE + MOT DE PASSE
+   ========================================================= */
+const KEY='missionFutur_v1';
+let S={name:'',placed:false,unlocked:0,tabs:{},auto:false,slow:false};
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const WORDS=['LUNE','COMETE','ETOILE','ORBITE','FUSEE','SATURNE','NEBULEUSE','GALAXIE','SUPERNOVA'];
+const WSAY=['LUNE','COMÈTE','ÉTOILE','ORBITE','FUSÉE','SATURNE','NÉBULEUSE','GALAXIE','SUPERNOVA'];
+const num=u=>String(((u+3)*29)%89+10);
+const code=u=>WSAY[u]+'-'+num(u);
+function parseCode(s){
+  const t=s.normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/\s+/g,'');
+  const m=t.match(/^([A-Z]+)-?(\d{2})$/); if(!m) return -1;
+  const u=WORDS.indexOf(m[1]); if(u<0||num(u)!==m[2]) return -1; return u;
+}
+
+/* =========================================================
+   VOIX
+   ========================================================= */
+let VOICE=null;
+const HAS_TTS=('speechSynthesis' in window);
+function pickVoice(){ if(!HAS_TTS) return; const vs=speechSynthesis.getVoices();
+  VOICE=vs.find(v=>/^fr[-_]FR/i.test(v.lang)&&/(Google|Amélie|Audrey|Marie|Thomas|Denise|Julie)/i.test(v.name))||vs.find(v=>/^fr[-_]FR/i.test(v.lang))||vs.find(v=>/^fr/i.test(v.lang))||null; }
+if(HAS_TTS){pickVoice(); speechSynthesis.onvoiceschanged=pickVoice;}
+let speakingBtn=null, speakingEl=null;
+function clearSpeak(){
+  if(speakingBtn){speakingBtn.classList.remove('speaking');speakingBtn=null;}
+  if(speakingEl){speakingEl.classList.remove('speaking-block');speakingEl.querySelectorAll('.w.hl').forEach(w=>w.classList.remove('hl'));speakingEl=null;}
+}
+function prepKara(el){
+  if(el._words) return el._words;
+  const txt=el.textContent; let html='', last=0; const words=[];
+  txt.replace(/\S+/g,(m,i)=>{html+=esc(txt.slice(last,i))+`<span class="w" data-i="${i}">${esc(m)}</span>`;last=i+m.length;words.push(i);return m;});
+  html+=esc(txt.slice(last)); el.innerHTML=html; el._words=words; el._text=txt; return words;
+}
+function speak(text,el,btn){
+  if(!HAS_TTS||!text) return;
+  speechSynthesis.cancel(); clearSpeak();
+  let kara=false;
+  if(el){speakingEl=el; el.classList.add('speaking-block'); if(el.classList.contains('kara')){prepKara(el); text=el._text; kara=true;}}
+  if(btn){speakingBtn=btn; btn.classList.add('speaking');}
+  const chunks=text.match(/[^.!?…]+[.!?…]*\s*/g)||[text];
+  let offset=0;
+  chunks.forEach((c,i)=>{
+    const u=new SpeechSynthesisUtterance(c); u.lang='fr-FR'; if(VOICE) u.voice=VOICE; u.rate=S.slow?0.68:0.92;
+    const base=offset; offset+=c.length;
+    if(kara){u.onboundary=e=>{ if(e.name&&e.name!=='word') return; const idx=base+e.charIndex; const spans=el.querySelectorAll('.w'); let cur=null; spans.forEach(s=>{if(+s.dataset.i<=idx) cur=s;}); spans.forEach(s=>s.classList.remove('hl')); if(cur) cur.classList.add('hl'); };}
+    if(i===chunks.length-1) u.onend=clearSpeak;
+    speechSynthesis.speak(u);
+  });
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.spk'); if(!b) return;
+  e.preventDefault();
+  let el=b.dataset.target?document.getElementById(b.dataset.target):null;
+  let text=b.dataset.say||(el?el.textContent:'');
+  if(el && el._text) text=el._text;
+  speak(text,el,b);
+});
+function autoSay(text,el){ if(S.auto) speak(text,el); }
+
+/* =========================================================
+   EN-TÊTE
+   ========================================================= */
+function refreshHeader(){
+  document.getElementById('hauto').classList.toggle('on',!!S.auto);
+  document.getElementById('hslow').classList.toggle('on',!!S.slow);
+  document.getElementById('hpass').style.display=S.placed?'':'none';
+}
+document.getElementById('hauto').onclick=()=>{S.auto=!S.auto;save();refreshHeader(); if(S.auto) speak('Lecture automatique activée. Je lirai tout pour toi.');};
+document.getElementById('hslow').onclick=()=>{S.slow=!S.slow;save();refreshHeader(); speak(S.slow?'Je parle plus lentement.':'Je parle normalement.');};
+document.getElementById('hpass').onclick=showPass;
+let logoTaps=0,logoTimer=null;
+document.getElementById('logo').onclick=()=>{logoTaps++;clearTimeout(logoTimer);logoTimer=setTimeout(()=>{logoTaps=0;},2500); if(logoTaps>=5){logoTaps=0;teacherLogin();} else if(logoTaps===1 && S.placed){ setTimeout(()=>{ if(logoTaps===1){logoTaps=0; if(S.placed) showMap();} },700);} };
+
+function modal(html){const bg=document.createElement('div');bg.className='modal-bg';bg.innerHTML=`<div class="modal">${html}</div>`;document.body.appendChild(bg);bg.addEventListener('click',e=>{if(e.target===bg||e.target.closest('[data-close]'))bg.remove();});return bg;}
+function showPass(){
+  const c=code(S.unlocked);
+  modal(`<h2>🔑 Ton mot de passe</h2><p>Avec ce mot de passe, tu retrouves ta mission sur n'importe quel ordinateur ou tablette.</p>
+  <p class="center"><span class="pass big">${c}</span> ${spk('Ton mot de passe est : '+c.replace('-',', tiret, ')+'.')}</p>
+  <p class="small">Écris-le dans ton cahier de liaison ou ton agenda.</p><p class="center"><button class="btn" data-close>OK</button></p>`);
+}
+
+/* =========================================================
+   ÉCRAN D'ACCUEIL
+   ========================================================= */
+function inibo(text,id){return `<div class="inibo"><div class="av">✋</div><div class="bub"><b class="n">IniBO</b> ${spk(null,id)}<div id="${id}" class="kara">${esc(text)}</div></div></div>`;}
+function showWelcome(){
+  window.scrollTo(0,0);
+  const t='Bonjour, je suis IniBO, ton guide ! Nous allons voyager de planète en planète pour apprendre à conjuguer les verbes au futur. D\'abord, le scanner va trouver ta planète de départ. Clique sur le bouton haut-parleur jaune quand tu veux que je lise.';
+  app().innerHTML=`<div class="card center"><h1>🚀 Mission Futur</h1><p class="small">Conjuguer au futur, de planète en planète</p>
+   ${inibo(t,'wtxt')}
+   <p><label>Ton nom d'astronaute (si tu veux) :<br><input id="nm" maxlength="20" style="padding:8px;border-radius:12px;border:3px solid #b39ddb;width:240px" value="${esc(S.name||'')}"></label></p>
+   <p><button class="btn green" id="go">🛸 Je lance le scanner</button></p>
+   <p><button class="btn yellow" id="haspass">🔑 J'ai déjà un mot de passe</button></p></div>`;
+  autoSay(t,document.getElementById('wtxt'));
+  document.getElementById('go').onclick=()=>{S.name=document.getElementById('nm').value.trim();save();scanIntro();};
+  document.getElementById('haspass').onclick=()=>{S.name=document.getElementById('nm').value.trim();save();askPass();};
+}
+function askPass(){
+  const m=modal(`<h2>🔑 Entre ton mot de passe</h2><p>Exemple : COMÈTE-37</p>
+   <p><input id="pw" style="padding:10px;border-radius:12px;border:3px solid #b39ddb;width:100%" autocapitalize="characters" autocomplete="off"></p>
+   <div id="pwfb"></div><p class="center"><button class="btn green" id="pwok">Valider</button> <button class="btn grey" data-close>Annuler</button></p>`);
+  const go=()=>{const u=parseCode(m.querySelector('#pw').value); if(u<0){m.querySelector('#pwfb').innerHTML='<div class="fb ko">Ce mot de passe ne marche pas. Vérifie les lettres et les chiffres.</div>';return;}
+    S.unlocked=u;S.placed=true;S.start=null;save();m.remove();refreshHeader();showMap(`Bon retour, astronaute ! Ta mission continue.`);};
+  m.querySelector('#pwok').onclick=go; m.querySelector('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+}
+
+/* =========================================================
+   GÉNÉRATION D'EXERCICES
+   ========================================================= */
+function verbItem(v,k){
+  if(k==null) k=rnd([0,1,2,3,4,5]);
+  const P=rnd(PRON.filter(p=>p.k===k)); const ans=form(v,k);
+  let pd=P.p; if(k===0&&VOW.test(ans)) pd="j'";
+  const adv=rnd(ADV), comp=rnd(v.comp);
+  const before=adv+' '+pd;
+  return {type:'verb',v,k,ans,before,after:' '+comp+'.',say:`${adv} ${P.p} … ${comp}. Le verbe : ${v.inf}.`};
+}
+function cm2Item(row){
+  const [s,inf,k]=row; const v=VBY[inf]; const [b,a]=s.split('____');
+  return {type:'verb',v,k,ans:form(v,k),before:b.replace(/\s+$/,''),after:a,cm2:true,
+    say:`${b} … ${a} Le verbe : ${inf}.`};
+}
+function verbSet(pl,n){
+  const vs=shuffle(VERBS.filter(v=>v.pl===pl)); const ks=shuffle([0,1,2,3,4,5,0,1,2,3,4,5]);
+  const out=[]; for(let i=0;i<n;i++) out.push(verbItem(vs[i%vs.length],ks[i%ks.length])); return shuffle(out);
+}
+function whenItem(row){return {type:'when',t:row[0],a:row[1],clue:row[2]};}
+function whichItem(row){return {type:'which',opts:shuffle(row),a:row[0]};}
+function qcmChoices(it){
+  const v=it.v,k=it.k; const c=it.ans; const out=[c];
+  if(v.reg){const d=v.reg+END[k]; if(d!==c) out.push(d);}
+  for(const kk of shuffle([0,1,2,3,4,5])){ if(out.length>=3) break; const d=v.rad+'r'+END[kk]; if(!out.includes(d)) out.push(d);}
+  return shuffle(out);
+}
+function radChoices(v){
+  let w=v.wrong;
+  if(!w){ if(v.mute) w=[v.reg.slice(0,-1),v.inf]; else w=[v.inf.slice(0,-2),v.inf]; }
+  return shuffle([{t:v.rad,ok:true},{t:w[0]},{t:w[1]}]);
+}
+
+/* =========================================================
+   CORRECTION
+   ========================================================= */
+function norm(s){return s.toLowerCase().replace(/[’`´]/g,"'").replace(/[.!?,;:]/g,'').replace(/\s+/g,' ').trim()
+  .replace(/^(je |j'|j |tu |il |elle |on |nous |vous |ils |elles )/,'').trim();}
+const noAcc=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'');
+function hintRad(v){
+  if(v.mute) return `N'oublie pas le <b>e</b> de l'infinitif « ${v.inf} », même si on ne l'entend pas.`;
+  if(v.re) return `Pour les verbes en -re, on enlève juste le e final : « ${v.inf} » → ${esc(v.rad)}r-.`;
+  if(v.pl===1||v.pl===2) return `Rappelle-toi : on garde l'infinitif entier (« ${v.inf} »), puis on ajoute la terminaison.`;
+  return `Ce verbe change de radical au futur. Regarde le tableau.`;
+}
+function analyse(it,typed){
+  const a=it.ans, t=norm(typed), v=it.v, end=END[it.k], stem=v.rad+'r';
+  if(!t) return {ok:false,msg:'Écris ta réponse dans la case.'};
+  if(t===a) return {ok:true};
+  if(noAcc(t)===noAcc(a)){
+    if(v.pl!==6) return {ok:true,note:`Attention à l'accent : on écrit « ${a} ».`};
+    return {ok:false,msg:`Presque ! Regarde bien l'accent dans le radical.`};
+  }
+  if(v.pl===3 && v.reg && t===v.reg+end) return {ok:false,msg:`✋ IniBO : Stop ! Tu as écrit le verbe <b>${v.inf==='être'?'avoir':'être'}</b>. Ici, c'est le verbe « ${v.inf} ».`};
+  if(v.mute && t===v.reg+end) return {ok:false,msg:`✋ IniBO : Stop ! Tu as oublié le <b>e</b> de l'infinitif « ${v.inf} ». On ne l'entend pas, mais on l'écrit !`};
+  if(v.reg && t===v.reg+end) return {ok:false,msg:`✋ IniBO : Stop ! Au futur, « ${v.inf} » ne garde pas son infinitif : son radical change.`};
+  if(t.startsWith(stem)) return {ok:false,msg:`Le radical est juste 👍. Regarde bien le sujet : qui fait l'action ? Quelle terminaison va avec ?`};
+  if(t.endsWith('r'+end)) return {ok:false,msg:`La terminaison est juste 👍. C'est le radical qui ne va pas. ${hintRad(v)}`};
+  if(!t.includes('r')) return {ok:false,msg:`N'oublie pas la marque du futur : le son <span class="rm">r</span> !`};
+  return {ok:false,msg:'Pas encore. Écoute la phrase et réessaie.'};
+}
+function fullSentence(it){ const sep=it.before.endsWith("'")?'':' '; return it.before+sep+it.ans+it.after; }
+
+/* =========================================================
+   AFFICHAGE D'UNE QUESTION
+   cfg.mode : 'guided' | 'solo' | 'defi' | 'scan'
+   cfg.input : 'type' | 'qcm'
+   ========================================================= */
+let QID=0;
+function sentenceHTML(it,id){
+  const sep=it.before.endsWith("'")?'':' ';
+  return `<div class="row">${spk(it.say)}<div class="sent" id="${id}">${esc(it.before)}${sep}<span class="blank">&nbsp;</span>${esc(it.after)} <span class="inf">(${esc(it.v.inf)})</span></div></div>`;
+}
+function fillBlank(box,it){const b=box.querySelector('.blank'); if(b){b.innerHTML=colorForm(it.v,it.k); b.style.borderBottom='none';}}
+function nextBtn(box,cb,label){const d=document.createElement('p');d.className='center';d.innerHTML=`<button class="btn green">${label||'Suivant ➜'}</button>`;box.appendChild(d);d.querySelector('button').onclick=cb;d.querySelector('button').focus();}
+function fbHTML(cls,html,sayTxt){return `<div class="fb ${cls}"><div class="row">${sayTxt?spk(sayTxt):''}<div>${html}</div></div></div>`;}
+function stripTags(h){const d=document.createElement('div');d.innerHTML=h;return d.textContent;}
+function helpBtn(box,it){
+  if(box.querySelector('.helpb')) return;
+  const p=document.createElement('p');p.className='center helpb';p.innerHTML=`<button class="btn yellow">📋 Voir le tableau</button>`;box.appendChild(p);
+  p.querySelector('button').onclick=()=>modal(`${tableHTML(it.v)}${LEGEND}<p class="center"><button class="btn" data-close>Fermer</button></p>`);
+}
+
+function renderQ(box,it,cfg,done){
+  const id='q'+(++QID);
+  if(it.type==='when') return renderWhen(box,it,cfg,done,id);
+  if(it.type==='which') return renderWhich(box,it,cfg,done,id);
+  if(cfg.mode==='guided') return it.cm2?renderGuidedCM2(box,it,done,id):renderGuided(box,it,done,id);
+  box.innerHTML=`<p><b>${cfg.input==='qcm'?'Choisis':'Écris'} le verbe au futur.</b></p>${sentenceHTML(it,id)}<div class="zone"></div>`;
+  const zone=box.querySelector('.zone');
+  autoSay((cfg.input==='qcm'?'Choisis':'Écris')+' le verbe au futur. '+it.say);
+  let tries=cfg.mode==='solo'?2:1, firstOk=null;
+  const finish=(ok,fbh)=>{
+    if(cfg.mode==='scan'){done(ok);return;}
+    fillBlank(box,it);
+    zone.insertAdjacentHTML('beforeend',fbh);
+    const sent=fullSentence(it);
+    autoSay(stripTags(fbh)+' '+sent);
+    nextBtn(zone,()=>done(firstOk));
+  };
+  const wrong=(msg)=>{
+    tries--; if(firstOk===null) firstOk=false;
+    if(tries>0){ const f=zone.querySelector('.fb'); if(f) f.remove(); zone.insertAdjacentHTML('beforeend',fbHTML('ko',msg,stripTags(msg))); autoSay(stripTags(msg)); helpBtn(zone,it); return false; }
+    const f=zone.querySelector('.fb'); if(f) f.remove(); const hb=zone.querySelector('.helpb'); if(hb) hb.remove();
+    finish(false,fbHTML('info',`La bonne réponse est : <b>${colorForm(it.v,it.k)}</b>.<br>${esc(fullSentence(it))}`,`La bonne réponse est : ${it.ans}. ${fullSentence(it)}`));
+    return true;
+  };
+  if(cfg.input==='qcm'){
+    const ch=qcmChoices(it);
+    zone.innerHTML=`<div class="tiles">${ch.map(c=>`<button class="tile choice" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>${cfg.mode==='scan'?'<p class="center"><button class="btn grey" id="dk">🤔 Je ne sais pas encore</button></p>':''}`;
+    zone.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+      if(b.disabled) return;
+      if(cfg.mode==='scan'){done(b.dataset.c===it.ans);return;}
+      if(b.dataset.c===it.ans){ if(firstOk===null) firstOk=true; zone.querySelectorAll('.tile').forEach(x=>x.disabled=true); b.classList.add('good'); finish(true,fbHTML('ok','✅ '+rnd(PRAISE))); }
+      else { b.classList.add('bad'); b.disabled=true; const fin=wrong(qcmHint(it,b.dataset.c)); if(fin) zone.querySelectorAll('.tile').forEach(x=>x.disabled=true); }
+    });
+    if(cfg.mode==='scan') zone.querySelector('#dk').onclick=()=>done(false);
+  } else {
+    zone.innerHTML=`<div class="ans"><input type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Ta réponse"><button class="btn green vb">Valider</button></div>${cfg.mode==='scan'?'<p class="center"><button class="btn grey" id="dk">🤔 Je ne sais pas encore</button></p>':''}`;
+    const inp=zone.querySelector('input'), vb=zone.querySelector('.vb');
+    const submit=()=>{
+      if(cfg.mode==='scan'){ if(!norm(inp.value)) return; done(analyse(it,inp.value).ok); return; }
+      const r=analyse(it,inp.value);
+      if(!norm(inp.value)) return;
+      if(r.ok){ if(firstOk===null) firstOk=true; inp.disabled=true; vb.disabled=true; const f=zone.querySelector('.fb'); if(f) f.remove(); const hb=zone.querySelector('.helpb'); if(hb) hb.remove(); finish(true,fbHTML('ok','✅ '+rnd(PRAISE)+(r.note?'<br>'+esc(r.note):''))); }
+      else { const fin=wrong(r.msg); if(fin){inp.disabled=true; vb.disabled=true;} else {inp.select();} }
+    };
+    vb.onclick=submit; inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
+    if(cfg.mode==='scan') zone.querySelector('#dk').onclick=()=>done(false);
+    setTimeout(()=>{try{inp.focus({preventScroll:true});}catch(e){}},50);
+  }
+}
+function qcmHint(it,c){
+  const v=it.v;
+  if(v.reg && c===v.reg+END[it.k]){
+    if(v.pl===3) return `✋ IniBO : Stop ! « ${esc(c)} », c'est le verbe ${v.inf==='être'?'avoir':'être'}. Ici, c'est « ${v.inf} ».`;
+    if(v.mute) return `✋ IniBO : Stop ! Il manque le <b>e</b> de l'infinitif « ${v.inf} ».`;
+    return `✋ IniBO : Stop ! Au futur, « ${v.inf} » change de radical.`;
+  }
+  return `Le radical est juste, mais la terminaison ne va pas avec le sujet. Qui fait l'action ?`;
+}
+
+function renderWhen(box,it,cfg,done,id){
+  const txt=cfg.mode==='guided'?esc(it.t).replace(esc(it.clue),`<mark>${esc(it.clue)}</mark>`):esc(it.t);
+  box.innerHTML=`<p><b>Cette phrase parle du passé, du présent ou du futur ?</b> ${spk('Cette phrase parle du passé, du présent ou du futur ?')}</p>
+   <div class="row">${spk(it.t)}<div class="sent">${txt}</div></div>
+   ${cfg.mode==='guided'?`<p class="small">💡 Le mot surligné est un indice.</p>`:''}
+   <div class="when-btns"><button class="tile" data-a="passé">⏪ Passé<br><span class="small">hier</span></button><button class="tile" data-a="présent">📍 Présent<br><span class="small">maintenant</span></button><button class="tile" data-a="futur">⏩ Futur<br><span class="small">plus tard</span></button></div><div class="zone"></div>`;
+  autoSay('Cette phrase parle du passé, du présent ou du futur ? '+it.t);
+  let first=null; const zone=box.querySelector('.zone');
+  box.querySelectorAll('.when-btns .tile').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return;
+    const ok=b.dataset.a===it.a;
+    if(cfg.mode==='scan'){done(ok);return;}
+    if(first===null) first=ok;
+    if(ok||cfg.mode==='defi'||b.dataset.tried){
+      box.querySelectorAll('.when-btns .tile').forEach(x=>{x.disabled=true; if(x.dataset.a===it.a) x.classList.add('good');});
+      const m=ok?'✅ '+rnd(PRAISE):`C'est le <b>${it.a}</b>. Le mot « ${esc(it.clue)} » nous aide.`;
+      box.querySelector('.sent').innerHTML=esc(it.t).replace(esc(it.clue),`<mark>${esc(it.clue)}</mark>`);
+      zone.innerHTML=fbHTML(ok?'ok':'info',m,stripTags(m)); autoSay(stripTags(m));
+      nextBtn(zone,()=>done(first));
+    } else {
+      b.classList.add('bad'); b.disabled=true; box.querySelectorAll('.when-btns .tile').forEach(x=>x.dataset.tried=1);
+      const m='Pas encore. Cherche le mot qui dit QUAND ça se passe.'; zone.innerHTML=fbHTML('ko',m,m); autoSay(m);
+    }
+  });
+}
+function renderWhich(box,it,cfg,done,id){
+  box.innerHTML=`<p><b>Quelle phrase parle du futur ?</b> ${spk('Quelle phrase parle du futur ? '+it.opts.join(' '))}</p>
+   <div class="tiles" style="flex-direction:column;align-items:center">${it.opts.map(o=>`<div class="row"><button class="tile choice" data-o="${esc(o)}" style="min-width:240px">${esc(o)}</button>${spk(o)}</div>`).join('')}</div>${cfg.mode==='scan'?'<p class="center"><button class="btn grey" id="dk">🤔 Je ne sais pas encore</button></p>':''}<div class="zone"></div>`;
+  autoSay('Quelle phrase parle du futur ? '+it.opts.join(' '));
+  let first=null; const zone=box.querySelector('.zone');
+  if(cfg.mode==='scan') box.querySelector('#dk').onclick=()=>done(false);
+  box.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return; const ok=b.dataset.o===it.a;
+    if(cfg.mode==='scan'){done(ok);return;}
+    if(first===null) first=ok;
+    if(ok||cfg.mode==='defi'||b.dataset.tried){
+      box.querySelectorAll('.tile').forEach(x=>{x.disabled=true; if(x.dataset.o===it.a) x.classList.add('good');});
+      const m=ok?'✅ '+rnd(PRAISE):`C'est « ${esc(it.a)} » : on entend le <span class="rm">r</span> du futur.`;
+      zone.innerHTML=fbHTML(ok?'ok':'info',m,stripTags(m)); autoSay(stripTags(m)); nextBtn(zone,()=>done(first));
+    } else { b.classList.add('bad'); b.disabled=true; box.querySelectorAll('.tile').forEach(x=>x.dataset.tried=1); const m='Pas encore. Écoute bien : au futur, on entend souvent le son r à la fin du verbe.'; zone.innerHTML=fbHTML('ko',m,m); autoSay(m); }
+  });
+}
+
+/* ---- Guidé : radical puis terminaison ---- */
+function renderGuided(box,it,done,id){
+  const v=it.v; const rads=radChoices(v); let first=true, errR=0, errT=0;
+  box.innerHTML=`${sentenceHTML(it,id)}
+   <div class="step1"><p><b>1️⃣ Choisis le radical.</b> ${spk('Étape 1 : choisis le radical du verbe '+v.inf+'.')}</p>
+   <div class="tiles">${rads.map(r=>`<button class="tile r-tile${v.irr?' irr':''}" data-ok="${r.ok?1:0}">${esc(r.t)}</button>`).join('')}</div></div>
+   <div class="step2" style="display:none"><p><b>2️⃣ Choisis la terminaison.</b> ${spk('Étape 2 : choisis la terminaison. Regarde bien le sujet : qui fait l\'action ?')}</p>
+   <div class="tiles">${END.map((e,k)=>`<button class="tile t-tile" data-k="${k}"><span class="rm">r</span>${e}</button>`).join('')}</div></div>
+   <div class="build center big" style="margin:8px 0"></div><div class="zone"></div>`;
+  autoSay('Étape 1 : choisis le radical. '+it.say);
+  const zone=box.querySelector('.zone'), build=box.querySelector('.build');
+  const msg=(cls,m)=>{zone.innerHTML=fbHTML(cls,m,stripTags(m)); autoSay(stripTags(m));};
+  box.querySelectorAll('.step1 .tile').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return;
+    if(b.dataset.ok==='1'){
+      box.querySelectorAll('.step1 .tile').forEach(x=>{x.disabled=true; if(x!==b) x.classList.add('bad');}); b.classList.add('good');
+      build.innerHTML=`<span class="rad${v.irr?' irr':''}">${esc(v.rad)}</span> + ?`;
+      zone.innerHTML=''; box.querySelector('.step2').style.display='';
+      autoSay('Bien ! Maintenant, choisis la terminaison.');
+    } else {
+      first=false; errR++; b.classList.add('bad'); b.disabled=true;
+      if(errR>=2){ const g=box.querySelector('.step1 .tile[data-ok="1"]'); msg('info',`Le radical est <b>${esc(v.rad)}</b>. ${hintRad(v)} Clique dessus.`); g.classList.add('good'); }
+      else msg('ko',hintRad(v));
+      helpBtn(zone,it);
+    }
+  });
+  box.querySelectorAll('.step2 .tile').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return; const k=+b.dataset.k;
+    if(k===it.k){
+      box.querySelectorAll('.step2 .tile').forEach(x=>x.disabled=true); b.classList.add('good');
+      build.innerHTML=colorForm(v,it.k); fillBlank(box,it);
+      const m=(first?'✅ '+rnd(PRAISE)+' ':'✅ ')+fullSentence(it);
+      zone.innerHTML=fbHTML('ok',esc(m),m); autoSay(m);
+      nextBtn(zone,()=>done(first));
+    } else {
+      first=false; errT++; b.classList.add('bad'); b.disabled=true;
+      if(errT>=2) msg('info',`Le sujet est « ${PLAB[it.k]} ». La terminaison est <span class="rm">r</span><span class="te">${END[it.k]}</span>.`);
+      else msg('ko',`Regarde bien le sujet : qui fait l'action ? Astuce d'IniBO : les terminaisons ressemblent au verbe avoir (j'ai, tu as, il a, nous avons, vous avez, ils ont).`);
+      helpBtn(zone,it);
+    }
+  });
+}
+/* ---- Guidé Station CM2 : sujet puis forme ---- */
+function renderGuidedCM2(box,it,done,id){
+  let first=true, err=0;
+  box.innerHTML=`${sentenceHTML(it,id)}
+   <div class="step1"><p><b>1️⃣ Qui fait l'action ? Choisis le pronom qui peut remplacer le sujet.</b> ${spk('Étape 1 : qui fait l\'action ? Choisis le pronom qui peut remplacer le sujet.')}</p>
+   <div class="tiles">${PLAB.map((p,k)=>`<button class="tile choice" data-k="${k}">${p}</button>`).join('')}</div></div>
+   <div class="step2" style="display:none"><p><b>2️⃣ Choisis le verbe bien conjugué.</b> ${spk('Étape 2 : choisis le verbe bien conjugué.')}</p><div class="tiles t2"></div></div><div class="zone"></div>`;
+  autoSay('Étape 1 : qui fait l\'action ? '+it.say);
+  const zone=box.querySelector('.zone');
+  const msg=(cls,m)=>{zone.innerHTML=fbHTML(cls,m,stripTags(m)); autoSay(stripTags(m));};
+  box.querySelectorAll('.step1 .tile').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return;
+    if(+b.dataset.k===it.k){
+      box.querySelectorAll('.step1 .tile').forEach(x=>x.disabled=true); b.classList.add('good'); zone.innerHTML='';
+      const s2=box.querySelector('.step2'); s2.style.display='';
+      const t2=s2.querySelector('.t2'); t2.innerHTML=qcmChoices(it).map(c=>`<button class="tile choice" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+      autoSay('Oui, le sujet correspond à '+PLAB[it.k]+'. Maintenant, choisis le verbe bien conjugué.');
+      let e2=0;
+      t2.querySelectorAll('.tile').forEach(c=>c.onclick=()=>{
+        if(c.disabled) return;
+        if(c.dataset.c===it.ans){ t2.querySelectorAll('.tile').forEach(x=>x.disabled=true); c.classList.add('good'); fillBlank(box,it); const m=(first?'✅ '+rnd(PRAISE)+' ':'✅ ')+fullSentence(it); zone.innerHTML=fbHTML('ok',esc(m),m); autoSay(m); nextBtn(zone,()=>done(first)); }
+        else { first=false; e2++; c.classList.add('bad'); c.disabled=true; msg('ko',qcmHint(it,c.dataset.c)); }
+      });
+    } else {
+      first=false; err++; b.classList.add('bad'); b.disabled=true;
+      if(err>=2) msg('info',`Pose-toi la question : « Qui est-ce qui ${it.v.inf==='être'||it.v.inf==='avoir'?'sera ou aura':'fera l\'action'} ? » Ici, le sujet correspond à « ${PLAB[it.k]} ».`);
+      else msg('ko','✋ IniBO : Stop ! Cherche le sujet : qui fait l\'action ? Attention, il peut être loin du verbe, ou même après lui.');
+    }
+  });
+}
+
+/* =========================================================
+   SÉRIE D'EXERCICES
+   ========================================================= */
+function runSeries(box,items,cfg,onEnd){
+  let i=0; const res=[];
+  const show=()=>{
+    if(i>=items.length){onEnd(res.filter(Boolean).length,res);return;}
+    box.innerHTML=`<div class="prog">${items.map((_,j)=>`<span class="dot ${j<i?(res[j]?'y':'n'):j===i?'cur':''}"></span>`).join('')}</div><div class="q"></div>`;
+    renderQ(box.querySelector('.q'),items[i],cfg,ok=>{res.push(!!ok);i++;show(); box.scrollIntoView({block:'start',behavior:'smooth'});});
+  };
+  show();
+}
+
+/* =========================================================
+   SCANNER (test de départ)
+   ========================================================= */
+function scanIntro(){
+  window.scrollTo(0,0);
+  const t='Le scanner va te poser quelques questions pour trouver ta planète de départ. Ce n\'est pas une évaluation : il n\'y a ni note ni piège. Si tu ne sais pas, clique sur « Je ne sais pas encore » : c\'est la meilleure façon d\'aider le scanner à trouver la bonne planète pour toi. Pour réussir à faire avancer le scanner, il faut au moins deux bonnes réponses pour chaque famille de verbes.';
+  app().innerHTML=`<div class="card"><h2>🛸 Le scanner du voyageur</h2>${inibo(t,'stxt')}<p class="center"><button class="btn green" id="sgo">C'est parti !</button></p></div>`;
+  autoSay(t,document.getElementById('stxt'));
+  document.getElementById('sgo').onclick=startScan;
+}
+let SC=null;
+function startScan(){ SC={fam:1,hist:{},tested0:false,used:{},n:0,phase:'fam'}; nextScan(); }
+function scanPick(fam){
+  if(fam===0) return whichItem(rnd(WHICH));
+  const vs=VERBS.filter(v=>v.pl===fam && !SC.used[v.inf]); const v=rnd(vs.length?vs:VERBS.filter(v=>v.pl===fam)); SC.used[v.inf]=1;
+  return verbItem(v);
+}
+function scanFrame(inner){
+  app().innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><h3>🛸 Scanner en cours…</h3><span class="small">Question ${SC.n}</span></div><div class="q"></div></div>`;
+  return app().querySelector('.q');
+}
+function nextScan(){
+  window.scrollTo(0,0);
+  if(SC.phase==='prod') return nextProd();
+  SC.n++;
+  const fam=SC.fam; const it=scanPick(fam);
+  const box=scanFrame();
+  renderQ(box,it,{mode:'scan',input:'qcm'},ok=>{
+    const h=SC.hist[fam]||(SC.hist[fam]=[]); h.push(!!ok);
+    const n=h.length,c=h.filter(Boolean).length;
+    let dec=null;
+    if(n===2&&c===2) dec='pass'; else if(n===2&&c===0) dec='fail'; else if(n===3) dec=c>=2?'pass':'fail';
+    if(dec==='pass'){
+      if(fam===0) return placeAt(1);
+      if(fam===6){SC.phase='prod';SC.prod=prodItems();SC.pi=0;SC.pres=[];return nextScan();}
+      SC.fam=fam+1;
+    } else if(dec==='fail'){
+      if(fam===1&&!SC.tested0){SC.tested0=true;SC.fam=0;}
+      else if(fam===0) return placeAt(0);
+      else return placeAt(fam);
+    }
+    nextScan();
+  });
+}
+function prodItems(){
+  const out=[3,4,5,6].map(pl=>{const vs=VERBS.filter(v=>v.pl===pl&&!SC.used[v.inf]);return verbItem(rnd(vs.length?vs:VERBS.filter(v=>v.pl===pl)));});
+  out.push(cm2Item(rnd(CM2)));
+  return out;
+}
+function nextProd(){
+  if(SC.pi>=SC.prod.length){
+    const ok=SC.pres.filter(Boolean).length;
+    if(ok>=4) return placeAt(7);
+    let m=7; SC.prod.forEach((it,i)=>{if(!SC.pres[i]) m=Math.min(m,it.cm2?7:it.v.pl);}); return placeAt(m);
+  }
+  SC.n++;
+  const box=scanFrame();
+  if(SC.pi===0) box.insertAdjacentHTML('beforebegin',fbHTML('info','🌟 Bravo, tu connais beaucoup de verbes ! Dernière étape du scanner : cette fois, tu écris toi-même le verbe.'));
+  const it=SC.prod[SC.pi];
+  renderQ(box,it,{mode:'scan',input:'type'},ok=>{SC.pres.push(!!ok);SC.pi++;nextScan();});
+}
+function placeAt(p){
+  S.unlocked=p; S.placed=true; S.start=p; S.scanDate=new Date().toLocaleDateString('fr-FR'); save(); refreshHeader(); window.scrollTo(0,0);
+  const P=PLANETS[p];
+  const t=p===0?'Ta mission commence sur la Planète Horloge : tu vas apprendre à reconnaître le futur.':
+    p===7?'Incroyable ! Tu connais déjà tous les verbes au futur. Tu pars directement à la Station CM2, pour t\'entraîner dans des phrases et des textes.':
+    `Ta mission commence sur la ${P.name}. Tu connais déjà les planètes d'avant : elles sont validées ! Tu peux quand même y retourner pour réviser.`;
+  app().innerHTML=`<div class="card center"><h2>Scan terminé ✅</h2>
+   <div class="badge-big">${P.emoji}</div><h2>${P.name}</h2>${inibo(t,'ptxt')}
+   <p>Ton mot de passe : <span class="pass">${code(p)}</span> ${spk('Ton mot de passe est : '+code(p).replace('-',', tiret, ')+'.')}</p>
+   <p class="small">Note-le : il te permet de continuer sur n'importe quel appareil.</p>
+   <p><button class="btn green" id="tomap">🗺️ Voir la carte de la galaxie</button></p></div>`;
+  autoSay(t,document.getElementById('ptxt'));
+  document.getElementById('tomap').onclick=()=>showMap();
+}
+
+/* =========================================================
+   CARTE
+   ========================================================= */
+function showMap(msg){
+  window.scrollTo(0,0); if(HAS_TTS) speechSynthesis.cancel();
+  const u=S.unlocked;
+  const hello=(S.name?`Commandant ${S.name}, `:'')+(msg||(u>=8?'tu as terminé toute la mission. Bravo !':'choisis une planète.'));
+  app().innerHTML=`<div class="center white"><h2>🗺️ La galaxie du futur</h2>
+    <p>${esc(hello)} ${spk(hello)}</p>
+    <p class="small" style="color:#cfd3ff">Mot de passe : <span class="pass">${code(u)}</span></p></div>
+    <div class="map">${PLANETS.map((P,i)=>{
+      const st=i<u?'done':i===u?'current':'locked';
+      const lab=st==='done'?'⭐ Planète validée':st==='current'?'🚀 Tu es ici':'🔒 Pas encore ouverte';
+      return `<button class="planet ${st}" data-p="${i}" ${st==='locked'?'aria-disabled="true"':''}><div class="orb" style="background:${P.color}">${P.emoji}</div><div><div class="pn">${P.name}</div><div class="ps">${P.sub}</div><div class="st">${lab}</div></div></button>`;}).join('')}</div>`;
+  app().querySelectorAll('.planet').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.p;
+    if(i>u){const m='Cette planète est encore fermée. Réussis le défi de la planète d\'avant pour l\'ouvrir !'; speak(m); modal(`<p class="big">🔒</p><p>${m}</p><p class="center"><button class="btn" data-close>OK</button></p>`);return;}
+    showPlanet(i,'d');
+  });
+}
+
+/* =========================================================
+   PLANÈTE + ONGLETS
+   ========================================================= */
+const TABS=[['d','🔭','Découvrir'],['g','🧭','Guidé'],['s','🚀','Seul'],['c','🏆','Défi']];
+function markTab(p,t){S.tabs[p]=S.tabs[p]||{}; S.tabs[p][t]=1; save();}
+function showPlanet(p,tab){
+  window.scrollTo(0,0); if(HAS_TTS) speechSynthesis.cancel();
+  const P=PLANETS[p]; const tb=S.tabs[p]||{};
+  app().innerHTML=`<div class="ptitle"><button class="btn grey" id="back" style="padding:8px 12px">🗺️</button><div class="orb" style="background:${P.color}">${P.emoji}</div><div><h2 style="margin:0">${P.name}</h2><div class="small" style="color:#cfd3ff">${P.sub}</div></div></div>
+   <div class="tabs">${TABS.map(([k,ic,lab])=>`<button class="tab ${k===tab?'active':''}" data-t="${k}"><span class="ic">${ic}</span>${lab} ${tb[k]?'<span class="ck">✓</span>':''}</button>`).join('')}</div>
+   <div class="card" id="pc"></div>`;
+  document.getElementById('back').onclick=()=>showMap();
+  app().querySelectorAll('.tab').forEach(b=>b.onclick=()=>showPlanet(p,b.dataset.t));
+  const pc=document.getElementById('pc');
+  if(tab==='d') return tabDiscover(pc,p);
+  if(tab==='g') return tabGuided(pc,p);
+  if(tab==='s') return tabSolo(pc,p);
+  if(tab==='c') return tabDefi(pc,p);
+}
+function inputModeBar(){
+  const t=S.qcm?'étiquettes':'clavier';
+  return `<p class="small">Je réponds avec : <button class="hbtn ${!S.qcm?'on':''}" data-im="0">⌨️ le clavier</button> <button class="hbtn ${S.qcm?'on':''}" data-im="1">🏷️ des étiquettes</button></p>`;
+}
+function bindInputMode(pc,again){pc.querySelectorAll('[data-im]').forEach(b=>b.onclick=()=>{S.qcm=b.dataset.im==='1';save();again();});}
+
+/* ---- Découvrir ---- */
+function slidesFor(p){
+  const V=n=>VBY[n];
+  const ex=(v,k,pron)=>`<span class="pr">${pron}</span> ${colorForm(v,k)}`;
+  switch(p){
+  case 0: return [
+    {h:'Passé, présent, futur',say:'Le futur, c\'est pour parler de ce qui n\'est pas encore arrivé. Ça se passera plus tard. Hier, c\'est le passé. Aujourd\'hui, c\'est le présent. Demain, c\'est le futur.',
+     html:`<p class="kara">Le futur, c'est pour parler de ce qui n'est pas encore arrivé. Ça se passera plus tard.</p>
+      <div class="timeline"><div style="background:#E1BEE7">⏪<br><b>Passé</b><br>hier</div><div style="background:#FFF9C4">📍<br><b>Présent</b><br>maintenant</div><div style="background:#B3E5FC">⏩<br><b>Futur</b><br>demain</div></div>`},
+    {h:'Les mots-indices',say:'Certains mots t\'aident à reconnaître le futur : demain, bientôt, plus tard, ce soir, la semaine prochaine, l\'année prochaine, dans dix ans.',
+     html:`<p class="kara">Certains mots t'aident à reconnaître le futur :</p><p class="big center"><mark>demain</mark> · <mark>bientôt</mark> · <mark>plus tard</mark> · <mark>ce soir</mark> · <mark>la semaine prochaine</mark> · <mark>l'année prochaine</mark> · <mark>dans dix ans</mark></p>`},
+    {h:'Écoute la différence',say:'Hier, j\'ai joué. Aujourd\'hui, je joue. Demain, je jouerai. Au futur, on entend souvent le son r à la fin du verbe : je joue-r-ai.',
+     html:`<div class="row">${spk("Hier, j'ai joué.")}<div class="sent">⏪ Hier, j'ai joué.</div></div><br><div class="row">${spk("Aujourd'hui, je joue.")}<div class="sent">📍 Aujourd'hui, je joue.</div></div><br><div class="row">${spk("Demain, je jouerai.")}<div class="sent">⏩ Demain, je ${colorForm(V('jouer'),0)}.</div></div>
+     ${inibo('Au futur, on entend souvent le son r à la fin du verbe. C\'est la marque du futur !','k0')}`}
+  ];
+  case 1: return [
+    {h:'La marque du futur : le r',say:'Au futur, on entend presque toujours le son r juste avant la terminaison. C\'est la marque du futur ! Je chanterai.',
+     html:`<p class="kara">Au futur, on entend presque toujours le son [r] juste avant la terminaison. C'est la marque du futur !</p><p class="eq">${ex(V('chanter'),0,'je')}</p>${LEGEND}`},
+    {h:'Les verbes en -er',say:'Pour les verbes comme chanter, c\'est facile : on garde l\'infinitif en entier, puis on ajoute la terminaison. Chanter, plus a i, donne je chanterai.',
+     html:`<p class="kara">Pour les verbes comme chanter, c'est facile : on garde l'infinitif en entier, puis on ajoute la terminaison.</p><p class="eq"><span class="rad">chante</span><span class="rm">r</span> + <span class="te">ai</span> → je ${colorForm(V('chanter'),0)}</p><div class="tables">${tableHTML(V('chanter'))}</div>`},
+    {h:'L\'astuce d\'IniBO 💡',say:'Les terminaisons du futur ressemblent au verbe avoir au présent : j\'ai, tu as, il a, nous avons, vous avez, ils ont. Au futur : je chanterai, tu chanteras, il chantera, nous chanterons, vous chanterez, ils chanteront.',
+     html:`${inibo('Les terminaisons du futur ressemblent au verbe avoir au présent !','k1')}<table class="conj"><tr><td class="small">avoir au présent</td><td></td><td class="small">futur</td></tr>${['j\'ai','tu as','il a','nous av<b>ons</b>','vous av<b>ez</b>','ils ont'].map((a,k)=>`<tr><td>${a}</td><td>→</td><td><span class="rm">r</span><span class="te">${END[k]}</span></td></tr>`).join('')}</table>`},
+    {h:'Le code couleur',say:'Dans toute la mission, les couleurs t\'aident à mémoriser. En jaune, le radical. En orange, un radical qui change : il faut l\'apprendre par cœur. En rouge, le r, marque du futur. En bleu, la terminaison.',
+     html:`<p class="kara">Dans toute la mission, les couleurs t'aident à mémoriser.</p><p class="big"><span class="rad">jaune</span> = le radical<br><span class="rad irr">orange</span> = un radical qui change : à apprendre par cœur<br><span class="rm">rouge</span> = le r, marque du futur<br><span class="te">bleu</span> = la terminaison</p>`}
+  ];
+  case 2: return [
+    {h:'Les verbes comme finir',say:'Pour les verbes comme finir, on garde aussi l\'infinitif en entier, puis on ajoute la terminaison. Je finirai.',
+     html:`<p class="kara">Pour les verbes comme finir, on garde aussi l'infinitif en entier, puis on ajoute la terminaison.</p><div class="tables">${tableHTML(V('finir'))}${tableHTML(V('choisir'))}</div>${LEGEND}`},
+    {h:'Le e qu\'on n\'entend pas',say:'Attention aux verbes comme jouer, crier, oublier, continuer. On garde le e de l\'infinitif, même si on ne l\'entend pas ! Je jouerai, tu crieras.',
+     html:`<p class="kara">Attention aux verbes comme jouer, crier, oublier, continuer. On garde le e de l'infinitif, même si on ne l'entend pas !</p><div class="tables">${tableHTML(V('jouer'))}${tableHTML(V('oublier'))}</div>${inibo('Stop ! Avant d\'écrire, pense à l\'infinitif dans ta tête : jouer. Garde-le en entier, puis ajoute la terminaison.','k2')}`}
+  ];
+  case 3: return [
+    {h:'Être : ser-',say:'Le verbe être change complètement au futur. Son radical devient s e. Je serai, tu seras, il sera, nous serons, vous serez, ils seront.',
+     html:`<p class="kara">Le verbe être change complètement au futur. Son radical devient se- (en orange : à apprendre par cœur).</p><div class="tables">${tableHTML(V('être'))}</div>${LEGEND}`},
+    {h:'Avoir : aur-',say:'Le verbe avoir change aussi. Son radical devient a u. J\'aurai, tu auras, il aura, nous aurons, vous aurez, ils auront.',
+     html:`<p class="kara">Le verbe avoir change aussi. Son radical devient au-.</p><div class="tables">${tableHTML(V('avoir'))}</div>`},
+    {h:'Ne les mélange pas !',say:'Je serai, c\'est le verbe être. J\'aurai, c\'est le verbe avoir. Je serai content. J\'aurai un vélo.',
+     html:`<div class="tables">${tableHTML(V('être'))}${tableHTML(V('avoir'))}</div>${inibo('Stop ! Je serai, c\'est être : je serai content. J\'aurai, c\'est avoir : j\'aurai un vélo.','k3')}`}
+  ];
+  case 4: return [
+    {h:'Aller et faire',say:'Aller et faire changent de radical au futur. Aller devient i : j\'irai. Faire devient f e : je ferai.',
+     html:`<p class="kara">Aller et faire changent de radical au futur : à apprendre par cœur !</p><div class="tables">${tableHTML(V('aller'))}${tableHTML(V('faire'))}</div>${LEGEND}`},
+    {h:'Dire et prendre',say:'Pour les verbes en r e comme dire et prendre, on enlève seulement le e final, puis on ajoute la terminaison. Dire, je dirai. Prendre, je prendrai.',
+     html:`<p class="kara">Pour les verbes en -re comme dire et prendre, on enlève seulement le e final, puis on ajoute la terminaison.</p><p class="eq">dir<s>e</s> → je ${colorForm(V('dire'),0)}<br>prendr<s>e</s> → je ${colorForm(V('prendre'),0)}</p><div class="tables">${tableHTML(V('dire'))}${tableHTML(V('prendre'))}</div>`},
+    {h:'Les cousins de prendre',say:'Comprendre et apprendre se conjuguent comme prendre : je comprendrai, j\'apprendrai.',
+     html:`<p class="kara">Comprendre et apprendre se conjuguent comme prendre.</p><div class="tables">${tableHTML(V('comprendre'))}${tableHTML(V('apprendre'))}</div>`}
+  ];
+  case 5: return [
+    {h:'Deux r !',say:'Pouvoir et voir ont deux r au futur. Pouvoir : je pourrai. Voir : je verrai.',
+     html:`<p class="kara">Pouvoir et voir ont deux r au futur !</p><div class="tables">${tableHTML(V('pouvoir'))}${tableHTML(V('voir'))}</div>${LEGEND}`},
+    {h:'Un d apparaît',say:'Venir et vouloir : un d apparaît avant le r. Venir : je viendrai. Vouloir : je voudrai. Revenir se conjugue comme venir.',
+     html:`<p class="kara">Venir et vouloir : un d apparaît avant le r.</p><div class="tables">${tableHTML(V('venir'))}${tableHTML(V('vouloir'))}</div>`},
+    {h:'L\'astuce d\'IniBO',say:'Pour retenir : je pourrai, je verrai, avec deux r. Je viendrai, je voudrai, avec un d.',
+     html:`${inibo('Pour retenir : je pourrai, je verrai : deux r. Je viendrai, je voudrai : un d avant le r.','k5')}<p class="eq">${ex(V('pouvoir'),0,'je')} · ${ex(V('voir'),0,'je')}<br>${ex(V('venir'),0,'je')} · ${ex(V('vouloir'),0,'je')}</p>`}
+  ];
+  case 6: return [
+    {h:'On double la consonne',say:'Appeler et jeter doublent leur consonne au futur. J\'appellerai, avec deux l. Je jetterai, avec deux t.',
+     html:`<p class="kara">Appeler et jeter doublent leur consonne au futur.</p><div class="tables">${tableHTML(V('appeler'))}${tableHTML(V('jeter'))}</div>${LEGEND}`},
+    {h:'Un accent grave',say:'Acheter et lever prennent un accent grave sur le e. J\'achèterai. Je lèverai.',
+     html:`<p class="kara">Acheter et lever prennent un accent grave : è.</p><div class="tables">${tableHTML(V('acheter'))}${tableHTML(V('lever'))}</div>`},
+    {h:'Le y devient i',say:'Pour nettoyer et essuyer, le y devient i : je nettoierai, j\'essuierai. Et envoyer est spécial : j\'enverrai, avec deux r, comme voir !',
+     html:`<p class="kara">Pour nettoyer et essuyer, le y devient i. Et envoyer est spécial : j'enverrai, avec deux r, comme voir !</p><div class="tables">${tableHTML(V('nettoyer'))}${tableHTML(V('envoyer'))}</div>`}
+  ];
+  case 7: return [
+    {h:'Qui fait l\'action ?',say:'Avant d\'écrire le verbe, IniBO te dit : Stop ! Cherche le sujet. Pose la question : qui est-ce qui fait l\'action ?',
+     html:`${inibo('Stop ! Avant d\'écrire le verbe, cherche le sujet. Pose la question : « Qui est-ce qui … ? »','k7')}`},
+    {h:'Le sujet peut être un nom',say:'Les élèves, c\'est ils : les élèves iront. Ma sœur, c\'est elle : ma sœur viendra.',
+     html:`<p class="big">Les élèves → <b>ils</b> → Les élèves ${colorForm(V('aller'),5)}.</p><p class="big">Ma sœur → <b>elle</b> → Ma sœur ${colorForm(V('venir'),2)}.</p>`},
+    {h:'Deux sujets',say:'Ma sœur et moi, c\'est nous : ma sœur et moi ferons. Toi et Tom, c\'est vous : toi et Tom pourrez.',
+     html:`<p class="big">Ma sœur et moi → <b>nous</b> → ${colorForm(V('faire'),3)}</p><p class="big">Toi et Tom → <b>vous</b> → ${colorForm(V('pouvoir'),4)}</p>`},
+    {h:'Le sujet caché',say:'Le sujet peut être loin du verbe : les enfants de ma voisine iront au cinéma. Qui ira ? Les enfants, c\'est ils. Il peut même être après le verbe : demain viendront mes cousins. Et attention : dans Mamie nous enverra un colis, nous n\'est pas le sujet. Qui enverra ? Mamie, c\'est elle.',
+     html:`<p class="big">Les enfants <span class="small">de ma voisine</span> ${colorForm(V('aller'),5)} au cinéma.<br><span class="small">Qui ira ? les enfants → ils</span></p>
+      <p class="big">Demain ${colorForm(V('venir'),5)} mes cousins.<br><span class="small">Qui viendra ? mes cousins → ils</span></p>
+      <p class="big">Mamie nous ${colorForm(V('envoyer'),2)} un colis.<br><span class="small">« nous » n'est pas le sujet ! Qui enverra ? Mamie → elle</span></p>`}
+  ];
+  }
+}
+function tabDiscover(pc,p){
+  const sl=slidesFor(p); let i=0;
+  const show=()=>{
+    const s=sl[i];
+    pc.innerHTML=`<div class="slide"><div class="row"><h3 style="flex:1">${s.h}</h3>${spk(s.say)}</div>${s.html}</div>
+     <div class="sdots">${sl.map((_,j)=>`<span class="dot ${j===i?'cur':j<i?'y':''}"></span>`).join('')}</div>
+     <div class="nav"><button class="btn grey" id="pv" ${i===0?'style="visibility:hidden"':''}>⬅ Avant</button>
+     ${i<sl.length-1?'<button class="btn" id="nx">Suite ➜</button>':'<button class="btn green" id="fin">J\'ai compris ! Étape Guidé ➜</button>'}</div>
+     ${i===sl.length-1&&p>0?`<p class="small center">Tu es sûr(e) de toi ? Tu peux aller directement au 🏆 Défi.</p>`:''}`;
+    autoSay(s.say);
+    const pv=pc.querySelector('#pv'); if(pv) pv.onclick=()=>{i--;show();};
+    const nx=pc.querySelector('#nx'); if(nx) nx.onclick=()=>{i++;show();};
+    const fn=pc.querySelector('#fin'); if(fn) fn.onclick=()=>{markTab(p,'d');showPlanet(p,'g');};
+  };
+  show();
+}
+
+/* ---- Guidé ---- */
+function tabGuided(pc,p){
+  let items;
+  if(p===0) items=shuffle(WHEN).slice(0,6).map(whenItem);
+  else if(p===7) items=shuffle(CM2).slice(0,6).map(cm2Item);
+  else items=verbSet(p,6);
+  const intro=p===0?'Je t\'aide : un mot-indice est surligné.':p===7?'Je t\'aide : d\'abord tu trouves le sujet, ensuite tu choisis le verbe.':'Je t\'aide : d\'abord tu choisis le radical, ensuite la terminaison.';
+  pc.innerHTML=`${inibo(intro,'gi')}<div id="ser"></div>`;
+  runSeries(pc.querySelector('#ser'),items,{mode:'guided'},(sc,res)=>{
+    markTab(p,'g');
+    endScreen(pc,`🧭 Étape Guidé terminée : ${sc} sur ${res.length} du premier coup.`,[['🚀 Étape Seul',()=>showPlanet(p,'s')],['🔁 Recommencer',()=>showPlanet(p,'g')]]);
+  });
+}
+/* ---- Seul ---- */
+function tabSolo(pc,p){
+  const again=()=>showPlanet(p,'s');
+  let items;
+  if(p===0) items=shuffle([...shuffle(WHEN).slice(0,4).map(whenItem),...shuffle(WHICH).slice(0,4).map(whichItem)]);
+  else if(p===7) items=shuffle(CM2).slice(0,8).map(cm2Item);
+  else items=verbSet(p,8);
+  const intro=p===0?'À toi de jouer, sans indice cette fois.':'À toi de jouer seul ! Si tu te trompes, tu as un deuxième essai et tu peux regarder le tableau.';
+  pc.innerHTML=`${inibo(intro,'si')}${p>0?inputModeBar():''}<div id="ser"></div>`;
+  if(p>0) bindInputMode(pc,again);
+  runSeries(pc.querySelector('#ser'),items,{mode:'solo',input:S.qcm?'qcm':'type'},(sc,res)=>{
+    markTab(p,'s');
+    endScreen(pc,`🚀 Étape Seul terminée : ${sc} sur ${res.length} du premier coup.`,[['🏆 Le Défi',()=>showPlanet(p,'c')],['🔁 Recommencer',again]]);
+  });
+}
+/* ---- Défi ---- */
+function tabDefi(pc,p){
+  const again=()=>showPlanet(p,'c');
+  if(p===7) return defiText(pc);
+  let items;
+  if(p===0) items=shuffle([...shuffle(WHEN).slice(0,3).map(whenItem),...shuffle(WHICH).slice(0,2).map(whichItem)]);
+  else if(p===1) items=verbSet(1,5);
+  else { items=verbSet(p,4); const rp=1+Math.floor(Math.random()*(p-1)); items.push(verbSet(rp,1)[0]); items=shuffle(items); }
+  const intro='Le Défi : 5 questions, un seul essai. Avec 4 bonnes réponses, tu gagnes l\'étoile de la planète et la planète suivante s\'ouvre !';
+  pc.innerHTML=`${inibo(intro,'ci')}${livretLine(p)}${p>0?inputModeBar():''}<div id="ser"></div>`;
+  if(p>0) bindInputMode(pc,again);
+  runSeries(pc.querySelector('#ser'),items,{mode:'defi',input:S.qcm?'qcm':'type'},(sc,res)=>{
+    markTab(p,'c'); defiResult(pc,p,sc>=4,`${sc} sur ${res.length}`);
+  });
+}
+function defiResult(pc,p,win,scoreTxt){
+  let newU=false;
+  S.defi=S.defi||{}; const prev=S.defi[p];
+  S.defi[p]={last:scoreTxt,ok:win||!!(prev&&prev.ok),date:new Date().toLocaleDateString('fr-FR'),n:((prev&&prev.n)||0)+1};
+  save();
+  if(win && S.unlocked===p){S.unlocked=Math.min(8,p+1);save();newU=true;}
+  window.scrollTo(0,0);
+  if(win){
+    const nextName=p<7?PLANETS[p+1].name:'';
+    const m=p===7?`Mission accomplie ! Tu as réussi la Station CM2. Tu es un vrai commandant du futur !`:
+      `Bravo ! Tu as gagné l'étoile de la ${PLANETS[p].name}.`+(newU?` La ${nextName} est maintenant ouverte !`:'');
+    const ev=PCODES[p].ev;
+    pc.innerHTML=`<div class="center"><div class="badge-big">⭐</div><h2>Défi réussi : ${scoreTxt}</h2>${inibo(m,'dr')}
+     ${ev.length?`<div class="fb info" style="text-align:left">📘 <b>Dans ton livret de réussite :</b>${codeChips(ev,true)}</div>`:''}
+     ${newU?`<p>Ton nouveau mot de passe : <span class="pass">${code(S.unlocked)}</span> ${spk('Ton nouveau mot de passe est : '+code(S.unlocked).replace('-',', tiret, ')+'. Note-le !')}</p><p class="small">Note-le dans ton cahier !</p>`:''}
+     <p>${p<7?`<button class="btn green" id="nxp">${PLANETS[p+1].emoji} Aller à la ${nextName}</button>`:''}<button class="btn" id="tm">🗺️ La carte</button></p></div>`;
+    autoSay(m,document.getElementById('dr'));
+    const n=pc.querySelector('#nxp'); if(n) n.onclick=()=>showPlanet(p+1,'d');
+  } else {
+    const m=`Tu as eu ${scoreTxt}. Il faut ${p===7?'au moins 80 sur 100 de bonnes réponses':'4 bonnes réponses'}. Ce n'est pas grave : retourne t'entraîner dans les étapes Guidé ou Seul, puis réessaie. Chaque erreur fait grandir ton cerveau !`;
+    pc.innerHTML=`<div class="center"><div class="badge-big">💪</div>${inibo(m,'dr')}<p><button class="btn" id="tg">🧭 Guidé</button><button class="btn" id="ts">🚀 Seul</button><button class="btn yellow" id="tc">🔁 Réessayer le défi</button></p><p><button class="btn grey" id="tm">🗺️ La carte</button></p></div>`;
+    autoSay(m,document.getElementById('dr'));
+    pc.querySelector('#tg').onclick=()=>showPlanet(p,'g'); pc.querySelector('#ts').onclick=()=>showPlanet(p,'s'); pc.querySelector('#tc').onclick=()=>showPlanet(p,'c');
+  }
+  pc.querySelector('#tm').onclick=()=>showMap();
+}
+function endScreen(pc,txt,btns){
+  pc.innerHTML=`<div class="center"><div class="badge-big">🎉</div>${inibo(txt,'es')}<p>${btns.map((b,i)=>`<button class="btn ${i===0?'green':'grey'}" data-b="${i}">${b[0]}</button>`).join('')}</p></div>`;
+  autoSay(txt,document.getElementById('es'));
+  pc.querySelectorAll('[data-b]').forEach(b=>b.onclick=btns[+b.dataset.b][1]);
+  window.scrollTo(0,0);
+}
+
+/* ---- Défi Station CM2 : transposer un texte ---- */
+function defiText(pc,idx){
+  const T=TEXTS[idx==null?Math.floor(Math.random()*TEXTS.length):idx];
+  const tidx=TEXTS.indexOf(T);
+  const qcm=!!S.qcm; let n=0;
+  const gaps=[];
+  const body=T.seg.map(s=>{
+    if(typeof s==='string') return esc(s);
+    const v=VBY[s[0]], k=s[1], ans=form(v,k), it={v,k,ans}; gaps.push(it); const i=n++;
+    if(qcm) return `<select data-g="${i}" aria-label="${v.inf}"><option value="">(${esc(v.inf)})</option>${qcmChoices(it).map(c=>`<option>${esc(c)}</option>`).join('')}</select>`;
+    return `<input data-g="${i}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${esc(v.inf)}" aria-label="${v.inf}">`;
+  }).join('');
+  const intro='Le grand Défi de la Station : ce texte est au présent. Réécris-le au futur ! Avec 80 sur 100 de bonnes réponses, tu termines la mission.';
+  pc.innerHTML=`${inibo(intro,'ti')}${livretLine(7)}${inputModeBar()}
+   <h3>📜 ${esc(T.title)} <span class="small">(au présent)</span></h3>
+   <div class="row">${spk(null,'tp')}<div class="sent kara" id="tp" style="font-size:22px">${esc(T.present)}</div></div>
+   <h3 style="margin-top:16px">⏩ Au futur :</h3>
+   <div class="textq">${body}</div>
+   <div id="tfb"></div><p class="center"><button class="btn green" id="tv">Vérifier</button></p>`;
+  bindInputMode(pc,()=>defiText(pc,tidx));
+  autoSay(intro);
+  pc.querySelector('#tv').onclick=()=>{
+    let ok=0;
+    pc.querySelectorAll('[data-g]').forEach(el=>{
+      const g=gaps[+el.dataset.g]; const r=qcm?{ok:el.value===g.ans}:analyse(g,el.value);
+      el.classList.remove('good','bad'); el.disabled=true;
+      if(r.ok){ok++;el.classList.add('good');} else {el.classList.add('bad'); el.insertAdjacentHTML('afterend',` <span class="corr">→ ${colorForm(g.v,g.k)}</span>`);}
+    });
+    const need=Math.ceil(gaps.length*0.8);
+    pc.querySelector('#tv').remove();
+    const futText=T.seg.map(s=>typeof s==='string'?s:form(VBY[s[0]],s[1])).join('');
+    pc.querySelector('#tfb').innerHTML=`<div class="fb ${ok>=need?'ok':'ko'}">${ok} bonnes réponses sur ${gaps.length}.</div><div class="row" style="margin-top:8px">${spk(futText)}<span>Écouter le texte au futur</span></div><p class="center"><button class="btn green" id="tn">Suite ➜</button> <button class="btn grey" id="tr">🔁 Un autre texte</button></p>`;
+    autoSay(`${ok} bonnes réponses sur ${gaps.length}.`);
+    pc.querySelector('#tr').onclick=()=>defiText(pc);
+    pc.querySelector('#tn').onclick=()=>{
+      markTab(7,'c');
+      if(ok>=need){ defiResult(pc,7,true,`${ok} sur ${gaps.length}`); bonus(pc); }
+      else defiResult(pc,7,false,`${ok} sur ${gaps.length}`);
+    };
+  };
+}
+function bonus(pc){
+  const d=document.createElement('div'); d.className='card'; d.style.marginTop='16px'; d.style.boxShadow='none'; d.style.border='3px dashed #b39ddb';
+  d.innerHTML=`<h3>✍️ Bonus : Ma vie en 2040</h3><p>Imagine ta vie plus tard et écris quelques phrases au futur. Ensuite, écoute ton texte !</p>
+   <p class="small">Idées de verbes : être, avoir, aller, faire, pouvoir, voir, vouloir, venir, habiter, travailler, voyager…</p>
+   <textarea id="bt" placeholder="En 2040, je serai…"></textarea><p class="center"><button class="btn yellow" id="bl">🔊 Écouter mon texte</button></p>`;
+  pc.appendChild(d);
+  d.querySelector('#bl').onclick=()=>speak(d.querySelector('#bt').value);
+}
+
+/* =========================================================
+   ESPACE ENSEIGNANTE (5 clics sur le logo)
+   ========================================================= */
+function teacherLogin(){
+  const m=modal(`<h3>Espace enseignante</h3><p><input id="tc" type="password" style="padding:8px;border-radius:10px;border:2px solid #b39ddb;width:100%"></p><div id="tcf"></div><p class="center"><button class="btn" id="tok">Entrer</button> <button class="btn grey" data-close>Fermer</button></p>`);
+  const go=()=>{ if(m.querySelector('#tc').value.trim().toUpperCase()!=='OFIKZA'){m.querySelector('#tcf').innerHTML='<div class="fb ko">Code incorrect.</div>';return;} m.remove(); teacherPanel(); };
+  m.querySelector('#tok').onclick=go; m.querySelector('#tc').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+}
+function teacherPanel(){
+  const m=modal(`<h3>Espace enseignante</h3>
+   <p><button class="btn green" id="ta">Ouvrir toutes les planètes</button></p>
+   <p><button class="btn yellow" id="tsc">Relancer le scanner</button></p>
+   <p><button class="btn grey" id="trs">Tout effacer sur cet appareil</button></p>
+   <h4>Bilan de cet appareil ${S.name?'('+esc(S.name)+')':''}</h4>
+   <p class="small">${S.start!=null?`Scanner (${S.scanDate||''}) : départ ${PLANETS[S.start].name}.`:'Scanner non passé sur cet appareil (ou progression restaurée par mot de passe).'}</p>
+   <div style="font-size:16px">${PLANETS.map((P,i)=>{const d=(S.defi||{})[i];
+     const st=d&&d.ok?`✅ Défi réussi (dernier : ${d.last}, ${d.date}, ${d.n} essai${d.n>1?'s':''})`:d?`⏳ Défi tenté (${d.last}, ${d.date}, ${d.n} essai${d.n>1?'s':''})`:(S.start!=null&&i<S.start)?'🛸 Validée par le scanner':i<S.unlocked?'✔︎ Ouverte par mot de passe':'—';
+     return `<div style="border-top:1px solid #ddd;padding:6px 0"><b>${P.emoji} ${P.name}</b> — ${st}<br><span class="small">Évalué :</span> ${PCODES[i].ev.length?codeChips(PCODES[i].ev):'<span class="small">aucun</span>'} · <span class="small">Travaillé :</span> ${codeChips(PCODES[i].tr)}</div>`;}).join('')}</div>
+   <details style="font-size:16px;margin-top:8px"><summary>Intitulés des codes</summary>${codeChips(Object.keys(CODES),true)}</details>
+   <h4>Mots de passe</h4><table class="conj" style="font-size:17px">${PLANETS.map((P,i)=>`<tr><td>${P.emoji} Départ ${P.name}</td><td><b>${code(i)}</b></td></tr>`).join('')}<tr><td>⭐ Mission terminée</td><td><b>${code(8)}</b></td></tr></table>
+   <p class="center"><button class="btn" data-close>Fermer</button></p>`);
+  m.querySelector('#ta').onclick=()=>{S.unlocked=Math.max(S.unlocked,7);S.placed=true;save();m.remove();refreshHeader();showMap();};
+  m.querySelector('#tsc').onclick=()=>{m.remove();scanIntro();};
+  m.querySelector('#trs').onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){} S={name:'',placed:false,unlocked:0,tabs:{},auto:false,slow:false}; m.remove(); refreshHeader(); showWelcome();};
+}
+
+/* =========================================================
+   DÉMARRAGE
+   ========================================================= */
+refreshHeader();
+if(S.placed) showMap('content de te revoir ! Choisis une planète.'); else showWelcome();
+</script>
+</body>
+</html>
