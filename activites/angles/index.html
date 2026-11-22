@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les angles – Entraînement</title>
+<style>
+  :root{
+    --teal:#1a9a8f; --teal-fonce:#0f6e66; --teal-clair:#e3f4f2;
+    --vert:#1f8a4c; --vert-clair:#e3f5ea; --rouge:#c0392b; --rouge-clair:#fdecea;
+    --jaune:#fff4cc; --texte:#222; --gris:#f4f6f6;
+    --aigu:#2b8be0; --droit:#e8833a; --obtus:#9b59b6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;color:var(--texte);background:var(--gris);font-size:20px;line-height:1.4}
+  header{background:var(--teal);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:14px}
+  header .num{background:#fff;color:var(--teal);font-weight:800;border-radius:10px;padding:4px 12px;font-size:28px}
+  header h1{margin:0;font-size:26px}
+  nav.principal{display:flex;gap:8px;padding:14px 24px 0;flex-wrap:wrap}
+  nav.principal button{font-size:19px;padding:11px 18px;border:2px solid var(--teal);background:#fff;color:var(--teal-fonce);border-radius:12px 12px 0 0;cursor:pointer;font-weight:600}
+  nav.principal button.actif{background:var(--teal);color:#fff}
+  main{background:#fff;margin:0 24px 24px;border:2px solid var(--teal);border-radius:0 14px 14px 14px;padding:24px;min-height:75vh}
+  .onglet{display:none}.onglet.actif{display:block}
+  h2{margin:0 0 6px;color:var(--teal-fonce);font-size:26px}
+  h3{color:var(--teal-fonce);margin:22px 0 8px;font-size:22px}
+  .consigne{font-size:22px;margin:0 0 16px}
+  .btn{font-size:19px;padding:10px 18px;border-radius:10px;border:none;cursor:pointer;font-weight:600;margin:4px 6px 4px 0}
+  .btn-p{background:var(--teal);color:#fff}
+  .btn-s{background:#fff;color:var(--teal-fonce);border:2px solid var(--teal)}
+  .btn:disabled{opacity:.4;cursor:default}
+  .cache{display:none!important}
+  .encadre{background:var(--teal-clair);border-left:6px solid var(--teal);border-radius:10px;padding:14px 18px;margin:14px 0}
+  .msg{margin-top:8px;font-weight:600;min-height:1.4em}
+  .msg.ok{color:var(--vert)} .msg.ko{color:var(--rouge)}
+  .bravo{background:var(--vert-clair);border:2px solid var(--vert);color:var(--vert);border-radius:12px;padding:14px 18px;font-weight:700;font-size:22px;margin-top:16px}
+  .t-aigu{color:var(--aigu);font-weight:700}.t-droit{color:var(--droit);font-weight:700}.t-obtus{color:var(--obtus);font-weight:700}
+  .ang{position:relative;display:inline-block;padding-top:4px;font-weight:700;letter-spacing:1px}
+  .ang::before{content:"";position:absolute;left:8%;right:8%;top:-3px;height:10px;border-top:2.5px solid currentColor;border-radius:50% 50% 0 0}
+  svg{max-width:100%;height:auto}
+  .code{display:inline-block;background:#fff4cc;border:2px solid #c9a400;color:#7a6200;border-radius:8px;padding:2px 10px;font-size:17px;font-weight:700;margin-left:8px;vertical-align:middle}
+
+  /* Découverte */
+  .grille3{display:flex;gap:16px;flex-wrap:wrap}
+  .carte{flex:1;min-width:230px;border:2px solid #ddd;border-radius:14px;padding:12px;text-align:center}
+  .carte p{margin:6px 0 0;font-size:19px}
+  .labo{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+  input[type=range]{width:320px;height:30px}
+  .typeLive{font-size:30px;font-weight:800;margin:8px 0}
+
+  /* Étiquettes */
+  .etiquettes{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .etiquettes button{font-size:21px;padding:9px 16px;border-radius:10px;border:2px solid #bbb;background:#fff;cursor:pointer;font-weight:700;min-width:100px}
+  .etiquettes button.bon{background:#7bd39b;border-color:var(--vert)}
+  .etiquettes button.faux{background:#f3a59d;border-color:var(--rouge);text-decoration:line-through}
+  .score{font-size:22px;font-weight:700;color:var(--teal-fonce)}
+
+  .ex1{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+  .ex1 .carte{min-width:200px;max-width:240px}
+
+  /* Exercice 2 */
+  .ex2-rep{display:flex;gap:14px;flex-wrap:wrap}
+  .ex2-item{flex:1;min-width:260px;border:2px solid #ddd;border-radius:12px;padding:12px}
+  .pastille{display:inline-flex;width:34px;height:34px;border-radius:50%;color:#fff;font-weight:800;align-items:center;justify-content:center;margin-right:6px}
+  .ex2-item input{font-size:26px;width:110px;text-align:center;text-transform:uppercase;border:2px solid #999;border-radius:8px;font-weight:700;letter-spacing:2px}
+  .ex2-item input.ok{background:var(--vert-clair);border-color:var(--vert)}
+  .ex2-item input.ko{background:var(--rouge-clair);border-color:var(--rouge)}
+  .pas div{background:var(--teal-clair);border-radius:8px;padding:6px 10px;margin:4px 0;font-size:19px}
+
+  /* Exercice 3 */
+  .jetons{display:flex;gap:8px;flex-wrap:wrap;min-height:56px;padding:8px;border:2px dashed #bbb;border-radius:12px;margin:10px 0}
+  .jeton{width:48px;height:48px;border-radius:50%;border:3px solid #333;background:#fff;font-size:21px;font-weight:800;cursor:pointer}
+  .jeton.sel{background:var(--jaune);border-color:#c9a400;transform:scale(1.12)}
+  .jeton.ok{background:#7bd39b;border-color:var(--vert)}
+  .jeton.ko{background:#f3a59d;border-color:var(--rouge)}
+  table.classe{width:100%;border-collapse:collapse;margin-top:8px}
+  table.classe th{font-size:21px;padding:10px;border:2px solid #aaa}
+  table.classe td{border:2px solid #aaa;height:110px;vertical-align:top;padding:8px;cursor:pointer}
+  table.classe td .zone{display:flex;gap:8px;flex-wrap:wrap}
+  th.h-aigu{background:#d7ebfb}th.h-droit{background:#fde3d0}th.h-obtus{background:#ead9f2}
+
+  .compteur{margin-left:auto;background:#fff;color:var(--teal-fonce);border-radius:14px;padding:6px 16px;font-size:24px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .compteur .etoiles{letter-spacing:2px}
+  header{flex-wrap:wrap}
+  nav.series{display:flex;gap:8px;margin:6px 0 14px;flex-wrap:wrap;padding:0}
+  nav.series button{font-size:19px;padding:8px 18px;border-radius:999px;border:2px solid var(--teal);background:#fff;color:var(--teal-fonce);cursor:pointer;font-weight:700}
+  nav.series button.actif{background:var(--teal-clair);border-color:var(--teal-fonce)}
+  .serie{display:none}.serie.actif{display:block}
+  .regle{font-size:18px;color:#6b5a00;background:var(--jaune);border-radius:8px;padding:6px 12px;display:inline-block;margin-bottom:12px}
+  .resultat{border-radius:12px;padding:14px 18px;font-weight:700;font-size:22px;margin-top:16px}
+  .resultat.gagne{background:#fff7d6;border:3px solid #f5b301;color:#7a5a00}
+  .resultat.perdu{background:var(--teal-clair);border:2px solid var(--teal);color:var(--teal-fonce)}
+  .grosse-etoile{font-size:44px;vertical-align:middle;margin-right:8px;display:inline-block;animation:pop .6s ease}
+  @keyframes pop{0%{transform:scale(0) rotate(-90deg)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+
+</style>
+</head>
+<body>
+<header>
+  <span class="num">21</span>
+  <h1>Identifier un angle et utiliser le vocabulaire associé <span style="font-size:20px;opacity:.9">— Entraînement</span></h1>
+  <div class="compteur">Mes étoiles : <span class="etoiles" id="etoiles"></span> <span id="nbEtoiles">0 / 9</span></div>
+</header>
+<nav class="principal">
+  <button class="actif" data-tab="t1">Découvrir les angles</button>
+  <button data-tab="t2">S'entraîner</button>
+  <button data-tab="t3">Exercice 1</button>
+  <button data-tab="t4">Exercice 2</button>
+  <button data-tab="t5">Exercice 3</button>
+</nav>
+<main>
+
+<section class="onglet actif" id="t1">
+  <h2>Découvrir les angles <span class="code">Livret : MES 8 · GM1</span></h2>
+  <div class="encadre">
+    Un <b>angle</b> est formé par <b>deux côtés</b> (deux demi-droites) qui partent d'un même point : le <b>sommet</b>.<br>
+    La taille d'un angle ne dépend pas de la longueur des côtés, mais de leur <b>écartement</b>.
+  </div>
+  <svg id="svgVocab" viewBox="0 0 520 220" width="520"></svg>
+
+  <h3>Les trois sortes d'angles</h3>
+  <p>Pour savoir quelle sorte d'angle on a, on le compare avec <b>l'angle droit de l'équerre</b> (en pointillés).</p>
+  <div class="grille3" id="troisAngles"></div>
+
+  <h3>À toi de jouer : ouvre ou ferme l'angle</h3>
+  <div class="labo">
+    <svg id="svgLabo" viewBox="0 0 340 260" width="340"></svg>
+    <div>
+      <input type="range" id="curseur" min="10" max="170" value="50"><br>
+      <label style="font-size:19px"><input type="checkbox" id="voirEquerre" checked> Montrer l'équerre</label>
+      <div class="typeLive" id="typeLive"></div>
+      <div id="expliLive" style="max-width:380px"></div>
+    </div>
+  </div>
+
+  <h3>Nommer un angle</h3>
+  <div class="labo">
+    <svg id="svgNom" viewBox="0 0 300 200" width="300"></svg>
+    <div class="encadre" style="flex:1;min-width:280px">
+      On nomme un angle avec <b>3 lettres</b> :<br>
+      • un point sur un côté,<br>
+      • <b>le sommet, toujours au milieu</b>,<br>
+      • un point sur l'autre côté.<br>
+      On met un petit chapeau au-dessus : <span class="ang">ESF</span> ou <span class="ang">FSE</span>.
+    </div>
+  </div>
+</section>
+
+<section class="onglet" id="t2">
+  <h2>S'entraîner <span class="code">Livret : MES 8</span></h2>
+  <p class="consigne">Cet angle est-il <span class="t-aigu">aigu</span>, <span class="t-droit">droit</span> ou <span class="t-obtus">obtus</span> ? Tu peux t'aider de l'équerre.</p>
+  <div class="score" id="score">Question 1 / 10 — Score : 0</div>
+  <div style="text-align:center">
+    <svg id="svgEntr" viewBox="0 0 360 280" width="360"></svg>
+    <div><button class="btn btn-s" id="btnEquerre">📐 Poser l'équerre</button></div>
+    <div class="etiquettes" id="etiqEntr"></div>
+    <div class="msg" id="msgEntr"></div>
+    <button class="btn btn-p cache" id="btnSuivEntr">Angle suivant ➜</button>
+  </div>
+  <div class="bravo cache" id="finEntr"></div>
+</section>
+
+<section class="onglet" id="t3">
+  <h2>Exercice 1 <span class="code">Livret : MES 8</span></h2>
+  <p class="consigne">À l'aide de ton équerre, indique pour chaque angle s'il est aigu, droit ou obtus. Clique sur la bonne étiquette.</p>
+  <div class="regle">⭐ Pour gagner l'étoile : trouve les 6 angles avec 1 erreur au maximum.</div>
+  <nav class="series"></nav>
+</section>
+
+<section class="onglet" id="t4">
+  <h2>Exercice 2 <span class="code">Livret : GM1</span></h2>
+  <p class="consigne">Nomme correctement les angles formés par les rayons lasers des vaisseaux spatiaux.<br><span style="font-size:19px">Attention : parfois, plusieurs noms sont possibles !</span></p>
+  <div class="regle">⭐ Pour gagner l'étoile : nomme les 4 angles sans utiliser l'aide pas à pas.</div>
+  <nav class="series"></nav>
+</section>
+
+<section class="onglet" id="t5">
+  <h2>Exercice 3 <span class="code">Livret : MES 8</span></h2>
+  <p class="consigne">Observe et classe les angles de ces constellations d'étoiles dans le tableau.<br>
+  <span style="font-size:19px">Clique sur un numéro, puis sur la bonne colonne. Pour retirer un numéro, clique dessus dans le tableau.</span></p>
+  <div class="regle">⭐ Pour gagner l'étoile : classe les 16 angles avec 2 erreurs au maximum, sans voir la correction.</div>
+  <nav class="series"></nav>
+</section>
+
+</main>
+
+<script>
+/* ================= Outils ================= */
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+const rad=d=>d*Math.PI/180;
+const pt=(c,deg,len)=>[c[0]+len*Math.cos(rad(deg)),c[1]-len*Math.sin(rad(deg))];
+const dirDeg=(a,b)=>{let d=Math.atan2(-(b[1]-a[1]),b[0]-a[0])*180/Math.PI;return (d+360)%360;};
+const typeDe=m=>Math.abs(m-90)<3?'droit':(m<90?'aigu':'obtus');
+const COUL={aigu:'#2b8be0',droit:'#e8833a',obtus:'#9b59b6'};
+
+/* secteur coloré entre deux directions (angle < 180) */
+function secteur(svg,v,d1,d2,r,fill,extra){
+  let m=((d2-d1)%360+360)%360;
+  if(m>180){[d1,d2]=[d2,d1];m=360-m;}
+  const a=pt(v,d1,r),b=pt(v,d2,r);
+  return el('path',Object.assign({d:`M${v[0]},${v[1]} L${a[0]},${a[1]} A${r},${r} 0 0 0 ${b[0]},${b[1]} Z`,fill:fill},extra||{}),svg);
+}
+/* dessine un angle : sommet c, direction du 1er côté d1, mesure m */
+function dessinerAngle(svg,c,d1,m,len,fill,opts){
+  opts=opts||{};
+  secteur(svg,c,d1,d1+m,opts.r||34,fill);
+  const a=pt(c,d1,len),b=pt(c,d1+m,len);
+  el('line',{x1:c[0],y1:c[1],x2:a[0],y2:a[1],stroke:'#222','stroke-width':3,'stroke-linecap':'round'},svg);
+  el('line',{x1:c[0],y1:c[1],x2:b[0],y2:b[1],stroke:'#222','stroke-width':3,'stroke-linecap':'round'},svg);
+}
+/* équerre : angle droit de référence posé sur le 1er côté */
+function dessinerEquerre(svg,c,d1,len,g){
+  g=g||el('g',{},svg);
+  const a=pt(c,d1,len*0.95),b=pt(c,d1+90,len*0.95);
+  el('path',{d:`M${c[0]},${c[1]} L${a[0]},${a[1]} L${b[0]},${b[1]} Z`,fill:'rgba(255,215,0,.22)',stroke:'#c9a400','stroke-width':2.5,'stroke-dasharray':'8 6'},g);
+  const s=16,p1=pt(c,d1,s),p2=pt(c,d1+90,s),p3=[p1[0]+p2[0]-c[0],p1[1]+p2[1]-c[1]];
+  el('path',{d:`M${p1[0]},${p1[1]} L${p3[0]},${p3[1]} L${p2[0]},${p2[1]}`,fill:'none',stroke:'#c9a400','stroke-width':2.5},g);
+  return g;
+}
+function texte(svg,x,y,t,attrs){const e=el('text',Object.assign({x:x,y:y,'font-size':20,'font-weight':700,'text-anchor':'middle','dominant-baseline':'middle','font-family':'Segoe UI,Arial'},attrs||{}),svg);e.textContent=t;return e;}
+function croix(svg,p,col){col=col||'#222';el('path',{d:`M${p[0]-7},${p[1]} L${p[0]+7},${p[1]} M${p[0]},${p[1]-7} L${p[0]},${p[1]+7}`,stroke:col,'stroke-width':2.5},svg);}
+
+
+/* ================= 1. DÉCOUVERTE ================= */
+(function(){
+  const s=document.getElementById('svgVocab');
+  const c=[150,170];
+  dessinerAngle(s,c,0,40,230,'#9fd8d2',{r:50});
+  el('circle',{cx:c[0],cy:c[1],r:7,fill:'#c0392b'},s);
+  texte(s,c[0]-50,c[1]+20,'sommet',{fill:'#c0392b'});
+  texte(s,400,195,'côté',{fill:'#0f6e66'});
+  texte(s,340,40,'côté',{fill:'#0f6e66'});
+  texte(s,240,148,'angle',{fill:'#0f6e66','font-size':18});
+
+  const zone=document.getElementById('troisAngles');
+  [['aigu',50,'Plus <b>petit</b> que l\'angle droit : le côté reste <b>à l\'intérieur</b> de l\'équerre.'],
+   ['droit',90,'<b>Exactement</b> comme l\'angle de l\'équerre. On le code avec un petit carré.'],
+   ['obtus',130,'Plus <b>grand</b> que l\'angle droit : le côté <b>dépasse</b> de l\'équerre.']].forEach(([t,m,txt])=>{
+    const d=document.createElement('div');d.className='carte';
+    d.innerHTML='<div class="t-'+t+'" style="font-size:26px">Angle '+t+'</div>';
+    const sv=el('svg',{viewBox:'0 0 220 170',width:220},d);
+    const c=[40,145];
+    dessinerEquerre(sv,c,0,120);
+    dessinerAngle(sv,c,0,m,150,COUL[t]+'88',{r:34});
+    const p=document.createElement('p');p.innerHTML=txt;d.appendChild(p);
+    zone.appendChild(d);
+  });
+
+  const lab=document.getElementById('svgLabo'),cur=document.getElementById('curseur'),chk=document.getElementById('voirEquerre');
+  function maj(){
+    lab.innerHTML='';
+    let m=+cur.value; if(Math.abs(m-90)<=3){m=90;}
+    const c=[150,225];
+    if(chk.checked)dessinerEquerre(lab,c,0,140);
+    dessinerAngle(lab,c,0,m,175,COUL[typeDe(m)]+'99',{r:40});
+    const t=typeDe(m),tl=document.getElementById('typeLive');
+    tl.textContent='Angle '+t;tl.className='typeLive t-'+t;
+    document.getElementById('expliLive').innerHTML=
+      t==='aigu'?'Le 2<sup>e</sup> côté reste <b>à l\'intérieur</b> de l\'équerre : l\'angle est plus petit qu\'un angle droit.'
+      :t==='droit'?'Les côtés suivent <b>exactement</b> l\'équerre : c\'est un angle droit.'
+      :'Le 2<sup>e</sup> côté <b>dépasse</b> de l\'équerre : l\'angle est plus grand qu\'un angle droit.';
+  }
+  cur.oninput=maj;chk.onchange=maj;maj();
+
+  const sn=document.getElementById('svgNom'),o=[60,160];
+  dessinerAngle(sn,o,0,45,220,'#9fd8d2',{r:40});
+  const A=pt(o,45,170),B=pt(o,0,190);
+  croix(sn,A);croix(sn,B);
+  texte(sn,A[0]-14,A[1]-14,'E');texte(sn,B[0],B[1]+22,'F');
+  texte(sn,o[0]-16,o[1]+16,'S',{fill:'#c0392b'});
+})();
+
+/* ================= 2. ENTRAÎNEMENT ================= */
+(function(){
+  const svg=document.getElementById('svgEntr'),etq=document.getElementById('etiqEntr'),msg=document.getElementById('msgEntr');
+  const bEq=document.getElementById('btnEquerre'),bS=document.getElementById('btnSuivEntr'),sc=document.getElementById('score');
+  const N=10;let q=0,score=0,cur=null,repondu=false,premier=true,gEq=null;
+  function tirer(){
+    const types=['aigu','droit','obtus'];const t=types[Math.floor(Math.random()*3)];
+    const m=t==='droit'?90:t==='aigu'?20+Math.floor(Math.random()*58):102+Math.floor(Math.random()*60);
+    return {t,m,rot:Math.floor(Math.random()*360)};
+  }
+  function dessiner(){
+    svg.innerHTML='';
+    const c=[180,140],d1=cur.rot;
+    // centrer approximativement l'angle
+    const bis=d1+cur.m/2,cc=pt(c,bis+180,55);
+    cur.c=cc;
+    dessinerAngle(svg,cc,d1,cur.m,120,'#7fcfc6',{r:32});
+    gEq=null;
+  }
+  function nouvelle(){
+    if(q>=N){fin();return;}
+    cur=tirer();repondu=false;premier=true;dessiner();
+    sc.textContent='Question '+(q+1)+' / '+N+' — Score : '+score;
+    msg.textContent='';msg.className='msg';bS.classList.add('cache');bEq.disabled=false;
+    etq.innerHTML='';
+    ['aigu','droit','obtus'].forEach(t=>{
+      const b=document.createElement('button');b.textContent=t;b.className='';b.style.color=COUL[t];
+      b.onclick=()=>repondre(b,t);etq.appendChild(b);
+    });
+  }
+  function poserEquerre(){if(!gEq){gEq=dessinerEquerre(svg,cur.c,cur.rot,110);svg.appendChild(svg.firstChild);}bEq.disabled=true;}
+  bEq.onclick=poserEquerre;
+  function repondre(b,t){
+    if(repondu)return;
+    if(t===cur.t){
+      b.classList.add('bon');repondu=true;if(premier)score++;
+      msg.innerHTML='✔ Oui, c\'est un angle <span class="t-'+t+'">'+t+'</span> !';msg.className='msg ok';
+      poserEquerre();bS.classList.remove('cache');q++;
+      sc.textContent='Question '+q+' / '+N+' — Score : '+score;
+      bS.textContent=q>=N?'Voir mon résultat ➜':'Angle suivant ➜';
+    }else{
+      b.classList.add('faux');premier=false;poserEquerre();
+      msg.innerHTML='✘ Regarde bien l\'équerre : '+(cur.t==='aigu'?'le côté reste à l\'intérieur.':cur.t==='obtus'?'le côté dépasse.':'les côtés suivent exactement l\'équerre.')+' Essaie encore.';
+      msg.className='msg ko';
+    }
+  }
+  bS.onclick=nouvelle;
+  function fin(){
+    document.getElementById('finEntr').classList.remove('cache');
+    document.getElementById('finEntr').innerHTML='Série terminée : '+score+' / '+N+' du premier coup. <button class="btn btn-p" id="rejouer">Recommencer</button>';
+    document.getElementById('rejouer').onclick=()=>{q=0;score=0;document.getElementById('finEntr').classList.add('cache');nouvelle();};
+    etq.innerHTML='';bS.classList.add('cache');msg.textContent='';
+  }
+  nouvelle();
+})();
+
+
+const CONSTELLATIONS=[{"constellations": [["Orion", [[123.3, 70.9], [193.4, 119.9], [128.4, 131.5], [144.1, 219.2], [228.7, 267.9], [309.9, 267.8], [275.3, 208.1], [358.2, 160.0], [358.1, 73.1], [309.5, 131.2]], [5, 12, 1, 9, 14, 3, 16, 7], 230], ["Cygne", [[504.1, 136.2], [546.0, 92.3], [642.6, 81.6], [652.7, 172.3], [719.1, 113.8], [806.9, 135.2], [786.7, 218.2], [729.7, 277.9], [826.5, 258.5], [845.4, 180.7]], [10, 2, 15, 6, 11, 4, 13, 8], 675]]}, {"constellations": [["Pégase", [[87.4, 227.1], [111.0, 285.5], [209.0, 299.2], [173.2, 242.1], [247.9, 195.3], [314.4, 198.8], [257.0, 145.3], [254.3, 69.3], [338.0, 66.3], [419.2, 100.8]], [8, 3, 14, 11, 1, 16, 6, 10], 230], ["Persée", [[589.3, 176.0], [536.5, 115.4], [627.2, 97.7], [676.8, 145.4], [617.7, 206.7], [686.3, 205.4], [751.0, 241.2], [788.8, 172.8], [754.7, 84.2], [824.9, 108.2]], [2, 13, 9, 5, 15, 12, 4, 7], 675]]}, {"constellations": [["Dragon", [[195.6, 216.7], [115.2, 234.2], [98.0, 155.3], [135.2, 84.6], [166.7, 145.8], [239.0, 149.2], [235.3, 227.0], [285.8, 181.1], [352.2, 166.7], [384.7, 89.1]], [13, 6, 2, 16, 9, 1, 11, 4], 230], ["Andromède", [[556.6, 248.3], [601.0, 172.3], [699.1, 155.6], [650.9, 212.4], [703.6, 257.2], [777.2, 277.4], [760.3, 213.0], [812.4, 161.5], [866.5, 216.2], [878.4, 285.8]], [7, 15, 3, 10, 12, 5, 8, 14], 675]]}];
+/* ================= Onglets principaux ================= */
+document.querySelectorAll('nav.principal button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('nav.principal button').forEach(x=>x.classList.remove('actif'));
+    document.querySelectorAll('.onglet').forEach(x=>x.classList.remove('actif'));
+    b.classList.add('actif');document.getElementById(b.dataset.tab).classList.add('actif');
+  };
+});
+
+/* ================= Étoiles et séries ================= */
+const gagnees={};
+function majEtoiles(){
+  const n=Object.keys(gagnees).length;
+  document.getElementById('etoiles').textContent='⭐'.repeat(n)+'☆'.repeat(9-n);
+  document.getElementById('nbEtoiles').textContent=n+' / 9';
+}
+majEtoiles();
+function creerSeries(exId,listeDonnees,construire){
+  const sec=document.getElementById(exId),nav=sec.querySelector('nav.series');
+  listeDonnees.forEach((donnees,i)=>{
+    const cle=exId+'-'+i;
+    const bt=document.createElement('button');bt.textContent='Série '+(i+1)+' ☆';nav.appendChild(bt);
+    const div=document.createElement('div');div.className='serie';sec.appendChild(div);
+    function lancer(){
+      div.innerHTML='';
+      const zone=document.createElement('div');div.appendChild(zone);
+      construire(zone,donnees,reussi=>{
+        const r=document.createElement('div');
+        if(reussi){
+          const deja=gagnees[cle];gagnees[cle]=true;majEtoiles();bt.textContent='Série '+(i+1)+' ⭐';
+          r.className='resultat gagne';
+          r.innerHTML='<span class="grosse-etoile">⭐</span>'+(deja?'Bravo, tu as encore réussi !':'Bravo ! Tu gagnes une étoile !')+
+            (Object.keys(gagnees).length===9?'<br>🏆 Tu as gagné les 9 étoiles !':'');
+        }else{
+          r.className='resultat perdu';
+          r.innerHTML='Série terminée. Tu as eu besoin d\'aide : recommence pour gagner l\'étoile ! ';
+        }
+        const b=document.createElement('button');b.className='btn btn-p';b.textContent='↻ Recommencer cette série';b.onclick=lancer;
+        r.appendChild(document.createElement('br'));r.appendChild(b);
+        div.appendChild(r);
+      });
+    }
+    bt.onclick=()=>{
+      nav.querySelectorAll('button').forEach(x=>x.classList.remove('actif'));
+      sec.querySelectorAll('.serie').forEach(x=>x.classList.remove('actif'));
+      bt.classList.add('actif');div.classList.add('actif');
+    };
+    lancer();
+    if(i===0)bt.click();
+  });
+}
+
+/* ================= EXERCICE 1 : étiquettes ================= */
+function construireEx1(zone,angles,fin){
+  zone.innerHTML='<div class="ex1"></div>';
+  const box=zone.querySelector('.ex1');let faits=0,erreurs=0;
+  const COULS=['#8bc34a','#ff9800','#b388c9','#29b6f6','#ffd600','#ef5350'];
+  angles.forEach(([d1,m],i)=>{
+    const t=typeDe(m);
+    const d=document.createElement('div');d.className='carte';
+    d.innerHTML='<div style="font-weight:700">Angle '+(i+1)+'</div>';
+    const sv=el('svg',{viewBox:'0 0 200 160',width:200},d);
+    // centrer la figure dans le cadre
+    const L=88,a=pt([0,0],d1,L),b=pt([0,0],d1+m,L);
+    const xs=[0,a[0],b[0]],ys=[0,a[1],b[1]];
+    const c=[100-(Math.min(...xs)+Math.max(...xs))/2,80-(Math.min(...ys)+Math.max(...ys))/2];
+    dessinerAngle(sv,c,d1,m,L,COULS[i%6],{r:32});
+    const etq=document.createElement('div');etq.className='etiquettes';
+    const msg=document.createElement('div');msg.className='msg';msg.style.fontSize='18px';
+    let fini=false,g=null;
+    ['aigu','droit','obtus'].forEach(x=>{
+      const b=document.createElement('button');b.textContent=x;b.style.minWidth='64px';b.style.fontSize='19px';b.style.padding='6px 8px';
+      b.onclick=()=>{
+        if(fini||b.classList.contains('faux'))return;
+        if(!g){g=dessinerEquerre(sv,c,d1,72);sv.insertBefore(g,sv.firstChild);}
+        if(x===t){fini=true;b.classList.add('bon');msg.innerHTML='✔ '+(t==='aigu'?'Le côté reste dans l\'équerre.':t==='droit'?'Il est comme l\'équerre.':'Le côté dépasse de l\'équerre.');msg.className='msg ok';
+          faits++;if(faits===angles.length)fin(erreurs<=1);}
+        else{erreurs++;b.classList.add('faux');msg.textContent='✘ Compare avec l\'équerre jaune.';msg.className='msg ko';}
+      };
+      etq.appendChild(b);
+    });
+    d.appendChild(etq);d.appendChild(msg);box.appendChild(d);
+  });
+}
+creerSeries('t3',[
+  [[120,30],[-10,135],[60,90],[200,75],[100,165],[-135,90]],
+  [[15,90],[250,50],[160,105],[30,15],[110,90],[-60,145]],
+  [[80,120],[-100,65],[170,90],[-20,155],[10,40],[245,90]]
+],construireEx1);
+
+/* ================= EXERCICE 2 : nommer les angles ================= */
+function construireEx2(zone,cfg,fin){
+  zone.innerHTML='<svg viewBox="-20 -40 680 400" width="760"></svg><div class="ex2-rep"></div>';
+  const s=zone.querySelector('svg'),rep=zone.querySelector('.ex2-rep');
+  const P=Object.assign({},cfg.points);
+  function inter(p1,p2,p3,p4){
+    const d=(p1[0]-p2[0])*(p3[1]-p4[1])-(p1[1]-p2[1])*(p3[0]-p4[0]);
+    const t=((p1[0]-p3[0])*(p3[1]-p4[1])-(p1[1]-p3[1])*(p3[0]-p4[0]))/d;
+    return [p1[0]+t*(p2[0]-p1[0]),p1[1]+t*(p2[1]-p1[1])];
+  }
+  const lignes=cfg.lignes.map(([a,b,col])=>({a,b,col,pts:[a,b]}));
+  cfg.inters.forEach(([nom,i,j])=>{
+    const l1=lignes[i],l2=lignes[j];P[nom]=inter(P[l1.a],P[l1.b],P[l2.a],P[l2.b]);l1.pts.push(nom);l2.pts.push(nom);
+  });
+  // points d'un côté : même droite, même sens que le point donné
+  function cote(v,p){
+    const l=lignes.find(l=>l.pts.includes(v)&&l.pts.includes(p));
+    const u=[P[p][0]-P[v][0],P[p][1]-P[v][1]];
+    return l.pts.filter(q=>q!==v&&((P[q][0]-P[v][0])*u[0]+(P[q][1]-P[v][1])*u[1])>0)
+      .sort((x,y)=>Math.hypot(P[x][0]-P[v][0],P[x][1]-P[v][1])-Math.hypot(P[y][0]-P[v][0],P[y][1]-P[v][1]));
+  }
+  const COL=['#1e9be0','#e53935','#7cb342','#fbc02d'];
+  const angs=cfg.angles.map(([v,a,b,r],i)=>({n:i+1,v,s1:cote(v,a),s2:cote(v,b),col:COL[i],r:r||28,d1:dirDeg(P[v],P[a]),d2:dirDeg(P[v],P[b])}));
+  const gArcs=el('g',{},s),gHi=el('g',{},s);
+  angs.forEach(a=>secteur(gArcs,P[a.v],a.d1,a.d2,a.r,a.col,{opacity:.9}));
+  lignes.forEach(l=>{
+    const d=dirDeg(P[l.b],P[l.a]),u=pt(P[l.a],d,62),v=pt(P[l.b],dirDeg(P[l.a],P[l.b]),40),w=pt(P[l.a],d,35);
+    el('line',{x1:w[0],y1:w[1],x2:v[0],y2:v[1],stroke:l.col,'stroke-width':3},s);
+    texte(s,u[0],u[1],'🚀',{'font-size':30});
+  });
+  // repères des points d'extrémité
+  lignes.forEach(l=>[l.a,l.b].forEach(k=>croix(s,P[k])));
+  // placement automatique des lettres : dans le plus grand espace libre autour du point
+  const bis=(d1,d2)=>{let m=((d2-d1)%360+360)%360;return m<=180?d1+m/2:d2+(360-m)/2;};
+  Object.keys(P).forEach(k=>{
+    const dirs=[];lignes.forEach(l=>{if(l.pts.includes(k)){const o=l.pts.find(q=>q!==k);const d=dirDeg(P[k],P[o]);dirs.push(d,(d+180)%360);}});
+    dirs.sort((x,y)=>x-y);
+    let best=null,bestGap=-1;
+    for(let i=0;i<dirs.length;i++){
+      const d1=dirs[i],d2=i+1<dirs.length?dirs[i+1]:dirs[0]+360,gap=d2-d1,mid=d1+gap/2;
+      const occupe=angs.some(a=>{if(a.v!==k)return false;const b=bis(a.d1,a.d2);const diff=Math.abs((((b-mid)%360)+540)%360-180);return diff<gap/2;});
+      const score=occupe?gap-400:gap+(Math.sin(rad(mid))>0?5:0);
+      if(score>bestGap){bestGap=score;best=mid;}
+    }
+    const q=pt(P[k],best,22);texte(s,q[0],q[1],k);
+  });
+  angs.forEach(a=>{const q=pt(P[a.v],bis(a.d1,a.d2),a.r+17);el('circle',{cx:q[0],cy:q[1],r:13,fill:a.col},s);texte(s,q[0],q[1]+1,a.n,{fill:'#fff','font-size':16});});
+
+  function surligner(a,niveau){
+    gHi.innerHTML='';if(!a)return;
+    const v=P[a.v];
+    el('circle',{cx:v[0],cy:v[1],r:12,fill:'none',stroke:'#c0392b','stroke-width':4},gHi);
+    if(niveau>=2)a.s1.concat(a.s2).forEach(k=>{
+      el('line',{x1:v[0],y1:v[1],x2:P[k][0],y2:P[k][1],stroke:'#c0392b','stroke-width':6,opacity:.35,'stroke-linecap':'round'},gHi);
+      el('circle',{cx:P[k][0],cy:P[k][1],r:12,fill:'none',stroke:'#c0392b','stroke-width':4},gHi);
+    });
+  }
+  let faits=0,aide=false;
+  angs.forEach(a=>{
+    const noms=[];a.s1.forEach(x=>a.s2.forEach(y=>{noms.push(x+a.v+y);noms.push(y+a.v+x);}));
+    const d=document.createElement('div');d.className='ex2-item';
+    d.innerHTML='<div><span class="pastille" style="background:'+a.col+'">'+a.n+'</span> → <input maxlength="3" autocomplete="off" autocapitalize="characters"> '+
+      '<button class="btn btn-p">Vérifier</button></div><div class="msg"></div>'+
+      '<button class="btn btn-s">Aide pas à pas (1/3)</button><div class="pas"></div>';
+    const inp=d.querySelector('input'),[bV,bA]=d.querySelectorAll('button'),msg=d.querySelector('.msg'),pas=d.querySelector('.pas');
+    let n=0,fini=false;
+    const ou=l=>'<b>'+l.join('</b> ou <b>')+'</b>';
+    const etapes=[
+      'Je cherche le <b>sommet</b> : c\'est le point où commence l\'arc coloré. Ici, c\'est <b>'+a.v+'</b>.',
+      'Je cherche un point sur <b>chaque côté</b> : '+ou(a.s1)+' sur un côté, '+ou(a.s2)+' sur l\'autre.',
+      'J\'écris le sommet au milieu : '+noms.filter((x,i)=>i%2===0).map(x=>'<span class="ang">'+x+'</span>').join(' ou ')+' (on peut aussi l\'écrire à l\'envers).'
+    ];
+    inp.onfocus=()=>surligner(null);
+    bA.onclick=()=>{
+      if(n>=3)return;
+      if(!fini)aide=true;
+      const e=document.createElement('div');e.innerHTML='Étape '+(n+1)+' : '+etapes[n];pas.appendChild(e);n++;
+      surligner(a,n);
+      if(n<3)bA.textContent='Étape suivante ('+(n+1)+'/3)';else bA.classList.add('cache');
+    };
+    bV.onclick=()=>{
+      if(fini)return;
+      const v=inp.value.toUpperCase().replace(/[^A-Z]/g,'');
+      if(v.length!==3){msg.textContent='Écris 3 lettres.';msg.className='msg ko';return;}
+      if(noms.includes(v)){
+        fini=true;inp.classList.remove('ko');inp.classList.add('ok');inp.disabled=true;
+        msg.innerHTML='✔ Bravo : <span class="ang">'+v+'</span>'+(noms.length>2?' (d\'autres noms sont possibles)':'');msg.className='msg ok';
+        faits++;if(faits===angs.length)fin(!aide);
+      }else{
+        inp.classList.add('ko');
+        msg.textContent=v[1]!==a.v?'✘ Attention : le sommet doit être la lettre du milieu.':'✘ Le sommet est bien placé, mais vérifie les points sur les côtés.';
+        msg.className='msg ko';
+      }
+    };
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')bV.click();});
+    rep.appendChild(d);
+  });
+}
+creerSeries('t4',[
+  {points:{X:[100,80],Y:[570,250],V:[110,270],W:[570,130],D:[250,30],E:[330,310]},
+   lignes:[['X','Y','#1e9be0'],['V','W','#7cb342'],['D','E','#e53935']],
+   inters:[['P',0,1],['Q',0,2],['Z',1,2]],
+   angles:[['Q','D','X',26],['P','Y','W',34],['Z','V','E',26],['P','Q','Z',24]]},
+  {points:{B:[100,210],C:[590,120],G:[150,60],J:[420,310],K:[580,50],N:[250,300]},
+   lignes:[['B','C','#1e9be0'],['G','J','#7cb342'],['K','N','#e53935']],
+   inters:[['E',0,1],['F',0,2],['H',1,2]],
+   angles:[['E','B','G',28],['F','C','K',28],['H','J','N',26],['E','F','H',24]]},
+  {points:{F:[90,250],H:[580,60],L:[100,60],M:[590,280],R:[470,30],T:[520,310]},
+   lignes:[['F','H','#1e9be0'],['L','M','#7cb342'],['R','T','#e53935']],
+   inters:[['A',0,1],['B',0,2],['C',1,2]],
+   angles:[['A','F','L',34],['B','A','R',24],['C','M','T',26],['C','A','T',22]]}
+],construireEx2);
+
+/* ================= EXERCICE 3 : constellations ================= */
+function construireEx3(zone,cfg,fin){
+  zone.innerHTML='<svg viewBox="0 0 900 330" width="900"></svg><div class="jetons"></div>'+
+    '<table class="classe"><tr><th class="h-aigu">Angles aigus</th><th class="h-droit">Angles droits</th><th class="h-obtus">Angles obtus</th></tr>'+
+    '<tr><td data-type="aigu"><div class="zone"></div></td><td data-type="droit"><div class="zone"></div></td><td data-type="obtus"><div class="zone"></div></td></tr></table>'+
+    '<div style="margin-top:10px"><button class="btn btn-p">Vérifier</button><button class="btn btn-s">Voir la correction</button></div><div class="msg"></div>';
+  const s=zone.querySelector('svg');
+  el('rect',{x:0,y:0,width:900,height:330,rx:30,fill:'#1d2f6f'},s);
+  for(let i=0;i<70;i++){el('circle',{cx:20+Math.random()*860,cy:15+Math.random()*300,r:Math.random()*1.6+.4,fill:'#fff',opacity:.7},s);}
+  const rep={},numPos={};
+  function mesure(p,v,q){let d=Math.abs(dirDeg(v,p)-dirDeg(v,q))%360;return Math.min(d,360-d);}
+  function etoile(q){const pts=[];for(let k=0;k<10;k++){const r=k%2?3.5:8;pts.push(pt(q,90+k*36,r).join(','));}el('polygon',{points:pts.join(' '),fill:'#fff'},s);}
+  const gArcs=el('g',{},s);
+  cfg.constellations.forEach(([nom,pts,nums,tx])=>{
+    el('polyline',{points:pts.map(q=>q.join(',')).join(' '),fill:'none',stroke:'#fff','stroke-width':2.5},s);
+    pts.forEach(q=>etoile(q));
+    nums.forEach((n,i)=>{const p=pts[i],v=pts[i+1],q=pts[i+2],m=mesure(p,v,q);rep[n]=typeDe(m);numPos[n]={v,dIn:dirDeg(v,p),dOut:dirDeg(v,q),m};});
+    texte(s,tx,32,'⭐ '+nom,{fill:'#ffd54f','font-size':24});
+  });
+  const arcs={},places=[],etoilesPts=[].concat(...cfg.constellations.map(c=>c[1]));
+  Object.keys(numPos).forEach(n=>{
+    const o=numPos[n];let d1=o.dIn,d2=o.dOut;const mm=((d2-d1)%360+360)%360;if(mm>180)[d1,d2]=[d2,d1];
+    if(rep[n]==='droit'){
+      const p1=pt(o.v,o.dIn,13),p2=pt(o.v,o.dOut,13),p3=[p1[0]+p2[0]-o.v[0],p1[1]+p2[1]-o.v[1]];
+      arcs[n]=el('path',{d:`M${p1[0]},${p1[1]} L${p3[0]},${p3[1]} L${p2[0]},${p2[1]}`,fill:'none',stroke:'#ff6b6b','stroke-width':3},gArcs);
+    }else{
+      const a=pt(o.v,d1,18),b=pt(o.v,d2,18);
+      arcs[n]=el('path',{d:`M${a[0]},${a[1]} A18,18 0 0 0 ${b[0]},${b[1]}`,fill:'none',stroke:'#ff6b6b','stroke-width':3},gArcs);
+    }
+    const bis=mm<=180?o.dIn+mm/2:o.dOut+(360-mm)/2;
+    let q=null;
+    for(const r of [24,30])for(const da of [0,35,-35,70,-70,110,-110]){
+      const c=pt(o.v,bis+180+da,r);
+      if(!q&&places.every(p=>Math.hypot(p[0]-c[0],p[1]-c[1])>24)&&etoilesPts.every(p=>Math.hypot(p[0]-c[0],p[1]-c[1])>14))q=c;
+    }
+    q=q||pt(o.v,bis+180,24);places.push(q);
+    texte(s,q[0],q[1],n,{fill:'#fff','font-size':19});
+  });
+  const jetons=zone.querySelector('.jetons'),msg=zone.querySelector('.msg'),[bV,bC]=zone.querySelectorAll('button.btn');
+  let sel=null,fini=false;const J={},fautes=new Set();
+  const N=Object.keys(rep).length;
+  function trier(){zone.querySelectorAll('.zone').forEach(z=>[...z.children].sort((a,b)=>a.textContent-b.textContent).forEach(c=>z.appendChild(c)));}
+  function reset(){Object.values(arcs).forEach(a=>{a.setAttribute('stroke','#ff6b6b');a.setAttribute('stroke-width',3);});}
+  for(let n=1;n<=N;n++){
+    const b=document.createElement('button');b.className='jeton';b.textContent=n;J[n]=b;
+    b.onclick=e=>{
+      e.stopPropagation();if(fini)return;
+      if(b.parentNode!==jetons){jetons.appendChild(b);b.classList.remove('ok','ko');trier();return;}
+      if(sel)sel.classList.remove('sel');reset();
+      if(sel===b){sel=null;return;}
+      sel=b;b.classList.add('sel');arcs[n].setAttribute('stroke','#ffeb3b');arcs[n].setAttribute('stroke-width',5);
+    };
+    jetons.appendChild(b);
+  }
+  zone.querySelectorAll('table.classe td').forEach(td=>{
+    td.onclick=()=>{if(!sel||fini)return;td.querySelector('.zone').appendChild(sel);sel.classList.remove('sel');reset();sel=null;trier();};
+  });
+  bV.onclick=()=>{
+    if(fini)return;
+    let bons=0,places=0;
+    zone.querySelectorAll('table.classe td').forEach(td=>td.querySelectorAll('.jeton').forEach(j=>{
+      places++;const ok=rep[j.textContent]===td.dataset.type;j.classList.toggle('ok',ok);j.classList.toggle('ko',!ok);if(ok)bons++;else fautes.add(j.textContent);
+    }));
+    if(bons===N){fini=true;msg.textContent='✔ Les '+N+' angles sont bien classés !';msg.className='msg ok';fin(fautes.size<=2);}
+    else{msg.textContent=bons+' bonne(s) réponse(s) sur '+places+' placée(s). Les numéros en rouge sont à revoir : clique dessus pour les retirer.'+(places<N?' Il reste '+(N-places)+' numéro(s) à placer.':'');msg.className='msg ko';}
+  };
+  bC.onclick=()=>{
+    if(fini)return;fini=true;
+    for(let n=1;n<=N;n++){J[n].classList.remove('sel','ko');J[n].classList.add('ok');zone.querySelector('td[data-type="'+rep[n]+'"] .zone').appendChild(J[n]);}
+    trier();reset();msg.textContent='Voici la correction.';msg.className='msg ok';fin(false);
+  };
+}
+creerSeries('t5',CONSTELLATIONS,construireEx3);
+
+</script>
+</body>
+</html>
