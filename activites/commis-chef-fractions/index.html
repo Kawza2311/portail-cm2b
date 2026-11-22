@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De commis à chef : les fractions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#fff8f0;--ink:#3b2a24;--muted:#7a655c;--choco:#5a3320;--pink:#f26d9b;--pinkd:#d94a7c;--pinkl:#ffe1ec;--mint:#5cc4a6;--mintl:#dcf5ed;--lav:#a586e0;--lavl:#efe7fb;--lemon:#ffe58a;--green:#2a9d61;--orange:#f08a24;--blue:#3a7be0}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Andika',system-ui,-apple-system,sans-serif;font-size:20px;color:var(--ink);line-height:1.45;-webkit-text-size-adjust:100%;
+  background-color:var(--cream);
+  background-image:radial-gradient(#f9c6d8 2px,transparent 2.5px),radial-gradient(#bfe8dc 2px,transparent 2.5px),radial-gradient(#ffe08a 2px,transparent 2.5px);
+  background-size:70px 70px,90px 90px,110px 110px;background-position:0 0,35px 45px,60px 15px}
+h1,h2,h3,.btn,nav button,.fred{font-family:'Fredoka','Andika',sans-serif}
+header{position:sticky;top:0;z-index:10;background:#fffaf3;box-shadow:0 3px 10px rgba(90,51,32,.12)}
+.awning{height:20px;background:repeating-linear-gradient(90deg,var(--pink) 0 40px,#fff 40px 80px);position:relative}
+.awning::after{content:'';position:absolute;left:0;right:0;bottom:-11px;height:11px;
+  background:radial-gradient(circle at 20px 0,var(--pink) 11px,transparent 12px) 0 0/80px 11px repeat-x,radial-gradient(circle at 60px 0,#fff 11px,transparent 12px) 0 0/80px 11px repeat-x}
+.hbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 14px 6px;flex-wrap:wrap}
+h1{margin:0;font-size:1.4rem;color:var(--choco)}
+.hstat{display:flex;gap:8px;flex-wrap:wrap}
+.pill2{display:flex;align-items:center;gap:6px;background:var(--pinkl);border:2px solid #f7b6cc;border-radius:999px;padding:3px 14px;font-weight:700;color:var(--choco);font-size:.95rem}
+.pill2.pop{animation:pop .5s}
+@keyframes pop{30%{transform:scale(1.25)}100%{transform:scale(1)}}
+nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:4px 10px 0}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;border:0;font-size:.95rem;font-weight:600;padding:9px 16px;border-radius:14px 14px 0 0;cursor:pointer;color:var(--choco);background:#f6ead8}
+nav button.on{background:var(--pink);color:#fff}
+main{max-width:1000px;margin:0 auto;padding:18px 12px 70px}
+section{display:none}
+section.on{display:block}
+.card{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 3px 12px rgba(90,51,32,.08);margin-bottom:16px;border:3px solid #ffe6ee}
+h2{margin:0 0 8px;font-size:1.3rem;color:var(--choco)}
+h3{margin:0 0 6px;font-size:1.1rem;color:var(--choco)}
+p{margin:.4em 0}
+.muted{color:var(--muted)}
+.code{display:inline-block;background:var(--choco);color:#fff;border-radius:999px;padding:1px 11px;font-weight:700;font-size:.85rem;font-family:'Fredoka',sans-serif;vertical-align:middle}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.05;margin:0 .12em;font-weight:700}
+.frac>span{padding:0 .18em;text-align:center}
+.frac .fn{border-bottom:.09em solid currentColor}
+.frac.big{font-size:1.5em}
+.frac.huge{font-size:2.2em}
+.wide{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:6px 0}
+.wide svg{display:block;width:100%;min-width:600px;height:auto}
+svg.pick,.click svg{cursor:pointer;touch-action:manipulation}
+.axis{stroke:var(--choco);stroke-width:5}
+.arrow{fill:var(--choco)}
+.tick{stroke:var(--choco);stroke-width:3}
+.tick.big{stroke-width:5}
+.ilbl{font-size:44px;font-weight:700;text-anchor:middle;fill:var(--choco);font-family:'Andika',sans-serif}
+.flbl{font-size:36px;font-weight:700;text-anchor:middle;font-family:'Andika',sans-serif}
+.jnum{font-size:26px;font-weight:700;text-anchor:middle;font-family:'Andika',sans-serif}
+.pnum{font-size:26px;font-weight:700;text-anchor:middle;fill:#9a6b00;font-family:'Andika',sans-serif}
+.letter{font-size:42px;font-weight:700;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:9px;font-family:'Andika',sans-serif}
+.jump{fill:none;stroke-width:5;stroke-linecap:round}
+@keyframes draw{to{stroke-dashoffset:0}}
+.btn{font-weight:600;border:0;border-radius:16px;padding:12px 20px;background:var(--pink);color:#fff;cursor:pointer;font-size:1rem;touch-action:manipulation;box-shadow:0 3px 0 var(--pinkd)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--pinkd)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.soft{background:#fff;color:var(--pinkd);border:2px solid #f7b6cc;box-shadow:none}
+.btn.help{background:var(--lemon);color:#6b4b00;box-shadow:0 3px 0 #d9b94a}
+.btn.green{background:var(--mint);box-shadow:0 3px 0 #3e9c82}
+.btn.choco{background:var(--choco);box-shadow:0 3px 0 #2f1a10}
+.btn.big{font-size:1.15rem;padding:14px 24px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.prompt{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:.3em 0}
+.hint{color:var(--muted);font-size:.95rem}
+.fb{border-radius:16px;padding:12px 14px;margin-top:12px}
+.fb.ok{background:#e1f6ec;border:2px solid #9fdcc2}
+.fb.ko{background:#fff0e3;border:2px solid #f6c28f}
+.fb.info{background:#f2ecfc;border:2px solid #d6c6f3}
+.prog{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-weight:700;color:var(--choco);flex-wrap:wrap}
+.prog .bar{flex:1;min-width:120px;height:14px;background:#f6e7d6;border-radius:8px;overflow:hidden}
+.prog .bar i{display:block;height:100%;background:repeating-linear-gradient(45deg,var(--pink) 0 10px,#f79bbb 10px 20px);border-radius:8px;transition:width .3s}
+.choices{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.choices.two{grid-template-columns:repeat(2,1fr)}
+.choices.three{grid-template-columns:repeat(3,1fr)}
+@media (max-width:560px){.choices{grid-template-columns:repeat(2,1fr)}.choices.three{grid-template-columns:1fr}.choices.three.sym{grid-template-columns:repeat(3,1fr)}}
+.wide.fit svg{min-width:0}
+.choice{font:inherit;font-size:1.4rem;background:#fff;border:3px solid #f3d7e1;border-radius:18px;padding:10px 6px;cursor:pointer;color:var(--ink);touch-action:manipulation}
+.choice.txt{font-size:1.05rem;font-weight:700}
+.choice.good{border-color:var(--green);background:#e1f6ec}
+.choice.bad{border-color:var(--orange);background:#fff0e3}
+.choice:disabled{cursor:default}
+input.n{font:inherit;font-size:1.5rem;font-weight:700;width:3em;text-align:center;border:3px solid #f3c6d6;border-radius:14px;padding:4px;color:var(--ink);background:#fff}
+input.n:focus{outline:none;border-color:var(--pink)}
+input.n:disabled{background:#f7f3ef}
+.fin{display:inline-flex;flex-direction:column;align-items:center;gap:4px;vertical-align:middle}
+.fin .fbar{width:3.8em;height:5px;background:var(--ink);border-radius:3px}
+.fin b{font-size:1.5rem}
+.answerrow{display:flex;align-items:center;gap:12px;font-size:1.5rem;font-weight:700;margin:10px 0;flex-wrap:wrap}
+.chef{display:flex;gap:12px;align-items:flex-start;background:#fff7e6;border:2px dashed #f1c27d;border-radius:18px;padding:10px 14px;margin:8px 0}
+.chef .bubble{font-size:1.15rem;font-weight:700}
+.chef .face{font-size:2.4rem;line-height:1}
+.home{display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:16px;align-items:center}
+@media (max-width:700px){.home{grid-template-columns:1fr}}
+.gradeName{font-family:'Fredoka';font-size:1.8rem;color:var(--pinkd);font-weight:700;line-height:1.1}
+.ladder{display:flex;flex-direction:column;gap:8px}
+.rung{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:#fbf6ef;border:2px solid #f1e3cf;flex-wrap:wrap}
+.rung.cur{background:#fff0f6;border-color:#f7b6cc}
+.rung.done{background:#eefaf4;border-color:#bfe8d4}
+.rung .rn{font-weight:700;min-width:12em}
+.rung .chips{display:flex;gap:4px;flex-wrap:wrap}
+.lock{color:var(--muted);font-size:.95rem}
+.namebox input{font:inherit;font-size:1rem;border:2px solid #f3c6d6;border-radius:12px;padding:6px 10px;width:12em}
+.result{text-align:center}
+.result .score{font-size:2.6rem;font-weight:700;color:var(--pinkd);font-family:'Fredoka'}
+.diploma{max-width:620px;margin:10px auto;background:#fffdf5;border:6px double #e6a91a;border-radius:18px;padding:18px;text-align:center}
+.diploma .t{font-family:'Fredoka';font-size:1.6rem;color:var(--choco);font-weight:700}
+.diploma .g{font-family:'Fredoka';font-size:2rem;color:var(--pinkd);font-weight:700}
+.recipes{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.recipes .card{margin:0}
+.bitem{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:2px dotted #f3d7e1}
+.bitem:first-of-type{border-top:0}
+.st{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.85rem;font-weight:700}
+.st.ok{background:#fff1b8;color:#7a5800}.st.redo{background:#ffe3cf;color:#9a4b00}.st.part{background:#e6f4ff;color:#245a8a}.st.todo{background:#eee;color:#666}
+.dots{display:flex;gap:4px;margin-top:4px}
+.dots i{width:14px;height:14px;border-radius:50%;display:block;background:#eee}
+.dots i.y{background:var(--mint)}.dots i.n{background:#f6b48a}
+.confirm{display:none;gap:10px;align-items:center;flex-wrap:wrap}
+.bigemoji{font-size:3rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="awning"></div>
+  <div class="hbar">
+    <h1>👩‍🍳 De commis à chef : les fractions</h1>
+    <div class="hstat"><span class="pill2" id="hGrade"></span><span class="pill2" id="hCer"></span></div>
+  </div>
+  <nav id="tabs">
+    <button data-t="home">🏠 Ma pâtisserie</button>
+    <button data-t="recettes">📖 Mes recettes</button>
+    <button data-t="bilan">🏆 Mon bilan</button>
+  </nav>
+</header>
+<main>
+<section id="home"></section>
+<section id="play"></section>
+<section id="recettes"></section>
+<section id="bilan"></section>
+</main>
+
+<script>
+/* ======================= OUTILS ======================= */
+const $=s=>document.querySelector(s);
+const rint=(a,b)=>a>=b?a:a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const F=(n,d,cls='')=>`<span class="frac ${cls}"><span class="fn">${n}</span><span class="fd">${d}</span></span>`;
+const COL={A:'#3a7be0',B:'#f08a24',pt:'#e0457b',try:'#8e6bd8',ok:'#2a9d61',gray:'#9aa0ad',jump:'#8e6bd8'};
+const W0=['zéro','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze','treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+const TENS={2:'vingt',3:'trente',4:'quarante',5:'cinquante',6:'soixante'};
+function nw(n){
+  if(n<20)return W0[n];
+  if(n<70){const t=Math.floor(n/10),u=n%10;return u===0?TENS[t]:(u===1?TENS[t]+' et un':TENS[t]+'-'+W0[u])}
+  if(n<80)return n===71?'soixante et onze':'soixante-'+W0[n-60];
+  if(n===80)return 'quatre-vingts';
+  return 'quatre-vingt-'+W0[n-80];
+}
+const DN={2:['demi','demis'],3:['tiers','tiers'],4:['quart','quarts'],5:['cinquième','cinquièmes'],6:['sixième','sixièmes'],7:['septième','septièmes'],8:['huitième','huitièmes'],9:['neuvième','neuvièmes'],10:['dixième','dixièmes'],11:['onzième','onzièmes'],12:['douzième','douzièmes']};
+const words=(n,d)=>nw(n)+' '+DN[d][n>1?1:0];
+const num=s=>{const v=parseInt(String(s).trim(),10);return isNaN(v)?null:v};
+const inp=(id,label)=>`<input class="n" id="${id}" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="${label}">`;
+const fin=(idN,idD,den)=>`<span class="fin">${inp(idN,'numérateur')}<span class="fbar"></span>${den!=null?`<b>${den}</b>`:inp(idD,'dénominateur')}</span>`;
+
+/* ======================= DONNÉES ======================= */
+const COMP={
+  N17:'Je sais représenter une fraction simple sur un dessin.',
+  N18:'Je sais écrire la fraction qui correspond à un dessin colorié.',
+  N19:'Je sais décomposer une fraction (entier + fraction restante).',
+  N20:'Je sais transformer un entier + une fraction en une seule fraction.',
+  N22:'Je sais lire / repérer une fraction simple sur une ligne graduée.',
+  N23:'Je sais placer une fraction simple sur une ligne graduée.',
+  N24:'Je sais dire si une fraction est plus petite, égale ou plus grande que 1.',
+  N25:'Je sais comparer deux fractions simples entre elles.',
+  N27:'Je sais encadrer une fraction simple entre deux nombres entiers qui se suivent.'
+};
+const ALL=[2,3,4,5,6,7,8,9,10,12];
+const GRADES=[
+  {name:'Commis',emoji:'🥄',dens:[2,3,4],k:[0,1],start0:1,labels:'all',qcm:true,denGiven:true,
+   types:['placer','lire','colorier','bandes','encadrer','decomposer'],desc:'Unités partagées en 2, 3 ou 4. Tous les nombres entiers sont écrits.'},
+  {name:'Demi-chef de partie',emoji:'🥣',dens:[3,4,5,6,10],k:[0,2],start0:1,labels:'two',qcm:false,denGiven:true,
+   types:['placer','lire','colorier','bandes','encadrer','decomposer','compare1'],desc:'Unités partagées en 5, 6 ou 10. Seuls les deux premiers entiers sont écrits.'},
+  {name:'Chef de partie',emoji:'🍰',dens:[3,4,5,6,8,10,12],k:[1,5],start0:.7,labels:'two',qcm:false,denGiven:false,
+   types:['placer','lire','bandes','encadrer','decomposer','recomposer','compare1','rate'],desc:'Des fractions jusqu\'à 5 + …, des droites qui ne commencent pas toujours à 0, et les ratés du commis.'},
+  {name:'Sous-chef',emoji:'🎂',dens:ALL,k:[1,5],start0:.45,labels:'two',qcm:false,denGiven:false,
+   types:['placer','lire','colorier','bandes','encadrer','decomposer','recomposer','compare1','compare2','rate','probleme'],desc:'Tous les dénominateurs, comparer deux fractions et des problèmes de pâtissier.'},
+  {name:'Chef pâtissier',emoji:'👑',dens:ALL,k:[1,6],start0:.45,labels:'sparse',qcm:false,denGiven:false,
+   types:['placer','lire','colorier','bandes','encadrer','decomposer','recomposer','compare1','compare2','rate','probleme'],desc:'Tout est mélangé, avec des droites où il manque des nombres.'}
+];
+const TYPECODES={placer:['N23'],lire:['N22'],colorier:['N17'],bandes:['N18','N19'],encadrer:['N27'],decomposer:['N19'],recomposer:['N20'],compare1:['N24'],compare2:['N25'],rate:['N19','N23','N24','N27'],probleme:['N18','N19','N20','N27']};
+function gradeCodes(g){const s=new Set();GRADES[g].types.forEach(t=>TYPECODES[t].forEach(c=>s.add(c)));return [...s].sort((a,b)=>+a.slice(1)-+b.slice(1))}
+const TRAIN_N=6,EXAM_N=8,EXAM_PASS=7,TRAIN_BEFORE_EXAM=2;
+
+/* ======================= SAUVEGARDE ======================= */
+const STORE='commisChefFractions_v1';
+function fresh(){return {grade:0,star:false,train:[0,0,0,0,0],cerises:0,codes:{},name:''}}
+let ST=fresh();
+try{const s=localStorage.getItem(STORE);if(s){const o=JSON.parse(s);if(o&&o.train)ST=Object.assign(fresh(),o)}}catch(e){}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(ST))}catch(e){}}
+function recCode(code,ok){const a=ST.codes[code]=ST.codes[code]||[];a.push(ok?1:0);while(a.length>8)a.shift();save()}
+function header(pop){
+  $('#hGrade').textContent=GRADES[ST.grade].emoji+' '+GRADES[ST.grade].name+(ST.star?' ⭐':'');
+  $('#hCer').textContent='🍒 '+ST.cerises+' cerise'+(ST.cerises>1?'s':'');
+  if(pop){const e=$('#hCer');e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')}
+}
+
+/* ======================= DROITE GRADUÉE ======================= */
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function txt(parent,x,y,s,cls,fill){const t=el('text',{x,y,class:cls},parent);if(fill)t.setAttribute('fill',fill);t.textContent=s;return t}
+function NL(host,{d,s=0,U,labels='all',onPick=null,fit=false}){
+  const W=1000,H=265,L=60,R=925,Y=170,total=d*U,X=i=>L+(R-L)*i/total;
+  host.innerHTML='';host.classList.add('wide');if(fit)host.classList.add('fit');
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,class:onPick?'pick':''},host);
+  const gHl=el('g',{},svg),gP=el('g',{},svg),gJ=el('g',{},svg),gG=el('g',{},svg),gB=el('g',{},svg),gM=el('g',{},svg);
+  el('line',{x1:L-35,y1:Y,x2:R+40,y2:Y,class:'axis'},gB);
+  el('path',{d:`M${R+38} ${Y-13} L${R+62} ${Y} L${R+38} ${Y+13} Z`,class:'arrow'},gB);
+  for(let i=0;i<=total;i++){
+    const big=i%d===0,j=i/d;
+    el('line',{x1:X(i),x2:X(i),y1:Y-(big?30:16),y2:Y+(big?30:16),class:big?'tick big':'tick'},gB);
+    if(big&&(labels==='all'||(labels==='two'&&j<=1)||(labels==='sparse'&&(j===0||j===2))))txt(gB,X(i),Y+80,String(s+j),'ilbl');
+  }
+  if(onPick){
+    el('rect',{x:0,y:0,width:W,height:H,fill:'transparent'},svg);
+    svg.addEventListener('click',e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+      let i=Math.round((p.x-L)/(R-L)*total);i=Math.max(0,Math.min(total,i));onPick(i)});
+  }
+  function fracLabel(g,x,n,dd,color){
+    const w=Math.max(String(n).length,String(dd).length)*22+30,yT=4;
+    el('line',{x1:x,x2:x,y1:yT+92,y2:Y-18,stroke:color,'stroke-width':3,'stroke-dasharray':'6 6'},g);
+    el('rect',{x:x-w/2,y:yT,width:w,height:92,rx:12,fill:'#fff',stroke:color,'stroke-width':3},g);
+    txt(g,x,yT+36,String(n),'flbl',color);el('line',{x1:x-w/2+9,x2:x+w/2-9,y1:yT+46,y2:yT+46,stroke:color,'stroke-width':4},g);txt(g,x,yT+82,String(dd),'flbl',color);
+  }
+  return {svg,X,Y,d,s,U,total,idx:n=>n-s*d,
+    clear(){[gM,gJ,gHl,gP,gG].forEach(g=>g.innerHTML='')},
+    clearMarks(){gM.innerHTML=''},
+    marker(i,color,{letter=null,frac=null,letterY=Y-58}={}){const g=el('g',{},gM);if(frac)fracLabel(g,X(i),frac[0],frac[1],color);
+      el('circle',{cx:X(i),cy:Y,r:15,fill:color,stroke:'#fff','stroke-width':4},g);if(letter)txt(g,X(i),letterY,letter,'letter',color)},
+    unit(j=0){el('rect',{x:X(j*d),y:Y-46,width:X(d)-X(0),height:92,rx:12,fill:'#ffefb3'},gHl)},
+    parts(j=0){for(let q=0;q<d;q++){const a=X(j*d+q),b=X(j*d+q+1);
+      el('line',{x1:a+3,x2:b-3,y1:Y,y2:Y,stroke:q%2?'#f2b600':'#ffd34d','stroke-width':14,'stroke-linecap':'round'},gP);txt(gP,(a+b)/2,Y+46,String(q+1),'pnum')}},
+    jumps(from,to,{color=COL.jump,numbers=true,animate=true,step=.15}={}){
+      gJ.innerHTML='';const sp=X(1)-X(0),h=Math.min(62,sp*.95+8);
+      for(let q=from;q<to;q++){const x1=X(q),x2=X(q+1),delay=(q-from)*step;
+        const p=el('path',{d:`M${x1+2} ${Y-6} Q ${(x1+x2)/2} ${Y-6-h*1.6} ${x2-2} ${Y-6}`,class:'jump',stroke:color},gJ);
+        if(animate){const len=p.getTotalLength?p.getTotalLength():0;if(len>0){p.style.strokeDasharray=len;p.style.strokeDashoffset=len;p.style.animation=`draw .22s ease ${delay}s forwards`}}
+        if(numbers)txt(gJ,(x1+x2)/2,Y-6-h*.8-12,String(q-from+1),'jnum',color)}},
+    guide(i,color){el('line',{x1:X(i),x2:X(i),y1:0,y2:265,stroke:color,'stroke-width':3,'stroke-dasharray':'10 8'},gG)}
+  };
+}
+
+/* ======================= BANDES ======================= */
+function bandsSVG(count,d,isF){
+  const per=2,slot=495,bw=465,bh=70,rows=Math.ceil(count/per);
+  let s=`<svg viewBox="0 0 1000 ${rows*95+5}">`;
+  for(let u=0;u<count;u++){const x0=(u%per)*slot+10,y0=Math.floor(u/per)*95+10,ps=bw/d;
+    for(let j=0;j<d;j++){const idx=u*d+j,f=isF(idx);
+      s+=`<rect data-p="${idx}" x="${(x0+j*ps).toFixed(1)}" y="${y0}" width="${ps.toFixed(1)}" height="${bh}" fill="${f?'#f26d9b':'#ffeef4'}" stroke="#b3416b" stroke-width="3"/>`}
+    s+=`<rect x="${x0}" y="${y0}" width="${bw}" height="${bh}" fill="none" stroke="#5a3320" stroke-width="5" rx="2" pointer-events="none"/>`}
+  return s+'</svg>';
+}
+
+/* ======================= GÉNÉRATION ======================= */
+let lastD=0;
+function pickDen(list){let d,g=0;do{d=pick(list)}while(d===lastD&&list.length>1&&g++<50);lastD=d;return d}
+function maxU(d){return Math.max(2,Math.min(4,Math.floor(30/d)))}
+function pickFrac(cfg){
+  const d=pickDen(cfg.dens);let kmax=cfg.k[1];
+  if(cfg.start0===1)kmax=Math.min(kmax,maxU(d)-1);
+  const k=rint(cfg.k[0],kmax),r=rint(1,d-1);return {n:k*d+r,d,k,r};
+}
+function lineWin(cfg,n,d,exam){
+  const k=Math.floor(n/d),U=maxU(d);
+  let s;const want0=Math.random()<cfg.start0;
+  if(want0&&k+1<=U)s=0;
+  else{const lo=Math.max(k>=1?1:0,k+1-U);s=rint(lo,k)}
+  let labels=cfg.labels;
+  if(exam&&labels==='two'&&Math.random()<.4)labels='sparse';
+  if(labels==='sparse'&&U<3)labels='two';
+  return {s,U,labels};
+}
+function variant(list){return pick(list)}
+
+/* ======================= TYPES D'EXERCICES =======================
+   chaque type : (ctx) => {code, render()}  ; ctx.done(ok,msg) ; ctx.setHint(fn) ; ctx.auto (pour tests) */
+const T={};
+
+function lineExplain(L,n,d){
+  const s=L.s;let m='';
+  if(s>0)m+=`La droite commence à <b>${s}</b>, c'est-à-dire ${F(s*d,d)}. `;
+  m+=`Entre deux grands traits, l'unité est partagée en <b>${d} parts</b> : chaque saut vaut ${F(1,d)}. `;
+  m+=s>0?`Depuis ${s}, on compte encore <b>${n-s*d} sauts</b> : ${s*d} + ${n-s*d} = ${n}.`:`Depuis 0, on compte <b>${n} sauts</b>.`;
+  return m;
+}
+function lineHint(L,d){L.unit(0);L.parts(0);return `Regarde l'unité en jaune : en combien de parts égales est-elle partagée ?${L.s>0?` Attention : la droite commence à <b>${L.s}</b>, pas à 0 ! ${L.s} = ${F(L.s*d,d)}.`:''}`}
+function showForm(form,n,d){const k=Math.floor(n/d),r=n%d;
+  return form==='words'?`« <span style="color:var(--pinkd)">${words(n,d)}</span> »`:form==='decomp'?`<span style="font-size:1.3em">${k} + </span>${F(r,d,'big')}`:F(n,d,'big')}
+
+/* 1. PLACER (N23) */
+T.placer=ctx=>{
+  const {n,d}=pickFrac(ctx.cfg),w=lineWin(ctx.cfg,n,d,ctx.exam);
+  const forms=ctx.g===0?['frac']:ctx.g===1?['frac','words']:ctx.exam?['words','decomp','frac']:['frac','frac','words','decomp'];
+  const form=pick(forms);
+  const say=variant(['Place {X} sur la droite graduée.','Où se trouve {X} ? Touche la droite à cet endroit.','Repère {X} sur la droite graduée.','Le pâtissier cherche {X}. Montre-lui où elle se trouve sur la droite.']).replace('{X}',showForm(form,n,d));
+  ctx.host.innerHTML=`<p class="prompt">${say}</p><p class="hint">Touche un trait de la droite, puis valide.</p><div id="xl"></div><div class="actions"><button class="btn" id="xok" disabled>Valider</button></div>`;
+  let pk=null,done=false;
+  const L=NL($('#xl'),{d,s:w.s,U:w.U,labels:w.labels,onPick:i=>{if(done)return;pk=i;L.clearMarks();L.marker(i,COL.try,{letter:'?'});$('#xok').disabled=false}});
+  const target=L.idx(n);
+  ctx.setHint(()=>lineHint(L,d));
+  const check=()=>{if(pk===null||done)return;done=true;$('#xok').disabled=true;L.clear();const ok=pk===target;
+    if(!ok)L.marker(pk,COL.gray,{letter:'toi',letterY:L.Y+58});
+    L.marker(target,COL.ok,{frac:[n,d]});L.jumps(0,target,{color:COL.ok});
+    ctx.done(ok,ok?`<b>Bravo !</b> ${F(n,d)} est bien placé.`:`Il fallait placer ${F(n,d)} ici. ${lineExplain(L,n,d)}`)};
+  $('#xok').onclick=check;
+  ctx.auto=(good)=>{pk=good?target:(target+1)%L.total;check()};
+  return 'N23';
+};
+
+/* 2. LIRE (N22) */
+function distractors(n,d,extra=[]){
+  const v=n/d,pool=extra.concat(shuffle([[n,d+1],[n,d-1],[d,n],[n+1,d],[n-1,d],[n,d+2],[n+1,d+1]]));
+  const out=[],seen=new Set([n+'/'+d]);
+  for(const [a,b] of pool){if(a<1||b<2||b>16)continue;const key=a+'/'+b;if(seen.has(key)||Math.abs(a/b-v)<1e-9)continue;
+    if(out.some(([x,y])=>Math.abs(x/y-a/b)<1e-9))continue;seen.add(key);out.push([a,b]);if(out.length===3)break}
+  return out;
+}
+function qcm(host,opts,correctIdx,onAns,cls=''){
+  host.insertAdjacentHTML('beforeend',`<div class="choices ${cls}">${opts.map((o,i)=>`<button class="choice ${cls.includes('txt')?'txt':''}" data-i="${i}">${o}</button>`).join('')}</div>`);
+  const btns=[...host.querySelectorAll('.choice')];let done=false;
+  const ans=i=>{if(done)return;done=true;btns.forEach((b,j)=>{b.disabled=true;if(j===correctIdx)b.classList.add('good')});if(i!==correctIdx)btns[i].classList.add('bad');onAns(i===correctIdx,i)};
+  btns.forEach(b=>b.onclick=()=>ans(+b.dataset.i));
+  return ans;
+}
+T.lire=ctx=>{
+  const {n,d}=pickFrac(ctx.cfg),w=lineWin(ctx.cfg,n,d,ctx.exam);
+  const say=variant(['À quelle fraction correspond le point A ?','Écris la fraction repérée par le point A.','Le pâtissier a posé une cerise au point A. Quelle fraction est-ce ?','Quelle fraction se cache au point A ?']);
+  ctx.host.innerHTML=`<p class="prompt">${say}</p><div id="xl"></div>`;
+  const L=NL($('#xl'),{d,s:w.s,U:w.U,labels:w.labels});const t=L.idx(n);L.marker(t,COL.pt,{letter:'A'});
+  ctx.setHint(()=>lineHint(L,d));
+  const fin_=(ok,extraMsg='')=>{L.clear();L.marker(t,COL.ok,{frac:[n,d]});L.jumps(0,t,{color:COL.ok});
+    ctx.done(ok,(ok?`<b>Bravo !</b> A = ${F(n,d)}. `:`A = ${F(n,d)}. `)+extraMsg+(ok?'':lineExplain(L,n,d)))};
+  if(ctx.cfg.qcm&&!ctx.exam){
+    const opts=shuffle([[n,d],...distractors(n,d)]);const ci=opts.findIndex(([a,b])=>a===n&&b===d);
+    const ans=qcm(ctx.host,opts.map(([a,b])=>F(a,b)),ci,ok=>fin_(ok));
+    ctx.auto=g=>ans(g?ci:(ci+1)%4);
+  }else{
+    ctx.host.insertAdjacentHTML('beforeend',`<div class="answerrow"><span style="color:${COL.pt}">A</span> = ${fin('xn','xd')}</div><div class="actions"><button class="btn" id="xok">Valider</button></div><div id="xmsg"></div>`);
+    let done=false;
+    const check=()=>{if(done)return;const a=num($('#xn').value),b=num($('#xd').value);
+      if(a===null||!b){$('#xmsg').innerHTML=`<div class="fb info">Écris un nombre en haut et un nombre en bas (pas 0).</div>`;return}
+      done=true;$('#xok').disabled=true;$('#xn').disabled=$('#xd').disabled=true;$('#xmsg').innerHTML='';
+      const ok=a*d===b*n;let extra='';
+      if(ok&&!(a===n&&b===d))extra=`${F(a,b)} = ${F(n,d)} : c'est juste ! `;
+      else if(!ok&&L.s>0&&a===n-L.s*d&&b===d)extra=`Attention : tu as compté depuis le début de la droite, mais elle commence à <b>${L.s}</b>, pas à 0 ! `;
+      else if(!ok&&a===d&&b===n)extra=`Tu as inversé : en bas, le nombre de parts dans l'unité. `;
+      fin_(ok,extra)};
+    $('#xok').onclick=check;enter(['#xn','#xd'],check);
+    ctx.auto=g=>{$('#xn').value=g?n:n+1;$('#xd').value=d;check()};
+  }
+  return 'N22';
+};
+
+/* 3. COLORIER (N17) */
+T.colorier=ctx=>{
+  const {n,d,k}=pickFrac(ctx.cfg),count=k+1+(Math.random()<.5?1:0);const st=new Array(count*d).fill(false);
+  const form=ctx.g>=1&&Math.random()<.4?'words':'frac';
+  const say=variant(['Colorie {X}.','Montre {X} en coloriant les bandes.','Le pâtissier veut {X} de pâte. Colorie-la.']).replace('{X}',showForm(form,n,d));
+  ctx.host.innerHTML=`<p class="prompt">${say}</p><p class="hint">Chaque bande est une unité. Touche les parts pour les colorier (touche encore pour effacer).</p>
+    <div class="wide click" id="xb"></div><p><b>Parts coloriées : <span id="xc">0</span></b></p><div class="actions"><button class="btn" id="xok">Valider</button></div>`;
+  let done=false;
+  const draw=()=>{$('#xb').innerHTML=bandsSVG(count,d,i=>st[i]);$('#xc').textContent=st.filter(Boolean).length};draw();
+  $('#xb').onclick=e=>{if(done)return;const p=e.target.closest('[data-p]');if(!p)return;const i=+p.getAttribute('data-p');st[i]=!st[i];draw()};
+  ctx.setHint(()=>`Chaque bande est partagée en <b>${d} parts</b> : une part vaut ${F(1,d)}. Il faut colorier <b>${n} parts</b> en tout.${n>d?` Une bande entière, c'est ${F(d,d)} = 1.`:''}`);
+  const check=()=>{if(done)return;done=true;$('#xok').disabled=true;const c=st.filter(Boolean).length,ok=c===n;
+    if(!ok)$('#xb').innerHTML=bandsSVG(count,d,i=>i<n);
+    ctx.done(ok,ok?`<b>Bravo !</b> ${n} parts de ${F(1,d)}, c'est bien ${F(n,d)}.`:`Tu as colorié ${c} part${c>1?'s':''}. Pour ${F(n,d)}, il faut <b>${n} parts</b> de ${F(1,d)}. Voici une bonne réponse.`)};
+  $('#xok').onclick=check;
+  ctx.auto=g=>{for(let i=0;i<(g?n:n-1);i++)st[i]=true;check()};
+  return 'N17';
+};
+
+/* 4. BANDES → FRACTION (N18) ou → entier + fraction (N19) */
+T.bandes=ctx=>{
+  const {n,d,k,r}=pickFrac(ctx.cfg),count=k+1+(Math.random()<.4?1:0);
+  const deco=ctx.g>=2&&Math.random()<.4;
+  const say=deco?variant(['Écris la quantité coloriée sous la forme d\'un entier + une fraction.','Combien d\'unités entières et quelle fraction en plus sont coloriées ?'])
+    :variant(['Quelle fraction est coloriée ?','Écris la fraction qui correspond aux parts coloriées.','Le pâtissier a utilisé les parts roses. Quelle fraction de bande est-ce ?']);
+  ctx.host.innerHTML=`<p class="prompt">${say}</p><p class="hint">Chaque bande est une unité.</p><div class="wide">${bandsSVG(count,d,i=>i<n)}</div>`;
+  ctx.setHint(()=>`Compte les parts dans <b>une</b> bande : c'est le dénominateur. Puis compte toutes les parts roses : c'est le numérateur.`);
+  const expl=`Chaque bande a <b>${d} parts</b> et <b>${n} parts</b> sont coloriées : ${F(n,d)}${k>0?` = ${k} + ${F(r,d)}`:''}.`;
+  if(deco){
+    ctx.host.insertAdjacentHTML('beforeend',`<div class="answerrow">${inp('xe','entier')} + ${fin('xn','xd')}</div><div class="actions"><button class="btn" id="xok">Valider</button></div><div id="xmsg"></div>`);
+    let done=false;
+    const check=()=>{if(done)return;const e=num($('#xe').value),a=num($('#xn').value),b=num($('#xd').value);
+      if(e===null||a===null||!b){$('#xmsg').innerHTML=`<div class="fb info">Remplis toutes les cases.</div>`;return}
+      done=true;$('#xok').disabled=true;['#xe','#xn','#xd'].forEach(s=>$(s).disabled=true);$('#xmsg').innerHTML='';
+      const ok=e===k&&a*d===b*r&&a<b;ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+expl)};
+    $('#xok').onclick=check;enter(['#xe','#xn','#xd'],check);
+    ctx.auto=g=>{$('#xe').value=g?k:k+1;$('#xn').value=r;$('#xd').value=d;check()};
+    return 'N19';
+  }
+  if(ctx.cfg.qcm&&!ctx.exam){
+    const opts=shuffle([[n,d],...distractors(n,d,[[n,count*d],[r,d]])]);const ci=opts.findIndex(([a,b])=>a===n&&b===d);
+    const ans=qcm(ctx.host,opts.map(([a,b])=>F(a,b)),ci,ok=>ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+expl));
+    ctx.auto=g=>ans(g?ci:(ci+1)%4);
+  }else{
+    ctx.host.insertAdjacentHTML('beforeend',`<div class="answerrow">${fin('xn','xd')}</div><div class="actions"><button class="btn" id="xok">Valider</button></div><div id="xmsg"></div>`);
+    let done=false;
+    const check=()=>{if(done)return;const a=num($('#xn').value),b=num($('#xd').value);
+      if(a===null||!b){$('#xmsg').innerHTML=`<div class="fb info">Écris un nombre en haut et un nombre en bas (pas 0).</div>`;return}
+      done=true;$('#xok').disabled=true;$('#xn').disabled=$('#xd').disabled=true;$('#xmsg').innerHTML='';
+      const ok=a*d===b*n;let m=ok?'<b>Bravo !</b> ':'';
+      if(!ok&&b===count*d)m+=`Attention : le dénominateur, c'est le nombre de parts dans <b>une seule</b> bande. `;
+      ctx.done(ok,m+expl)};
+    $('#xok').onclick=check;enter(['#xn','#xd'],check);
+    ctx.auto=g=>{$('#xn').value=g?n:n+1;$('#xd').value=d;check()};
+  }
+  return 'N18';
+};
+
+/* 5. ENCADRER (N27) */
+T.encadrer=ctx=>{
+  const {n,d,k}=pickFrac(ctx.cfg);
+  const forms=ctx.g===0?['boxes']:ctx.g===1?['boxes','phrase']:['boxes','phrase','inverse'];
+  const form=pick(forms);
+  let w=null,L=null;
+  const showLine=ctx.g===0&&!ctx.exam;
+  if(form==='inverse'){
+    const A=rint(1,Math.max(1,ctx.cfg.k[1]));
+    ctx.host.innerHTML=`<p class="prompt">${variant(['Écris une fraction de dénominateur '+d+' comprise entre '+A+' et '+(A+1)+'.','Trouve une fraction en '+DN[d][1]+' plus grande que '+A+' et plus petite que '+(A+1)+'.'])}</p>
+      <div class="answerrow">${A} &lt; ${fin('xn',null,d)} &lt; ${A+1}</div><div class="actions"><button class="btn" id="xok">Valider</button></div><div id="xmsg"></div>`;
+    ctx.setHint(()=>`${A} = ${F(A*d,d)} et ${A+1} = ${F((A+1)*d,d)}. Il faut un numérateur entre ${A*d} et ${(A+1)*d}.`);
+    let done=false;
+    const check=()=>{if(done)return;const a=num($('#xn').value);if(a===null){$('#xmsg').innerHTML=`<div class="fb info">Écris le numérateur.</div>`;return}
+      done=true;$('#xok').disabled=true;$('#xn').disabled=true;$('#xmsg').innerHTML='';const ok=a>A*d&&a<(A+1)*d;
+      ctx.done(ok,`${A} = ${F(A*d,d)} et ${A+1} = ${F((A+1)*d,d)}. Toutes les fractions de ${F(A*d+1,d)} à ${F((A+1)*d-1,d)} conviennent${ok?` : ${F(a,d)} est juste !`:'.'}`)};
+    $('#xok').onclick=check;enter(['#xn'],check);
+    ctx.auto=g=>{$('#xn').value=g?A*d+1:A*d;check()};
+    return 'N27';
+  }
+  const X=F(n,d,'big');
+  const say=form==='boxes'?variant(['Encadre la fraction entre deux nombres entiers qui se suivent.','Complète avec deux nombres entiers qui se suivent.'])
+    :variant(['Entre quels nombres entiers qui se suivent se trouve cette fraction ?','Complète la phrase.']);
+  ctx.host.innerHTML=`<p class="prompt">${say}</p>${showLine?'<div id="xl"></div>':''}
+    <div class="answerrow">${form==='boxes'?`${inp('xa','entier')} &lt; ${X} &lt; ${inp('xb2','entier')}`:`${X} <span style="font-size:.8em">est entre</span> ${inp('xa','entier')} <span style="font-size:.8em">et</span> ${inp('xb2','entier')}`}</div>
+    <div class="actions"><button class="btn" id="xok">Valider</button></div><div id="xmsg"></div>`;
+  if(showLine){w=lineWin(ctx.cfg,n,d,false);L=NL($('#xl'),{d,s:w.s,U:w.U,labels:w.labels});L.marker(L.idx(n),COL.pt,{frac:[n,d]})}
+  ctx.setHint(()=>`Combien de fois ${F(d,d)} (= 1) dans ${F(n,d)} ? Compte de ${d} en ${d} : ${[1,2,3,4,5,6,7].map(x=>x*d).filter(x=>x<=n+d).join(', ')}…`);
+  let done=false;
+  const check=()=>{if(done)return;const a=num($('#xa').value),b=num($('#xb2').value);
+    if(a===null||b===null){$('#xmsg').innerHTML=`<div class="fb info">Remplis les deux cases.</div>`;return}
+    done=true;$('#xok').disabled=true;$('#xa').disabled=$('#xb2').disabled=true;$('#xmsg').innerHTML='';
+    const ok=a===k&&b===k+1;
+    ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+`${F(n,d)} = ${k} + ${F(n%d,d)}, donc <b>${k} &lt; ${F(n,d)} &lt; ${k+1}</b>.${k>0?` (${k} = ${F(k*d,d)} et ${k+1} = ${F((k+1)*d,d)})`:''}`)};
+  $('#xok').onclick=check;enter(['#xa','#xb2'],check);
+  ctx.auto=g=>{$('#xa').value=g?k:k-1;$('#xb2').value=k+1;check()};
+  return 'N27';
+};
+
+/* 6. DÉCOMPOSER (N19) */
+T.decomposer=ctx=>{
+  let {n,d,k,r}=pickFrac(ctx.cfg);if(k===0){k=1;n=d+r}
+  const denGiven=ctx.cfg.denGiven&&!ctx.exam;
+  const say=variant(['Décompose la fraction : un nombre entier + une fraction plus petite que 1.','Combien d\'unités entières dans cette fraction, et combien en plus ? Complète.','Écris cette fraction sous la forme d\'un entier + une fraction.']);
+  ctx.host.innerHTML=`<p class="prompt">${say}</p><div class="answerrow">${F(n,d,'big')} = ${inp('xe','entier')} + ${fin('xn','xd',denGiven?d:null)}</div>
+    <div class="actions"><button class="btn" id="xok">Valider</button></div><div id="xmsg"></div>`;
+  ctx.setHint(()=>`Rappel : ${F(d,d)} = 1. Combien de paquets de ${d} dans ${n} ? Compte de ${d} en ${d} : ${[1,2,3,4,5,6,7].map(x=>x*d).filter(x=>x<=n).join(', ')}.`);
+  let done=false;
+  const check=()=>{if(done)return;const e=num($('#xe').value),a=num($('#xn').value),b=denGiven?d:num($('#xd').value);
+    if(e===null||a===null||!b){$('#xmsg').innerHTML=`<div class="fb info">Remplis toutes les cases.</div>`;return}
+    done=true;$('#xok').disabled=true;['#xe','#xn','#xd'].forEach(s=>{if($(s))$(s).disabled=true});$('#xmsg').innerHTML='';
+    const ok=e===k&&a*d===b*r&&a<b;
+    ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+`${F(n,d)} = ${Array(k).fill(F(d,d)).join(' + ')} + ${F(r,d)} = <b>${k} + ${F(r,d)}</b>`)};
+  $('#xok').onclick=check;enter(['#xe','#xn','#xd'],check);
+  ctx.auto=g=>{$('#xe').value=g?k:k+1;$('#xn').value=r;if($('#xd'))$('#xd').value=d;check()};
+  return 'N19';
+};
+
+/* 7. RECOMPOSER (N20) */
+T.recomposer=ctx=>{
+  let {n,d,k,r}=pickFrac(ctx.cfg);if(k===0){k=1;n=d+r}
+  const say=variant(['Écris ce nombre avec une seule fraction.','Transforme en une seule fraction.','Le pâtissier a '+k+' bande'+(k>1?'s':'')+' entière'+(k>1?'s':'')+' et un morceau. Écris la quantité totale avec une seule fraction.']);
+  ctx.host.innerHTML=`<p class="prompt">${say}</p><div class="answerrow"><span>${k} + </span>${F(r,d,'big')} = ${fin('xn','xd')}</div>
+    <div class="actions"><button class="btn" id="xok">Valider</button></div><div id="xmsg"></div>`;
+  ctx.setHint(()=>`Rappel : 1 = ${F(d,d)}, donc ${k} = ${F(k*d,d)}.`);
+  let done=false;
+  const check=()=>{if(done)return;const a=num($('#xn').value),b=num($('#xd').value);
+    if(a===null||!b){$('#xmsg').innerHTML=`<div class="fb info">Remplis les deux cases.</div>`;return}
+    done=true;$('#xok').disabled=true;$('#xn').disabled=$('#xd').disabled=true;$('#xmsg').innerHTML='';
+    const ok=a*d===b*n;
+    ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+`${k} = ${F(k*d,d)}, donc ${k} + ${F(r,d)} = ${F(k*d,d)} + ${F(r,d)} = <b>${F(n,d)}</b>`)};
+  $('#xok').onclick=check;enter(['#xn','#xd'],check);
+  ctx.auto=g=>{$('#xn').value=g?n:k+r;$('#xd').value=d;check()};
+  return 'N20';
+};
+
+/* 8. COMPARER À 1 (N24) */
+T.compare1=ctx=>{
+  const d=pickDen(ctx.cfg.dens),c=Math.random();const n=c<.4?rint(1,d-1):c<.6?d:rint(d+1,3*d-1);
+  const good=n<d?0:n===d?1:2;
+  const form=ctx.exam||ctx.g>=3?pick(['frac','words']):'frac';
+  const sym=Math.random()<.5;
+  ctx.host.innerHTML=`<p class="prompt">${sym?'Complète avec &lt;, = ou &gt;.':variant(['Cette fraction est-elle plus petite, égale ou plus grande que 1 ?','Compare cette fraction à 1.'])}</p>
+    <div class="answerrow" style="justify-content:center">${showForm(form,n,d)}${sym?' <span style="color:var(--muted)">…</span> 1':''}</div>`;
+  ctx.setHint(()=>`Compare le numérateur (en haut) et le dénominateur (en bas). Rappel : ${F(d,d)} = 1.`);
+  const opts=sym?['&lt;','=','&gt;']:['plus petite que 1','égale à 1','plus grande que 1'];
+  const expl=n<d?`Le numérateur (${n}) est plus petit que le dénominateur (${d}) : ${F(n,d)} <b>&lt; 1</b>.`:n===d?`Le numérateur est égal au dénominateur : ${F(n,d)} <b>= 1</b>.`:`Le numérateur (${n}) est plus grand que le dénominateur (${d}) : ${F(n,d)} <b>&gt; 1</b>.`;
+  const ans=qcm(ctx.host,opts,good,ok=>ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+expl),sym?'three sym':'three txt');
+  ctx.auto=g=>ans(g?good:(good+1)%3);
+  return 'N24';
+};
+
+/* 9. COMPARER DEUX FRACTIONS (N25) */
+T.compare2=ctx=>{
+  let d1,d2,a,b,U;const mode=pick(['same','related','related','across']);
+  if(mode==='same'){d1=d2=pickDen(ctx.cfg.dens);U=maxU(d1);a=rint(1,d1*U-1);do{b=rint(1,d1*U-1)}while(b===a)}
+  else if(mode==='related'){d1=pick([2,3,4,5,6]);const m=pick([2,3].filter(x=>d1*x<=12));d2=d1*m;U=maxU(d2);a=rint(1,d1*U-1);
+    if(Math.random()<.3)b=a*m;else{do{b=rint(1,d2*U-1)}while(b===a*m||Math.abs(a/d1-b/d2)<.08)}
+    if(Math.random()<.5){[d1,d2]=[d2,d1];[a,b]=[b,a]}}
+  else{d1=pickDen([2,3,4,5,6,8]);do{d2=pick([2,3,4,5,6,8])}while(d2===d1);U=Math.min(maxU(d1),maxU(d2));
+    if(Math.random()<.5){a=rint(1,d1-1);b=rint(d2+1,d2*U-1)}else{a=rint(d1+1,d1*U-1);b=rint(1,d2-1)}}
+  U=Math.min(maxU(d1),maxU(d2));if(a>=d1*U)a=d1*U-1;if(b>=d2*U)b=d2*U-1;
+  const l=a*d2,r=b*d1,good=l<r?0:l===r?1:2;
+  ctx.host.innerHTML=`<p class="prompt">${variant(['Compare ces deux fractions avec &lt;, = ou &gt;.','Quelle fraction est la plus grande ? Choisis le bon signe.','Complète avec &lt;, = ou &gt;.'])}</p>
+    <div class="answerrow" style="justify-content:center"><span style="color:${COL.A}">${F(a,d1,'big')}</span> <span style="color:var(--muted)">…</span> <span style="color:${COL.B}">${F(b,d2,'big')}</span></div><div id="xl1"></div><div id="xl2"></div>`;
+  const lines=()=>{const L1=NL($('#xl1'),{d:d1,U,labels:'all',fit:true});L1.marker(a,COL.A,{frac:[a,d1]});L1.guide(a,COL.A);
+    if(d1===d2){L1.marker(b,COL.B,{frac:[b,d2]});L1.guide(b,COL.B);$('#xl2').innerHTML=''}
+    else{const L2=NL($('#xl2'),{d:d2,U,labels:'all',fit:true});L2.marker(b,COL.B,{frac:[b,d2]});L2.guide(b,COL.B);L1.guide(b*d1/d2,COL.B);L2.guide(a*d2/d1,COL.A)}};
+  ctx.setHint(()=>{lines();return d1===d2?'Même dénominateur : compare les numérateurs. Plus un point est à droite, plus la fraction est grande.':'Regarde les deux droites (même unité) : plus un point est à droite, plus la fraction est grande.'});
+  const expl=()=>{lines();const A=F(a,d1),B=F(b,d2);return good===1?`Les deux points sont au même endroit : ${A} = ${B}. Ce sont des fractions égales !`:good===0?`${B} est plus à droite, donc ${A} <b>&lt;</b> ${B}.`:`${A} est plus à droite, donc ${A} <b>&gt;</b> ${B}.`};
+  const ans=qcm(ctx.host,['&lt;','=','&gt;'],good,ok=>ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+expl()),'three sym');
+  ctx.auto=g=>ans(g?good:(good+1)%3);
+  return 'N25';
+};
+
+/* 10. LES RATÉS DU COMMIS (vrai / faux) */
+T.rate=ctx=>{
+  let {n,d,k,r}=pickFrac(ctx.cfg);if(k===0){k=1;n=d+r}
+  const kinds=['enc','dec','un'];if(ctx.g>=3)kinds.push('place');
+  const kind=pick(kinds),truth=Math.random()<.45;let stmt,code,why,extra='';
+  if(kind==='enc'){code='N27';const A=truth?k:pick([k+1,k-1].filter(x=>x>=0));stmt=`${F(n,d)} est entre ${A} et ${A+1}.`;
+    why=`${F(n,d)} = ${k} + ${F(r,d)}, donc ${F(n,d)} est entre <b>${k} et ${k+1}</b>.`}
+  else if(kind==='dec'){code='N19';let e=k,rr=r;if(!truth){if(Math.random()<.5&&d>2){do{rr=rint(1,d-1)}while(rr===r)}else e=k+1}
+    stmt=`${F(n,d)} = ${e} + ${F(rr,d)}`;why=`${F(n,d)} = ${Array(k).fill(F(d,d)).join(' + ')} + ${F(r,d)} = <b>${k} + ${F(r,d)}</b>.`}
+  else if(kind==='un'){code='N24';const big=Math.random()<.5;const nn=big?n:rint(1,d-1);n=nn;
+    const real=nn>d;const says=truth?real:!real;stmt=`${F(nn,d)} est ${says?'plus grand':'plus petit'} que 1.`;
+    why=real?`Le numérateur (${nn}) est plus grand que le dénominateur (${d}) : ${F(nn,d)} <b>&gt; 1</b>.`:`Le numérateur (${nn}) est plus petit que le dénominateur (${d}) : ${F(nn,d)} <b>&lt; 1</b>.`}
+  else{code='N23';stmt=`J'ai placé ${F(n,d)} au point G.`}
+  ctx.host.innerHTML=`<p class="prompt">${variant(['Les ratés du commis : Gaston a-t-il raison ?','Gaston le commis affirme quelque chose. Vrai ou faux ?','Vérifie le travail de Gaston le commis.'])}</p>
+    <div class="chef"><span class="face">🧑‍🍳</span><span class="bubble">« ${stmt} »</span></div><div id="xl"></div>`;
+  let L=null,t=0,gi=0;
+  if(kind==='place'){const w=lineWin(ctx.cfg,n,d,ctx.exam);L=NL($('#xl'),{d,s:w.s,U:w.U,labels:w.labels});t=L.idx(n);
+    const wrongs=[t+1,t-1,w.s>0?n:null].filter(x=>x!=null&&x>=0&&x<=L.total&&x!==t);gi=truth||!wrongs.length?t:pick(wrongs);L.marker(gi,COL.B,{letter:'G'});
+    why=gi===t?`Oui, ${F(n,d)} est bien au point G.`:`Le point G n'est pas à ${F(n,d)}. ${lineExplain(L,n,d)}`}
+  const isTrue=kind==='place'?gi===t:truth;
+  ctx.setHint(()=>kind==='place'?lineHint(L,d):kind==='un'?'Compare le numérateur et le dénominateur.':`Rappel : ${F(d,d)} = 1. Décompose la fraction toi-même, puis compare avec Gaston.`);
+  const ans=qcm(ctx.host,['✅ Vrai, Gaston a raison','❌ Faux, Gaston s\'est trompé'],isTrue?0:1,ok=>{
+    if(L){L.clear();if(gi!==t)L.marker(gi,COL.gray,{letter:'G',letterY:L.Y+58});L.marker(t,COL.ok,{frac:[n,d]});L.jumps(0,t,{color:COL.ok})}
+    ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+(isTrue?'Gaston a raison. ':'Gaston s\'est trompé. ')+why)},'two txt');
+  ctx.auto=g=>ans(g?(isTrue?0:1):(isTrue?1:0));
+  return code;
+};
+
+/* 11. PROBLÈMES DE PÂTISSIER */
+T.probleme=ctx=>{
+  const d=pickDen([2,3,4,5,6,8,10,12]);const k=rint(1,Math.min(5,ctx.cfg.k[1])),r=rint(1,d-1),n=k*d+r;
+  const tpl=pick(['p1','p2','p3','p4']);let code,html,checkFn,autoFn,expl;
+  const ROW=(c)=>`<div class="answerrow">${c}</div><div class="actions"><button class="btn" id="xok">Valider</button></div><div id="xmsg"></div>`;
+  if(tpl==='p1'){code='N18';html=`<p class="prompt">Le chef coupe chaque tarte en ${d} parts égales. Pour le goûter, il sert ${n} parts.<br>Quelle fraction de tarte a-t-il servie ?</p>${ROW(fin('xn','xd'))}`;
+    expl=`Une part = ${F(1,d)} de tarte. ${n} parts = <b>${F(n,d)}</b> de tarte (c'est ${k} tarte${k>1?'s':''} et ${F(r,d)}).`;
+    checkFn=()=>{const a=num($('#xn').value),b=num($('#xd').value);if(a===null||!b)return null;return a*d===b*n};autoFn=g=>{$('#xn').value=g?n:d;$('#xd').value=g?d:n}}
+  else if(tpl==='p2'){code='N19';html=`<p class="prompt">Chaque tarte est coupée en ${d} parts égales. Le chef a servi ${F(n,d)} de tarte.<br>Combien de tartes entières a-t-il servies, et quelle fraction de tarte en plus ?</p>${ROW(`${inp('xe','tartes entières')} <span style="font-size:.75em">tarte(s) +</span> ${fin('xn','xd')}`)}`;
+    expl=`${F(n,d)} = ${k} + ${F(r,d)} : <b>${k} tarte${k>1?'s':''} entière${k>1?'s':''}</b> et ${F(r,d)} de tarte.`;
+    checkFn=()=>{const e=num($('#xe').value),a=num($('#xn').value),b=num($('#xd').value);if(e===null||a===null||!b)return null;return e===k&&a*d===b*r&&a<b};autoFn=g=>{$('#xe').value=g?k:k+1;$('#xn').value=r;$('#xd').value=d}}
+  else if(tpl==='p3'){code='N20';html=`<p class="prompt">Pour sa recette, le pâtissier utilise ${k} plaque${k>1?'s':''} de beurre entière${k>1?'s':''} et ${F(r,d)} de plaque.<br>Écris cette quantité avec une seule fraction.</p>${ROW(fin('xn','xd'))}`;
+    expl=`1 plaque = ${F(d,d)}, donc ${k} plaque${k>1?'s':''} = ${F(k*d,d)}. ${F(k*d,d)} + ${F(r,d)} = <b>${F(n,d)}</b>.`;
+    checkFn=()=>{const a=num($('#xn').value),b=num($('#xd').value);if(a===null||!b)return null;return a*d===b*n};autoFn=g=>{$('#xn').value=g?n:k+r;$('#xd').value=d}}
+  else{code='N27';html=`<p class="prompt">Un ruban de pâte d'amande mesure ${F(n,d)} ${n/d>=2?'mètres':'mètre'}.<br>Entre quels nombres entiers de mètres se trouve sa longueur ?</p>${ROW(`<span style="font-size:.75em">entre</span> ${inp('xa','entier')} <span style="font-size:.75em">m et</span> ${inp('xb2','entier')} <span style="font-size:.75em">m</span>`)}`;
+    expl=`${F(n,d)} = ${k} + ${F(r,d)}, donc la longueur est entre <b>${k} m et ${k+1} m</b>.`;
+    checkFn=()=>{const a=num($('#xa').value),b=num($('#xb2').value);if(a===null||b===null)return null;return a===k&&b===k+1};autoFn=g=>{$('#xa').value=g?k:k+1;$('#xb2').value=g?k+1:k+2}}
+  ctx.host.innerHTML=`<div class="chef"><span class="face">🧁</span><span class="bubble" style="font-weight:400">Problème de pâtissier</span></div>${html}`;
+  ctx.setHint(()=>tpl==='p3'?`Rappel : 1 = ${F(d,d)}.`:`Rappel : ${F(d,d)} = 1 tarte entière. Compte de ${d} en ${d}.`);
+  let done=false;
+  const check=()=>{if(done)return;const ok=checkFn();if(ok===null){$('#xmsg').innerHTML=`<div class="fb info">Remplis toutes les cases.</div>`;return}
+    done=true;$('#xok').disabled=true;ctx.host.querySelectorAll('input').forEach(i=>i.disabled=true);$('#xmsg').innerHTML='';ctx.done(ok,(ok?'<b>Bravo !</b> ':'')+expl)};
+  $('#xok').onclick=check;enter([...ctx.host.querySelectorAll('input')].map(i=>'#'+i.id),check);
+  ctx.auto=g=>{autoFn(g);check()};
+  return code;
+};
+
+function enter(sels,fn){sels.forEach(s=>{const e=$(s);if(e)e.addEventListener('keydown',ev=>{if(ev.key==='Enter')fn()})})}
+
+/* ======================= DÉROULÉ D'UNE SÉANCE ======================= */
+let RUN=null,CUR=null;
+function buildQueue(g,exam){
+  const types=GRADES[g].types,N=exam?EXAM_N:TRAIN_N;let q=[];
+  if(exam){const prev=g>0?GRADES[g-1].types:[];const pool=shuffle(types.slice());
+    while(q.length<N-(g>0?2:0))q.push(pool[q.length%pool.length]);
+    if(g>0){q.push(pick(prev));q.push(pick(prev))}
+    q=shuffle(q);
+  }else{const pool=shuffle(types.slice());while(q.length<N)q.push(pool[q.length%pool.length]);q=shuffle(q)}
+  for(let i=1;i<q.length;i++)if(q[i]===q[i-1]){const j=(i+1)%q.length;[q[i],q[j]]=[q[j],q[i]]}
+  return q;
+}
+function startRun(g,exam){
+  RUN={g,exam,queue:buildQueue(g,exam),i:0,score:0,cer:0,miss:{}};lastD=0;
+  showSection('play');nextQ();
+}
+function nextQ(){
+  const R=RUN,host=$('#play');
+  if(R.i>=R.queue.length)return endRun();
+  const g=R.g,cfg=GRADES[g],type=R.queue[R.i];
+  host.innerHTML=`<div class="prog"><span>${R.exam?'🎓 Épreuve':'👩‍🍳 Entraînement'} · ${cfg.emoji} ${cfg.name}</span><div class="bar"><i style="width:${R.i/R.queue.length*100}%"></i></div><span>Question ${R.i+1} / ${R.queue.length}</span></div>
+    <div class="card"><div id="qcode" style="margin-bottom:6px"></div><div id="qbody"></div>
+      <div class="actions">${R.exam?'':'<button class="btn help" id="qhint">💡 Coup de pouce</button>'}<button class="btn soft" id="qquit">Quitter</button></div>
+      <div id="qhintbox"></div><div id="qfb"></div></div>`;
+  let hintFn=null,answered=false;
+  const ctx={host:$('#qbody'),cfg,g,exam:R.exam,setHint:f=>hintFn=f,
+    done:(ok,msg)=>{if(answered)return;answered=true;
+      recCode(CUR.code,ok);if(ok){R.score++;R.cer++;ST.cerises++;save();header(true)}else{R.miss[CUR.code]=(R.miss[CUR.code]||0)+1}
+      if($('#qhint'))$('#qhint').disabled=true;$('#qhintbox').innerHTML='';
+      $('#qfb').innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?'🍒 ':''}${msg}</div><div class="actions"><button class="btn" id="qnext">${R.i+1<R.queue.length?'Question suivante ➜':'Voir mon résultat ➜'}</button></div>`;
+      $('#qnext').onclick=()=>{R.i++;nextQ();window.scrollTo(0,0)}}};
+  const code=T[type](ctx);
+  CUR={type,code,ctx};
+  $('#qcode').innerHTML=`<span class="code">${code}</span> <span class="muted" style="font-size:.9rem">${COMP[code]}</span>`;
+  if($('#qhint'))$('#qhint').onclick=()=>{if(answered||!hintFn)return;$('#qhintbox').innerHTML=`<div class="fb info">💡 ${hintFn()}</div>`;$('#qhint').disabled=true};
+  $('#qquit').onclick=()=>{RUN=null;showSection('home')};
+}
+function endRun(){
+  const R=RUN,host=$('#play'),cfg=GRADES[R.g];let html='';
+  const missList=Object.keys(R.miss).sort();
+  const missHtml=missList.length?`<p>À retravailler : ${missList.map(c=>`<span class="code">${c}</span>`).join(' ')} <span class="muted" style="font-size:.9rem">(regarde « Mes recettes » !)</span></p>`:'';
+  if(!R.exam){
+    if(R.g===ST.grade)ST.train[R.g]=(ST.train[R.g]||0)+1;save();
+    const left=Math.max(0,TRAIN_BEFORE_EXAM-ST.train[ST.grade]);
+    const r=R.score/R.queue.length;
+    html=`<div class="card result"><h2>Fin de l'entraînement !</h2><div class="score">${R.score} / ${R.queue.length}</div>
+      <p style="font-size:1.15rem">${r>=.8?'👩‍🍳 Superbe travail !':r>=.5?'🧁 Beau travail, continue !':'🌱 Tu progresses : chaque entraînement te rend plus fort !'}</p>
+      <p>🍒 Tu as gagné <b>${R.cer}</b> cerise${R.cer>1?'s':''}.</p>${missHtml}
+      ${R.g===ST.grade&&!(ST.grade===4&&ST.star)?(left?`<p class="muted">Encore ${left} entraînement${left>1?'s':''} avant de pouvoir passer l'épreuve.</p>`:`<p><b>🎓 Tu peux passer l'épreuve !</b></p>`):''}
+      <div class="actions" style="justify-content:center"><button class="btn green" id="eAgain">🔄 Un autre entraînement</button>
+      ${R.g===ST.grade&&!left&&!(ST.grade===4&&ST.star)?'<button class="btn choco" id="eExam">🎓 Passer l\'épreuve</button>':''}<button class="btn soft" id="eHome">🏠 Ma pâtisserie</button></div></div>`;
+  }else{
+    const pass=R.score>=EXAM_PASS;let promo='';
+    if(pass&&R.g===ST.grade){
+      if(ST.grade<4){ST.grade++;promo=GRADES[ST.grade].name}else if(!ST.star){ST.star=true;promo='Chef pâtissier étoilé ⭐'}
+      save();header(false);
+    }
+    html=pass?`<div class="card result"><div class="bigemoji">🎉</div><h2>Épreuve réussie !</h2><div class="score">${R.score} / ${R.queue.length}</div>
+      ${promo?`<div class="diploma"><div class="t">Diplôme de la pâtisserie des fractions</div><p>Félicitations${ST.name?' <b>'+esc(ST.name)+'</b>':''} ! Tu deviens</p><div class="g">${promo}</div>
+        <div style="max-width:220px;margin:10px auto">${cake(ST.grade,ST.star,true)}</div><p class="muted">Un nouvel étage s'ajoute à ta pièce montée !</p></div>`:'<p>Tu as déjà ce grade : bravo d\'avoir révisé !</p>'}
+      <div class="actions" style="justify-content:center"><button class="btn" id="eHome">🏠 Voir ma pâtisserie</button></div></div>`
+    :`<div class="card result"><div class="bigemoji">💪</div><h2>Presque !</h2><div class="score">${R.score} / ${R.queue.length}</div>
+      <p>Il faut ${EXAM_PASS} bonnes réponses sur ${EXAM_N} pour passer. Il t'en manque <b>${EXAM_PASS-R.score}</b>.</p>${missHtml}
+      <p>Tu ne perds rien : entraîne-toi encore et retente l'épreuve quand tu veux !</p>
+      <div class="actions" style="justify-content:center"><button class="btn green" id="eAgain">👩‍🍳 M'entraîner</button><button class="btn choco" id="eExam">🎓 Retenter l'épreuve</button><button class="btn soft" id="eHome">🏠 Ma pâtisserie</button></div></div>`;
+  }
+  host.innerHTML=html;
+  const g=R.g;RUN=null;
+  if($('#eAgain'))$('#eAgain').onclick=()=>startRun(R.exam?ST.grade:g,false);
+  if($('#eExam'))$('#eExam').onclick=()=>startRun(ST.grade,true);
+  $('#eHome').onclick=()=>showSection('home');
+  window.scrollTo(0,0);
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ======================= PIÈCE MONTÉE ======================= */
+function cake(grade,star,small=false){
+  const W=[250,206,166,130,98],C=['#f7a8c4','#a8e2cf','#ffe08a','#cbb5f0','#ffc2a0'],D=['#e0779e','#6fc7aa','#e6bb3c','#9c80d6','#ef9461'];
+  let s=`<svg viewBox="0 0 300 360" style="width:100%;height:auto;display:block">`;
+  s+=`<ellipse cx="150" cy="338" rx="140" ry="14" fill="#e9dccb"/><rect x="20" y="326" width="260" height="12" rx="6" fill="#f3e7d6"/>`;
+  for(let t=0;t<5;t++){const w=W[t],h=52,x=150-w/2,y=326-(t+1)*h-t*2,built=t<=grade;
+    if(built){s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${C[t]}" stroke="${D[t]}" stroke-width="3"/>`;
+      let p='';const nb=Math.round(w/22);for(let i=nb-1;i>=0;i--){const x1=x+4+(w-8)*(i+.5)/nb,x2=x+4+(w-8)*i/nb;p+=` Q ${x1.toFixed(1)} ${y+26} ${x2.toFixed(1)} ${y+12}`}
+      s+=`<path d="M${x+4} ${y+2} H${x+w-4} V${y+12}${p} Z" fill="#fff" opacity=".85"/>`;
+      s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="none" stroke="${D[t]}" stroke-width="3"/>`;
+      for(let i=0;i<Math.round(w/40);i++)s+=`<circle cx="${x+20+i*(w-40)/Math.max(1,Math.round(w/40)-1)}" cy="${y+38}" r="4" fill="${D[t]}"/>`;
+    }else s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="none" stroke="#cdbfae" stroke-width="2.5" stroke-dasharray="8 7"/>`;
+  }
+  const topY=326-5*52-8;
+  if(grade>=4)s+=`<circle cx="150" cy="${topY+2}" r="13" fill="#d7263d"/><path d="M150 ${topY-10} q6 -14 18 -16" stroke="#3e7d2e" stroke-width="3" fill="none"/>`;
+  if(star)s+=`<path d="M150 ${topY-52} l9 18 20 3 -14 14 3 20 -18 -9 -18 9 3 -20 -14 -14 20 -3 z" fill="#f5c542" stroke="#c88a08" stroke-width="2.5"/>`;
+  return s+'</svg>';
+}
+
+/* ======================= ACCUEIL ======================= */
+function renderHome(){
+  const g=ST.grade,cfg=GRADES[g],left=Math.max(0,TRAIN_BEFORE_EXAM-(ST.train[g]||0)),finished=g===4&&ST.star;
+  const nextName=g<4?GRADES[g+1].name:'Chef pâtissier étoilé ⭐';
+  const rungs=GRADES.map((G,i)=>{const cls=i<g||(i===4&&ST.star)?'done':i===g?'cur':'';
+    return `<div class="rung ${cls}"><span style="font-size:1.4rem">${G.emoji}</span><span class="rn">${G.name}${i<g?' ✅':i===g?' ← toi':' 🔒'}</span>
+      <span class="chips">${gradeCodes(i).map(c=>`<span class="code">${c}</span>`).join('')}</span>
+      ${i<g?`<button class="btn soft" data-rev="${i}" style="padding:6px 12px;font-size:.9rem">Réviser</button>`:''}</div>`}).join('');
+  $('#home').innerHTML=`<div class="card"><div class="home"><div>${cake(g,ST.star)}</div>
+    <div><p class="muted" style="margin:0">Ton grade :</p><div class="gradeName">${cfg.emoji} ${cfg.name}${ST.star?' ⭐':''}</div>
+      <p class="namebox">Ton nom de pâtissier : <input id="hName" maxlength="20" value="${esc(ST.name)}" placeholder="ton prénom"></p>
+      <p>🍒 <b>${ST.cerises}</b> cerise${ST.cerises>1?'s':''} gagnée${ST.cerises>1?'s':''}</p>
+      <p class="muted">${cfg.desc}</p>
+      <div class="actions"><button class="btn big" id="hTrain">👩‍🍳 M'entraîner</button>
+        ${finished?'':left?`<span class="lock">🔒 Épreuve pour devenir <b>${nextName}</b> : encore ${left} entraînement${left>1?'s':''}.</span>`:`<button class="btn choco big" id="hExam">🎓 Épreuve : devenir ${nextName}</button>`}</div>
+      ${finished?'<p><b>⭐ Tu as terminé ta pièce montée : tu es Chef pâtissier étoilé ! Continue à t\'entraîner pour rester au top.</b></p>':''}
+    </div></div></div>
+    <div class="card"><h2>🪜 Les grades de la brigade</h2><p class="muted">Chaque entraînement : ${TRAIN_N} questions, avec des coups de pouce. Chaque épreuve : ${EXAM_N} questions sans aide, il faut ${EXAM_PASS} bonnes réponses. Tu ne perds jamais un grade !</p><div class="ladder">${rungs}</div></div>`;
+  $('#hTrain').onclick=()=>startRun(g,false);
+  if($('#hExam'))$('#hExam').onclick=()=>startRun(g,true);
+  $('#hName').onchange=$('#hName').onblur=e=>{ST.name=e.target.value.trim();save()};
+  document.querySelectorAll('[data-rev]').forEach(b=>b.onclick=()=>startRun(+b.dataset.rev,false));
+}
+
+/* ======================= RECETTES (aide-mémoire) ======================= */
+function renderRecettes(){
+  const box=(id)=>`<div id="${id}"></div>`;
+  $('#recettes').innerHTML=`<div class="card"><h2>📖 Mes recettes</h2><p class="muted">Relis une recette quand tu bloques.</p></div>
+  <div class="recipes">
+    <div class="card"><h3>🍰 Lire une fraction sur une droite <span class="code">N22</span> <span class="code">N23</span></h3>
+      <ol><li>Je repère deux nombres entiers qui se suivent : c'est l'<b>unité</b>.</li><li>Je compte les <b>parts égales</b> dans l'unité → le <b>dénominateur</b>.</li><li>Je compte les <b>sauts depuis 0</b> → le <b>numérateur</b>.</li></ol>${box('rl1')}</div>
+    <div class="card"><h3>⚠️ La droite ne commence pas à 0 <span class="code">N22</span> <span class="code">N23</span></h3>
+      <p>Si la droite commence à 2 et que l'unité est partagée en 3 : 2 = ${F(6,3)}.<br>Je pars de <b>6 sauts</b> et je continue à compter !</p>${box('rl2')}</div>
+    <div class="card"><h3>✂️ Décomposer <span class="code">N19</span></h3><p>${F(11,4,'big')} : combien de paquets de 4 dans 11 ? 4, 8 → <b>2 paquets</b>, il reste 3.</p>
+      <p>${F(11,4)} = ${F(4,4)} + ${F(4,4)} + ${F(3,4)} = <b>2 + ${F(3,4)}</b></p></div>
+    <div class="card"><h3>🧁 Recomposer <span class="code">N20</span></h3><p>2 + ${F(3,4)} = ? &nbsp; 1 = ${F(4,4)}, donc 2 = ${F(8,4)}.</p><p>${F(8,4)} + ${F(3,4)} = <b>${F(11,4)}</b></p></div>
+    <div class="card"><h3>🍫 Encadrer <span class="code">N27</span></h3><p>${F(11,4)} = 2 + ${F(3,4)}, donc <b>2 &lt; ${F(11,4)} &lt; 3</b>.</p><p class="muted">Les deux nombres entiers se suivent.</p></div>
+    <div class="card"><h3>⚖️ Comparer à 1 <span class="code">N24</span></h3><p>${F(3,4)} &lt; 1 : le numérateur est <b>plus petit</b>.<br>${F(4,4)} = 1 : ils sont <b>égaux</b>.<br>${F(5,4)} &gt; 1 : le numérateur est <b>plus grand</b>.</p></div>
+    <div class="card"><h3>🍒 Comparer deux fractions <span class="code">N25</span></h3><p>Sur la droite, <b>plus un point est à droite, plus la fraction est grande</b>.</p><p>Même dénominateur : je compare les numérateurs. ${F(3,5)} &lt; ${F(4,5)}</p><p>${F(1,2)} = ${F(2,4)} : même place sur la droite !</p></div>
+    <div class="card"><h3>🎨 Bandes et fractions <span class="code">N17</span> <span class="code">N18</span></h3><p>Une bande = 1 unité. Le dénominateur = le nombre de parts dans <b>une</b> bande.</p><div class="wide">${bandsSVG(2,4,i=>i<7)}</div><p>7 parts de ${F(1,4)} = ${F(7,4)}</p></div>
+  </div>`;
+  const L1=NL($('#rl1'),{d:4,U:2,labels:'all'});L1.marker(7,COL.pt,{frac:[7,4]});L1.jumps(0,7,{animate:false});
+  const L2=NL($('#rl2'),{d:3,s:2,U:2,labels:'all'});L2.marker(2,COL.pt,{frac:[8,3]});
+}
+
+/* ======================= BILAN ======================= */
+function renderBilan(){
+  const items=Object.keys(COMP).map(code=>{const a=ST.codes[code]||[];const ok=a.reduce((x,y)=>x+y,0);
+    const st=!a.length?'todo':a.length>=4&&ok/a.length>=.75?'ok':a.length>=3&&ok/a.length<.6?'redo':'part';return {code,a,ok,st}});
+  const lbl={ok:'<span class="st ok">🌟 Réussie</span>',part:'<span class="st part">⏳ En cours</span>',redo:'<span class="st redo">🔁 À retravailler</span>',todo:'<span class="st todo">Pas encore travaillée</span>'};
+  const row=x=>`<div class="bitem"><div style="flex:1"><span class="code">${x.code}</span> ${lbl[x.st]}<br><b>${COMP[x.code]}</b>
+    ${x.a.length?`<div class="dots">${x.a.map(v=>`<i class="${v?'y':'n'}"></i>`).join('')}</div><div class="muted" style="font-size:.9rem">${x.ok} réussite${x.ok>1?'s':''} sur tes ${x.a.length} dernières questions</div>`:''}</div></div>`;
+  const grp=(st,t)=>{const l=items.filter(x=>x.st===st);return l.length?`<div class="card"><h3>${t} (${l.length})</h3>${l.map(row).join('')}</div>`:''};
+  $('#bilan').innerHTML=`<div class="card"><h2>🏆 Mon bilan</h2><p>Grade : <b>${GRADES[ST.grade].emoji} ${GRADES[ST.grade].name}${ST.star?' ⭐':''}</b> · 🍒 ${ST.cerises} cerises</p>
+    <p class="muted">Pour chaque compétence, on regarde tes 8 dernières réponses. Elle est réussie quand tu as au moins 3 bonnes réponses sur 4.</p></div>
+    ${grp('ok','🌟 Compétences réussies')}${grp('redo','🔁 Compétences à retravailler')}${grp('part','⏳ Compétences en cours')}${grp('todo','⚪ Pas encore travaillées')}
+    <div class="card"><div class="actions" style="margin:0"><button class="btn soft" id="bReset">🗑️ Tout recommencer depuis le début</button>
+      <span class="confirm" id="bConf">Tu es sûr ? Ton grade et tes cerises seront effacés. <button class="btn choco" id="bYes">Oui, effacer</button><button class="btn soft" id="bNo">Non</button></span></div></div>`;
+  $('#bReset').onclick=()=>{$('#bConf').style.display='inline-flex'};
+  $('#bNo').onclick=()=>{$('#bConf').style.display='none'};
+  $('#bYes').onclick=()=>{ST=fresh();save();header(false);renderBilan()};
+}
+
+/* ======================= NAVIGATION ======================= */
+function showSection(t){
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  if(t==='home')renderHome();else if(t==='recettes')renderRecettes();else if(t==='bilan')renderBilan();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{RUN=null;showSection(b.dataset.t)});
+header(false);showSection('home');
+</script>
+</body>
+</html>
