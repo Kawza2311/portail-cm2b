@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendrier des énigmes n°2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: joyeux, chaleureux, lisible au TBI par des CM2
+   IDEA: un village de cadeaux enneigés au pied d'une piste de luge, une énigme derrière chaque porte
+   PICTURE: nuit d'hiver, collines de neige, sapins, une luge qui descend ; neige qui tombe
+   COLOUR and TYPE: bleu nuit dominant, neige blanche, rouge Noël en accent, vert sapin ; Mountains of Christmas + Fredoka
+   LAYOUT: scène en haut, grille de 24 portes, chaque énigme s'ouvre en grande fiche papier */
+:root{color-scheme:light dark;--night:#0c2240;--night2:#173a63;--snow:#f6faff;--red:#c8102e;--red2:#a30d25;--green:#17694a;--gold:#f2b632;--ink:#16213a;--paper:#fffdf7;--muted:#56627a;--ok:#1d8a4e;--ko:#c8102e}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth}
+body{margin:0;position:relative;background:radial-gradient(ellipse at 70% -10%,#3b2f7a 0%,transparent 55%),linear-gradient(#060e2a,#122a5c 460px,#1b3f78 900px,#20497f);color:var(--snow);font:19px/1.5 Fredoka,"Trebuchet MS",system-ui,sans-serif;overflow-x:clip;min-height:100vh}
+#snow{position:fixed;inset:0;pointer-events:none;z-index:1}
+header{position:relative;z-index:2;padding:22px max(4vw,14px) 0;max-width:1240px;margin:auto}
+h1{font-family:"Mountains of Christmas",cursive;font-size:clamp(42px,6.5vw,72px);line-height:1.05;margin:4px 0 0;background:linear-gradient(180deg,#fffbe6,#f7d774 50%,#d99a1c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 0 rgba(70,35,0,.45)) drop-shadow(0 0 20px rgba(255,214,120,.45));text-wrap:balance;cursor:default;user-select:none}
+.sub{font-size:20px;margin:6px 0 0;color:#d6e6ff}
+.scene{display:block;width:100vw;max-width:none;margin-left:calc(50% - 50vw);height:clamp(150px,24vw,300px);margin-top:-6px;-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
+main{position:relative;z-index:2;max-width:1240px;margin:auto;padding:0 max(4vw,14px) 40px}
+.doors{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:30px 18px;margin-top:14px}
+.door{position:relative;aspect-ratio:1;border:0;border-radius:16px;cursor:pointer;font:inherit;color:#fff;padding:0;display:grid;place-items:center;
+  background:linear-gradient(90deg,transparent calc(50% - 9px),#d9a22a calc(50% - 9px),#ffe9a3 50%,#d9a22a calc(50% + 9px),transparent calc(50% + 9px)),linear-gradient(0deg,transparent calc(50% - 9px),#d9a22a calc(50% - 9px),#ffe9a3 50%,#d9a22a calc(50% + 9px),transparent calc(50% + 9px)),radial-gradient(circle,rgba(255,255,255,.22) 2px,transparent 3px) 0 0/20px 20px,linear-gradient(145deg,var(--g1),var(--g2));
+  box-shadow:0 8px 0 rgba(0,0,0,.28),0 16px 30px rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.14);transition:transform .2s}
+.door:hover,.door:focus-visible{transform:translateY(-4px) rotate(-1.5deg)}
+.door:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.door::before{content:"";position:absolute;left:-4px;right:-4px;top:-9px;height:26px;z-index:1;background:radial-gradient(circle at 10% 70%,#fff 12px,transparent 13px),radial-gradient(circle at 30% 55%,#fff 15px,transparent 16px),radial-gradient(circle at 72% 60%,#fff 15px,transparent 16px),radial-gradient(circle at 92% 70%,#fff 12px,transparent 13px);filter:drop-shadow(0 2px 0 #c9d9ee)}
+.door::after{content:"";position:absolute;inset:0;border-radius:16px;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.55) 50%,transparent 62%) no-repeat;background-size:260% 100%;background-position:160% 0;transition:background-position .8s;pointer-events:none}
+.door:hover::after{background-position:-60% 0}
+.door .bow{position:absolute;z-index:2;top:-20px;left:50%;transform:translateX(-50%);width:60px;height:34px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+.door .num{position:relative;z-index:1;display:grid;place-items:center;width:58%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fffef8,#f1e6c8);border:3px solid #e2b13c;color:var(--g2);font-family:"Mountains of Christmas",cursive;font-size:44px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.3),inset 0 0 0 3px #fffaf0}
+.door .tag{position:absolute;z-index:1;left:6px;right:6px;bottom:7px;font-size:13px;line-height:1.2;background:rgba(255,255,255,.95);color:var(--ink);border-radius:8px;padding:3px 4px}
+.door.locked{filter:saturate(.55) brightness(.82)}
+.door.locked .num{color:#6f7d99;border-color:#c9d3e6}
+.door.today{animation:glowd 1.6s ease-in-out infinite alternate}
+@keyframes glowd{from{box-shadow:0 8px 0 rgba(0,0,0,.28),0 0 0 0 rgba(255,209,102,0)}to{box-shadow:0 8px 0 rgba(0,0,0,.28),0 0 34px 10px rgba(255,209,102,.8)}}
+.door.solved .num::after{content:"★";position:absolute;right:-14px;top:-14px;color:#ffd166;font-size:32px;text-shadow:0 0 10px rgba(255,209,102,.95),0 2px 0 #9a6a00}
+.c0{--g1:#e3344f;--g2:#9d0f26}.c1{--g1:#22a06b;--g2:#0f5a3b}.c2{--g1:#3a7bd5;--g2:#1a3f86}.c3{--g1:#9b59d0;--g2:#5b2a8c}
+.aurora{position:absolute;left:0;right:0;top:0;height:560px;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;width:70%;height:220px;border-radius:50%;filter:blur(48px);opacity:.42;animation:aur 14s ease-in-out infinite alternate}
+.aurora i:nth-child(1){left:-12%;top:50px;background:linear-gradient(90deg,transparent,#3ee8b5,transparent)}
+.aurora i:nth-child(2){left:28%;top:0;background:linear-gradient(90deg,transparent,#9a7bff,transparent);animation-duration:19s}
+.aurora i:nth-child(3){left:52%;top:100px;background:linear-gradient(90deg,transparent,#41c7ff,transparent);animation-duration:23s}
+.aurora svg{position:absolute;inset:0}
+@keyframes aur{from{transform:translateX(-6%) skewY(-6deg) scaleY(.8)}to{transform:translateX(9%) skewY(5deg) scaleY(1.2)}}
+.tw{animation:tw 2.6s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.25}to{opacity:1}}
+.bulb{animation:bl 1.4s ease-in-out infinite alternate}
+@keyframes bl{from{opacity:.35}to{opacity:1}}
+.garland{position:relative;z-index:2;display:block;width:100%;height:56px;margin-bottom:-8px}
+.legend{margin:30px 0 0;color:#d6e6ff;font-size:16px}
+.legend b{color:#fff}
+footer{position:relative;z-index:2;text-align:center;color:#b8cbe6;font-size:14px;padding:10px 16px 30px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);background:var(--paper);color:var(--ink);padding:14px 22px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:50;transition:transform .3s;font-size:19px;max-width:92vw;text-align:center}
+#toast.on{transform:translateX(-50%) translateY(0)}
+/* fiche du jour */
+#day{position:fixed;inset:0;z-index:20;overflow-y:auto;background:radial-gradient(ellipse at 50% 0,rgba(60,50,130,.6),rgba(4,12,30,.85));backdrop-filter:blur(5px);display:none;padding:18px max(3vw,10px) 40px}
+#day.on{display:block}
+.card{max-width:1000px;margin:24px auto 0;background:var(--paper);color:var(--ink);border-radius:22px;padding:clamp(18px,3vw,34px);box-shadow:0 0 0 4px #f2c94c,0 0 0 8px rgba(242,201,76,.25),0 20px 60px rgba(0,0,0,.5);position:relative}
+.card::before{content:"";position:absolute;left:14px;right:14px;top:-16px;height:28px;background:radial-gradient(circle at 50% 100%,#fff 17px,transparent 18px) 0 0/40px 28px repeat-x;filter:drop-shadow(0 -1px 0 #dce7f5)}
+.top{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.back{border:0;background:var(--night2);color:#fff;font:inherit;font-size:18px;border-radius:12px;padding:10px 16px;cursor:pointer;min-height:44px}
+.date{font-family:"Mountains of Christmas",cursive;font-size:clamp(34px,5vw,48px);line-height:1;color:var(--red)}
+.fam{display:inline-block;border-radius:999px;padding:6px 14px;font-weight:600;font-size:17px;color:#fff}
+h2{font-size:clamp(26px,3.4vw,34px);margin:14px 0 4px;line-height:1.15}
+.src{color:var(--muted);font-size:15px;margin:0 0 10px}
+.methode{border-radius:14px;padding:12px 16px;margin:12px 0 16px;font-size:18px;border:2px dashed}
+.enonce{font-size:20px;background:#fff;border:2px solid #e5e9f2;border-radius:14px;padding:14px 18px}
+.enonce p{margin:.3em 0}
+.zone{margin:18px 0;padding:16px;border-radius:16px;background:#eef5ff;border:2px solid #d3e3fb}
+.zone h3{margin:0 0 8px;font-size:19px;color:var(--night2)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:0;font:inherit;font-size:18px;border-radius:12px;padding:10px 16px;cursor:pointer;min-height:46px;background:var(--night2);color:#fff}
+.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.light{background:#dde7f6;color:var(--ink)}.btn.gold{background:var(--gold);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible,.tok:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.answer{margin-top:16px;padding:16px;border-radius:16px;background:#fff6e0;border:2px solid #f3d58d}
+.field{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+.field input{font:inherit;font-size:20px;width:7.5em;padding:8px 10px;border:2px solid #b9c3d6;border-radius:10px;background:#fff;color:var(--ink)}
+.field input.good{border-color:var(--ok);background:#e6f6ec}.field input.bad{border-color:var(--ko);background:#fde8eb}
+.fb{margin-top:10px;font-size:19px;font-weight:500;min-height:1.5em}
+.fb.ok{color:var(--ok)}.fb.ko{color:var(--ko)}
+.hint,.corr{margin-top:14px;border-radius:14px;padding:12px 18px;font-size:18px}
+.hint{background:#e8f7ef;border:2px solid #a8dcbf}
+.corr{background:#f3efff;border:2px solid #cfc3f7}
+.corr ol{margin:.3em 0;padding-left:1.3em}.corr li{margin:.3em 0}
+.big{font-size:22px;font-weight:600}
+/* jetons à placer */
+.tray{display:flex;flex-wrap:wrap;gap:10px;min-height:58px;padding:8px;border-radius:12px;background:#fff;border:2px dashed #b9c9e3;margin-top:10px}
+.tok{width:52px;height:52px;border-radius:12px;border:2px solid #7b8db0;background:#fff;color:var(--ink);font:inherit;font-size:24px;font-weight:600;cursor:grab;touch-action:none;display:grid;place-items:center;box-shadow:0 3px 0 #b9c3d6}
+.tok.sel{background:var(--gold);border-color:#b8740d}
+.tok.ghost{visibility:hidden}
+.slot{width:56px;height:56px;border-radius:12px;border:3px dashed #7b8db0;background:#fff;display:grid;place-items:center;font-size:25px;font-weight:600;cursor:pointer;touch-action:none;color:var(--ink)}
+.slot.full{border-style:solid;border-color:var(--night2);background:#fffbe9}
+.slot.round{border-radius:50%}
+.fixed{width:56px;height:56px;border-radius:12px;border:3px solid #444;background:#e9ecf2;display:grid;place-items:center;font-size:25px;font-weight:600;color:var(--ink)}
+.fixed.round{border-radius:50%}
+.drag-ghost{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-50%) scale(1.1)}
+.stage{position:relative;width:100%;margin:auto}
+.stage>svg{position:absolute;inset:0;width:100%;height:100%}
+.stage>.slot,.stage>.fixed,.stage>.lab{position:absolute;transform:translate(-50%,-50%)}
+.lab{font-weight:600;font-size:18px;white-space:nowrap}
+.chk{display:inline-block;min-width:1.4em;font-weight:700}
+.chk.y{color:var(--ok)}.chk.n{color:var(--ko)}
+table.logi{border-collapse:collapse;font-size:17px;background:#fff}
+.logi th,.logi td{border:2px solid #9aa8c2;padding:6px;text-align:center}
+.logi td button{width:54px;height:44px;border:0;background:#fff;font:inherit;font-size:22px;font-weight:700;cursor:pointer;color:var(--ink)}
+.grid3{display:grid;grid-template-columns:repeat(3,92px);gap:0;border:3px solid #333;width:max-content;background:#fff}
+.grid3 .c{width:92px;height:92px;border:1px solid #888;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:5px;padding:6px;cursor:pointer;background:#fff;font:inherit}
+.grid3 .c.blk{background:#222;cursor:default}
+.grid3 .c.given{background:#eef0f4;cursor:default}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid #333;background:#fff}
+.dot.n{background:#222}
+.dot.t{background:#c7ccd6;border-color:#7a8191}
+.bars{display:grid;grid-template-columns:5.5em 1fr;gap:8px 12px;align-items:center;margin:10px 0}
+.bar{display:flex;gap:4px;height:40px}
+.bar span{display:grid;place-items:center;border-radius:8px;color:#fff;font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden}
+.pion{width:64px;height:64px;border-radius:50%;border:3px solid #555;background:#f4f6fa;font:inherit;font-size:26px;font-weight:700;cursor:pointer;color:var(--ink)}
+.pion.off{opacity:.18}
+.pion.lock{background:#ffe9a8;border-color:#b8740d;cursor:default}
+.mini{display:inline-grid;grid-template-columns:repeat(3,18px);gap:2px;padding:4px;background:#fff;border:1px solid #ccc;border-radius:6px;margin:3px;font-size:11px;text-align:center}
+.mini span{width:18px;height:18px;border-radius:50%;background:#c9ced8;line-height:18px}
+.mini span.k{background:#fff;border:1px dashed #ccc}
+.coll{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:#fff;border:2px solid #c8d4ea;border-radius:10px;padding:4px 10px;font-size:18px}
+.maze{display:grid;grid-template-columns:repeat(4,74px);gap:6px;width:max-content}
+.room{width:74px;height:74px;border-radius:10px;border:2px solid #8aa0c4;background:#fff;font:inherit;font-size:24px;font-weight:600;cursor:pointer;color:var(--ink)}
+.room.here{background:var(--gold);border-color:#b8740d}
+.room.seen{background:#d8ecdf}
+.room.alarm{background:#ffb3bd;animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.notes{display:flex;gap:8px}
+.sticks{display:grid;gap:12px;justify-items:center;margin:10px 0}
+.srow{display:flex;gap:10px;align-items:center}
+.stick{width:16px;height:64px;border-radius:8px;border:0;background:#8b5a2b;cursor:pointer;padding:0}
+.stick.sel{background:var(--red);transform:translateY(-6px)}
+.stick.gone{visibility:hidden}
+.flowers{display:grid;gap:4px;justify-items:center;margin:8px 0}
+.frow{display:flex;gap:2px;align-items:center}
+.frow small{width:6.5em;text-align:right;color:var(--muted);font-size:14px;margin-right:6px}
+@media (max-width:600px){body{font-size:17px}.doors{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:24px 12px}.door .num{font-size:30px}.door .bow{width:46px;top:-16px}.door .tag{font-size:11px}.grid3{grid-template-columns:repeat(3,78px)}.grid3 .c{width:78px;height:78px}.maze{grid-template-columns:repeat(4,62px)}.room{width:62px;height:62px}.enonce{font-size:18px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<canvas id="snow"></canvas>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><svg width="100%" height="460"><circle class="tw" style="animation-delay:0.97s;animation-duration:2.38s" cx="65.1%" cy="30" r="1.8" fill="#fff"/><circle class="tw" style="animation-delay:1.10s;animation-duration:2.14s" cx="50.7%" cy="16" r="1.6" fill="#fff"/><circle class="tw" style="animation-delay:0.21s;animation-duration:2.23s" cx="42.5%" cy="347" r="1.0" fill="#fff"/><circle class="tw" style="animation-delay:0.67s;animation-duration:3.57s" cx="94.8%" cy="242" r="1.5" fill="#fff"/><circle class="tw" style="animation-delay:2.93s;animation-duration:2.12s" cx="85.8%" cy="122" r="1.1" fill="#fff"/><circle class="tw" style="animation-delay:0.35s;animation-duration:2.77s" cx="81.6%" cy="76" r="1.8" fill="#fff"/><circle class="tw" style="animation-delay:1.92s;animation-duration:2.93s" cx="54.8%" cy="26" r="0.9" fill="#fff"/><circle class="tw" style="animation-delay:0.62s;animation-duration:3.70s" cx="42.8%" cy="132" r="1.9" fill="#fff"/><circle class="tw" style="animation-delay:1.36s;animation-duration:2.75s" cx="79.4%" cy="294" r="1.2" fill="#fff"/><circle class="tw" style="animation-delay:1.72s;animation-duration:3.31s" cx="87.5%" cy="306" r="1.3" fill="#fff"/><circle class="tw" style="animation-delay:2.94s;animation-duration:2.30s" cx="41.8%" cy="318" r="1.1" fill="#fff"/><circle class="tw" style="animation-delay:1.47s;animation-duration:2.10s" cx="66.8%" cy="321" r="1.8" fill="#fff"/><circle class="tw" style="animation-delay:2.63s;animation-duration:2.78s" cx="69.5%" cy="250" r="1.8" fill="#fff"/><circle class="tw" style="animation-delay:1.37s;animation-duration:4.10s" cx="94.5%" cy="199" r="2.0" fill="#fff"/><circle class="tw" style="animation-delay:0.18s;animation-duration:3.75s" cx="64.7%" cy="417" r="2.3" fill="#fff"/><circle class="tw" style="animation-delay:0.85s;animation-duration:2.96s" cx="66.9%" cy="9" r="1.6" fill="#fff"/><circle class="tw" style="animation-delay:0.50s;animation-duration:2.29s" cx="5.9%" cy="323" r="1.0" fill="#fff"/><circle class="tw" style="animation-delay:0.74s;animation-duration:2.98s" cx="87.1%" cy="34" r="1.6" fill="#fff"/><circle class="tw" style="animation-delay:1.65s;animation-duration:4.21s" cx="81.9%" cy="363" r="1.3" fill="#fff"/><circle class="tw" style="animation-delay:1.25s;animation-duration:2.90s" cx="88.4%" cy="402" r="1.1" fill="#fff"/><circle class="tw" style="animation-delay:0.53s;animation-duration:2.58s" cx="23.3%" cy="204" r="1.9" fill="#fff"/><circle class="tw" style="animation-delay:0.79s;animation-duration:2.01s" cx="41.9%" cy="155" r="1.8" fill="#fff"/><circle class="tw" style="animation-delay:2.86s;animation-duration:3.73s" cx="51.5%" cy="259" r="2.0" fill="#fff"/><circle class="tw" style="animation-delay:0.16s;animation-duration:4.25s" cx="78.0%" cy="367" r="2.2" fill="#fff"/><circle class="tw" style="animation-delay:1.18s;animation-duration:3.00s" cx="10.4%" cy="266" r="0.9" fill="#fff"/><circle class="tw" style="animation-delay:0.20s;animation-duration:2.52s" cx="16.2%" cy="143" r="0.9" fill="#fff"/><circle class="tw" style="animation-delay:0.00s;animation-duration:2.38s" cx="10.1%" cy="153" r="0.8" fill="#fff"/><circle class="tw" style="animation-delay:2.62s;animation-duration:3.54s" cx="14.9%" cy="106" r="1.4" fill="#fff"/><circle class="tw" style="animation-delay:1.09s;animation-duration:2.31s" cx="84.9%" cy="417" r="1.6" fill="#fff"/><circle class="tw" style="animation-delay:1.45s;animation-duration:2.21s" cx="10.2%" cy="144" r="1.3" fill="#fff"/><circle class="tw" style="animation-delay:2.49s;animation-duration:2.40s" cx="2.3%" cy="399" r="1.8" fill="#fff"/><circle class="tw" style="animation-delay:0.44s;animation-duration:3.36s" cx="2.7%" cy="222" r="2.6" fill="#fff"/><circle class="tw" style="animation-delay:2.59s;animation-duration:3.74s" cx="26.1%" cy="154" r="1.1" fill="#fff"/><circle class="tw" style="animation-delay:2.32s;animation-duration:3.33s" cx="77.9%" cy="138" r="1.2" fill="#fff"/><circle class="tw" style="animation-delay:2.43s;animation-duration:4.46s" cx="85.3%" cy="339" r="2.3" fill="#fff"/><circle class="tw" style="animation-delay:2.22s;animation-duration:2.57s" cx="51.8%" cy="149" r="0.9" fill="#fff"/><circle class="tw" style="animation-delay:0.08s;animation-duration:2.70s" cx="25.9%" cy="291" r="2.5" fill="#fff"/><circle class="tw" style="animation-delay:1.34s;animation-duration:4.34s" cx="98.8%" cy="401" r="1.5" fill="#fff"/><circle class="tw" style="animation-delay:0.66s;animation-duration:2.57s" cx="19.7%" cy="86" r="1.9" fill="#fff"/><circle class="tw" style="animation-delay:2.70s;animation-duration:4.10s" cx="47.9%" cy="274" r="2.2" fill="#fff"/><circle class="tw" style="animation-delay:0.25s;animation-duration:3.65s" cx="91.0%" cy="329" r="2.2" fill="#fff"/><circle class="tw" style="animation-delay:1.43s;animation-duration:2.45s" cx="78.9%" cy="140" r="2.2" fill="#fff"/><circle class="tw" style="animation-delay:2.91s;animation-duration:2.99s" cx="40.1%" cy="398" r="2.1" fill="#fff"/><circle class="tw" style="animation-delay:0.51s;animation-duration:2.32s" cx="15.1%" cy="380" r="2.3" fill="#fff"/><circle class="tw" style="animation-delay:0.44s;animation-duration:4.07s" cx="98.0%" cy="276" r="1.4" fill="#fff"/><circle class="tw" style="animation-delay:1.65s;animation-duration:2.33s" cx="1.4%" cy="408" r="2.0" fill="#fff"/><circle class="tw" style="animation-delay:1.58s;animation-duration:4.33s" cx="43.4%" cy="366" r="2.3" fill="#fff"/><circle class="tw" style="animation-delay:0.63s;animation-duration:2.63s" cx="29.3%" cy="101" r="1.9" fill="#fff"/><circle class="tw" style="animation-delay:0.78s;animation-duration:3.05s" cx="13.1%" cy="382" r="1.4" fill="#fff"/><circle class="tw" style="animation-delay:1.37s;animation-duration:3.46s" cx="90.4%" cy="177" r="2.5" fill="#fff"/><circle class="tw" style="animation-delay:1.50s;animation-duration:3.33s" cx="52.4%" cy="8" r="1.6" fill="#fff"/><circle class="tw" style="animation-delay:0.55s;animation-duration:2.01s" cx="79.9%" cy="72" r="1.7" fill="#fff"/><circle class="tw" style="animation-delay:2.18s;animation-duration:3.39s" cx="32.6%" cy="218" r="1.8" fill="#fff"/><circle class="tw" style="animation-delay:2.35s;animation-duration:2.27s" cx="56.0%" cy="104" r="1.3" fill="#fff"/><circle class="tw" style="animation-delay:2.32s;animation-duration:3.27s" cx="56.2%" cy="319" r="2.4" fill="#fff"/><circle class="tw" style="animation-delay:1.33s;animation-duration:3.53s" cx="50.6%" cy="215" r="2.0" fill="#fff"/><circle class="tw" style="animation-delay:1.36s;animation-duration:3.33s" cx="47.8%" cy="395" r="2.1" fill="#fff"/><circle class="tw" style="animation-delay:2.63s;animation-duration:4.36s" cx="26.0%" cy="235" r="2.5" fill="#fff"/><circle class="tw" style="animation-delay:2.52s;animation-duration:2.34s" cx="12.2%" cy="186" r="0.9" fill="#fff"/><circle class="tw" style="animation-delay:0.72s;animation-duration:2.18s" cx="66.9%" cy="329" r="2.4" fill="#fff"/><circle class="tw" style="animation-delay:0.46s;animation-duration:3.79s" cx="66.0%" cy="60" r="2.4" fill="#fff"/><circle class="tw" style="animation-delay:2.90s;animation-duration:2.55s" cx="95.3%" cy="167" r="1.7" fill="#fff"/><circle class="tw" style="animation-delay:2.97s;animation-duration:4.08s" cx="16.1%" cy="181" r="1.7" fill="#fff"/><circle class="tw" style="animation-delay:1.02s;animation-duration:2.49s" cx="31.9%" cy="303" r="0.8" fill="#fff"/><circle class="tw" style="animation-delay:1.66s;animation-duration:3.10s" cx="1.8%" cy="139" r="1.9" fill="#fff"/><circle class="tw" style="animation-delay:1.54s;animation-duration:2.16s" cx="98.5%" cy="331" r="2.5" fill="#fff"/><circle class="tw" style="animation-delay:0.31s;animation-duration:2.66s" cx="4.0%" cy="327" r="1.3" fill="#fff"/><circle class="tw" style="animation-delay:0.39s;animation-duration:3.06s" cx="91.1%" cy="344" r="1.3" fill="#fff"/><circle class="tw" style="animation-delay:0.45s;animation-duration:4.30s" cx="57.1%" cy="294" r="1.0" fill="#fff"/><circle class="tw" style="animation-delay:0.17s;animation-duration:3.72s" cx="42.5%" cy="30" r="2.5" fill="#fff"/></svg></div>
+<svg class="garland" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M0 8 Q100 62 200 8 Q300 62 400 8 Q500 62 600 8 Q700 62 800 8 Q900 62 1000 8 Q1100 62 1200 8" stroke="#1d2b3a" stroke-width="2.5" fill="none"/><g transform="translate(28 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.00s" cx="0" cy="11" rx="6" ry="9" fill="#ff4d6d" filter="url(#glow)"/></g><g transform="translate(64 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.37s" cx="0" cy="11" rx="6" ry="9" fill="#ffd166" filter="url(#glow)"/></g><g transform="translate(100 35)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.74s" cx="0" cy="11" rx="6" ry="9" fill="#06d6a0" filter="url(#glow)"/></g><g transform="translate(136 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.11s" cx="0" cy="11" rx="6" ry="9" fill="#4cc9f0" filter="url(#glow)"/></g><g transform="translate(172 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.48s" cx="0" cy="11" rx="6" ry="9" fill="#c77dff" filter="url(#glow)"/></g><g transform="translate(228 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.85s" cx="0" cy="11" rx="6" ry="9" fill="#ff4d6d" filter="url(#glow)"/></g><g transform="translate(264 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.22s" cx="0" cy="11" rx="6" ry="9" fill="#ffd166" filter="url(#glow)"/></g><g transform="translate(300 35)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.59s" cx="0" cy="11" rx="6" ry="9" fill="#06d6a0" filter="url(#glow)"/></g><g transform="translate(336 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.96s" cx="0" cy="11" rx="6" ry="9" fill="#4cc9f0" filter="url(#glow)"/></g><g transform="translate(372 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.33s" cx="0" cy="11" rx="6" ry="9" fill="#c77dff" filter="url(#glow)"/></g><g transform="translate(428 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.70s" cx="0" cy="11" rx="6" ry="9" fill="#ff4d6d" filter="url(#glow)"/></g><g transform="translate(464 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.07s" cx="0" cy="11" rx="6" ry="9" fill="#ffd166" filter="url(#glow)"/></g><g transform="translate(500 35)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.44s" cx="0" cy="11" rx="6" ry="9" fill="#06d6a0" filter="url(#glow)"/></g><g transform="translate(536 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.81s" cx="0" cy="11" rx="6" ry="9" fill="#4cc9f0" filter="url(#glow)"/></g><g transform="translate(572 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.18s" cx="0" cy="11" rx="6" ry="9" fill="#c77dff" filter="url(#glow)"/></g><g transform="translate(628 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.55s" cx="0" cy="11" rx="6" ry="9" fill="#ff4d6d" filter="url(#glow)"/></g><g transform="translate(664 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.92s" cx="0" cy="11" rx="6" ry="9" fill="#ffd166" filter="url(#glow)"/></g><g transform="translate(700 35)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.29s" cx="0" cy="11" rx="6" ry="9" fill="#06d6a0" filter="url(#glow)"/></g><g transform="translate(736 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.66s" cx="0" cy="11" rx="6" ry="9" fill="#4cc9f0" filter="url(#glow)"/></g><g transform="translate(772 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.03s" cx="0" cy="11" rx="6" ry="9" fill="#c77dff" filter="url(#glow)"/></g><g transform="translate(828 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.40s" cx="0" cy="11" rx="6" ry="9" fill="#ff4d6d" filter="url(#glow)"/></g><g transform="translate(864 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.77s" cx="0" cy="11" rx="6" ry="9" fill="#ffd166" filter="url(#glow)"/></g><g transform="translate(900 35)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.14s" cx="0" cy="11" rx="6" ry="9" fill="#06d6a0" filter="url(#glow)"/></g><g transform="translate(936 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.51s" cx="0" cy="11" rx="6" ry="9" fill="#4cc9f0" filter="url(#glow)"/></g><g transform="translate(972 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.88s" cx="0" cy="11" rx="6" ry="9" fill="#c77dff" filter="url(#glow)"/></g><g transform="translate(1028 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.25s" cx="0" cy="11" rx="6" ry="9" fill="#ff4d6d" filter="url(#glow)"/></g><g transform="translate(1064 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.62s" cx="0" cy="11" rx="6" ry="9" fill="#ffd166" filter="url(#glow)"/></g><g transform="translate(1100 35)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:1.99s" cx="0" cy="11" rx="6" ry="9" fill="#06d6a0" filter="url(#glow)"/></g><g transform="translate(1136 32)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.36s" cx="0" cy="11" rx="6" ry="9" fill="#4cc9f0" filter="url(#glow)"/></g><g transform="translate(1172 21)"><rect x="-3" y="-2" width="6" height="6" rx="1" fill="#2c3e50"/><ellipse class="bulb" style="animation-delay:0.73s" cx="0" cy="11" rx="6" ry="9" fill="#c77dff" filter="url(#glow)"/></g></svg>
+<header>
+  <h1 id="title">Le calendrier des énigmes n°2</h1>
+  <p class="sub">De nouvelles énigmes du championnat des jeux mathématiques, et quelques retrouvailles. Les énigmes d'une même couleur de ruban se résolvent de la même façon !</p>
+  <svg class="scene" viewBox="0 0 1200 270" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e4f7"/></linearGradient>
+      <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6eefc"/><stop offset="1" stop-color="#b3c6e6"/></linearGradient>
+      <linearGradient id="mt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9c3f0"/><stop offset="1" stop-color="#6d78b8"/></linearGradient>
+      <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b3f78" stop-opacity="0"/><stop offset="1" stop-color="#1b3f78"/></linearGradient><radialGradient id="moonglow"><stop offset="0" stop-color="#fff6d8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient>
+      <radialGradient id="win"><stop offset="0" stop-color="#fff3b0"/><stop offset="1" stop-color="#ffb020"/></radialGradient>
+      <filter id="glow2" x="-2" y="-2" width="5" height="5"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <g id="tree"><path d="M0 -70 L26 -20 L14 -20 L34 14 L-34 14 L-14 -20 L-26 -20Z" fill="#1b7a55"/><path d="M0 -70 L26 -20 L14 -20 L34 14 L8 14Z" fill="#11553b"/><path d="M-10 -40 L0 -70 L10 -40 Q0 -34 -10 -40Z" fill="#fff"/><path d="M-30 12 Q0 4 32 12" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="-5" y="14" width="10" height="12" fill="#6b4226"/></g>
+    </defs>
+    <mask id="cres"><circle cx="560" cy="50" r="30" fill="#fff"/><circle cx="574" cy="42" r="27" fill="#000"/></mask><circle cx="560" cy="50" r="85" fill="url(#moonglow)" opacity=".7"/>
+    <circle cx="560" cy="50" r="30" fill="#fff6d8" mask="url(#cres)"/>
+    <path d="M0 150 L110 80 L190 130 L300 60 L420 140 L520 90 L640 150 L760 70 L880 135 L1000 85 L1200 150 V200 H0Z" fill="url(#mt)" opacity=".55"/>
+    <path d="M110 80 L130 93 L118 92 L104 100 L96 89Z M300 60 L322 76 L306 74 L292 84 L282 72Z M760 70 L782 85 L766 84 L752 93 L742 82Z" fill="#fff" opacity=".8"/>
+    <path d="M0 160 Q200 85 420 130 T820 110 T1200 125 V270 H0Z" fill="url(#hill2)"/>
+    <use href="#tree" x="140" y="132"/><use href="#tree" x="200" y="142"/><use href="#tree" x="250" y="130" transform="scale(1)"/><use href="#tree" x="690" y="120"/><use href="#tree" x="740" y="128"/>
+    <g transform="translate(860 112)">
+      <rect x="-8" y="-58" width="14" height="30" fill="#6b3a22"/><rect x="-10" y="-62" width="18" height="7" rx="3" fill="#fff"/>
+      <rect x="-60" y="-20" width="120" height="66" fill="#8b4a2b"/><rect x="-60" y="-20" width="120" height="66" fill="none" stroke="#5e2f18" stroke-width="2"/>
+      <path d="M-74 -16 L0 -64 L74 -16Z" fill="#5e2f18"/><path d="M-80 -14 L0 -70 L80 -14 L70 -10 L0 -56 L-70 -10Z" fill="#fff"/>
+      <rect x="-44" y="-2" width="26" height="22" rx="3" fill="url(#win)" filter="url(#glow2)"/><rect x="18" y="-2" width="26" height="22" rx="3" fill="url(#win)" filter="url(#glow2)"/>
+      <path d="M-31 -2 V20 M-44 9 H-18 M31 -2 V20 M18 9 H44" stroke="#8b4a2b" stroke-width="2.5"/>
+      <rect x="-10" y="20" width="20" height="26" rx="3" fill="#5e2f18"/><circle cx="5" cy="34" r="1.8" fill="#ffd166"/>
+      <path d="M-14 4 q14 10 28 0" stroke="#17694a" stroke-width="5" fill="none"/><circle cx="0" cy="9" r="3" fill="#c8102e"/>
+    </g>
+    <g transform="translate(1040 150) scale(1.55)"><use href="#tree"/><circle class="bulb" style="animation-delay:0.0s" cx="-14" cy="-30" r="3.2" fill="#ff4d6d" filter="url(#glow2)"/><circle class="bulb" style="animation-delay:0.3s" cx="10" cy="-20" r="3.2" fill="#ffd166" filter="url(#glow2)"/><circle class="bulb" style="animation-delay:0.6s" cx="-18" cy="-6" r="3.2" fill="#06d6a0" filter="url(#glow2)"/><circle class="bulb" style="animation-delay:0.9s" cx="16" cy="4" r="3.2" fill="#4cc9f0" filter="url(#glow2)"/><circle class="bulb" style="animation-delay:1.2s" cx="-8" cy="10" r="3.2" fill="#c77dff" filter="url(#glow2)"/><circle class="bulb" style="animation-delay:1.5s" cx="20" cy="-40" r="3.2" fill="#ff4d6d" filter="url(#glow2)"/><circle class="bulb" style="animation-delay:1.8s" cx="-4" cy="-48" r="3.2" fill="#ffd166" filter="url(#glow2)"/><circle class="bulb" style="animation-delay:2.1s" cx="6" cy="-62" r="3.2" fill="#06d6a0" filter="url(#glow2)"/><path class="tw" d="M0 -84 L3 -76 L11 -76 L5 -71 L7 -63 L0 -68 L-7 -63 L-5 -71 L-11 -76 L-3 -76Z" fill="#ffd166" filter="url(#glow2)"/></g>
+    <path d="M0 200 Q300 130 640 180 T1200 168 V270 H0Z" fill="url(#hill)"/>
+    <path d="M300 168 Q520 172 760 206" stroke="#c4d6ee" stroke-width="5" fill="none" stroke-dasharray="2 10" stroke-linecap="round"/>
+    <path class="tw" style="animation-delay:0s" transform="translate(380 160) scale(0.9)" d="M0 -10 L2.5 -2.5 L10 0 L2.5 2.5 L0 10 L-2.5 2.5 L-10 0 L-2.5 -2.5Z" fill="#ffe28a"/><path class="tw" style="animation-delay:0.8s" transform="translate(450 150) scale(0.6)" d="M0 -10 L2.5 -2.5 L10 0 L2.5 2.5 L0 10 L-2.5 2.5 L-10 0 L-2.5 -2.5Z" fill="#ffe28a"/><path class="tw" style="animation-delay:1.5s" transform="translate(505 172) scale(0.7)" d="M0 -10 L2.5 -2.5 L10 0 L2.5 2.5 L0 10 L-2.5 2.5 L-10 0 L-2.5 -2.5Z" fill="#ffe28a"/><path class="tw" style="animation-delay:0.4s" transform="translate(640 182) scale(0.6)" d="M0 -10 L2.5 -2.5 L10 0 L2.5 2.5 L0 10 L-2.5 2.5 L-10 0 L-2.5 -2.5Z" fill="#ffe28a"/><path class="tw" style="animation-delay:1.1s" transform="translate(330 150) scale(0.5)" d="M0 -10 L2.5 -2.5 L10 0 L2.5 2.5 L0 10 L-2.5 2.5 L-10 0 L-2.5 -2.5Z" fill="#ffe28a"/>
+    <g transform="translate(580 172) rotate(12)">
+      <rect x="-40" y="-14" width="80" height="12" rx="4" fill="#c8102e"/>
+      <path d="M-46 4 H44 Q60 4 56 -10" stroke="#6b4226" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <line x1="-30" y1="-2" x2="-30" y2="4" stroke="#6b4226" stroke-width="4"/><line x1="26" y1="-2" x2="26" y2="4" stroke="#6b4226" stroke-width="4"/>
+      <rect x="-28" y="-40" width="28" height="26" fill="#2f6db5"/><rect x="-16" y="-40" width="5" height="26" fill="#f2b632"/>
+      <rect x="4" y="-34" width="24" height="20" fill="#17694a"/><rect x="14" y="-34" width="5" height="20" fill="#f2b632"/>
+      <path d="M-14 -40 q-8 -8 -2 -10 q4 0 2 10 q8 -8 10 -4 q0 4 -10 4" fill="#f2b632"/>
+    </g>
+  </svg>
+</header>
+<main>
+  <div class="doors" id="doors"></div>
+  <p class="legend" id="legend"></p>
+</main>
+<footer>Énigmes : Fédération Française des Jeux Mathématiques (FFJM), championnat 2025 et 2026, catégories CE et CM.</footer>
+
+<div id="day" role="dialog" aria-modal="true"><div class="card" id="card"></div></div>
+<div id="toast"></div>
+
+<script>
+{
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const el=html=>{const t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstElementChild};
+const num=s=>{const m=String(s).replace(/\s/g,'').match(/-?\d+/);return m?+m[0]:NaN};
+const norm=s=>String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/g,'');
+
+/* ---------- mémoire ---------- */
+const KEY='avent-enigmes-2026-n2';
+let store={solved:{},free:false};
+try{store=Object.assign(store,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}};
+
+/* ---------- familles de raisonnement ---------- */
+const FAM={
+ bal:{nom:'La balance',col:'#2f6db5',m:"Si on enlève (ou si on remplace) la même chose des deux côtés d'une balance, elle reste en équilibre."},
+ plac:{nom:'Les nombres à placer',col:'#c8102e',m:"Commence par l'endroit où il y a le moins de choix : un triangle, un cercle ou un groupe presque complet. Puis complète par différence."},
+ enq:{nom:"L'enquête",col:'#6b4fa0',m:"Pars de l'indice le plus sûr, puis élimine ce qui est impossible. Un tableau « oui / non » aide à ne rien oublier."},
+ gril:{nom:'Les grilles à indices',col:'#17694a',m:"Cherche d'abord la rangée où il n'y a qu'une seule possibilité. Chaque case trouvée t'aide pour la suivante."},
+ parts:{nom:'Les parts',col:'#e07a1f',m:"Dessine des barres : une barre = une part. Repère ce qui ne change pas, puis partage le total en parts égales."},
+ code:{nom:'Les opérations codées',col:'#a30d25',m:"Commence par la colonne qui donne une information sûre (souvent celle de gauche ou celle des unités) et pense aux retenues."},
+ liste:{nom:'Compter sans oublier',col:'#1f8a8a',m:"Range tes essais dans un ordre précis : comme ça, tu n'en oublies aucun et tu ne comptes pas deux fois le même."},
+ dates:{nom:'Les dates',col:'#7a5a2a',m:"Place d'abord ce qui est obligatoire (l'année), puis cherche quels mois et quels jours restent possibles avec les chiffres qui restent."},
+ chem:{nom:'Les chemins',col:'#3d7a2a',m:"Suis la règle pas à pas, sans revenir en arrière. Si tu bloques, pars de la sortie et remonte."},
+ motif:{nom:'Ce qui grandit',col:'#b8740d',m:"Observe ce qui change d'une étape à l'autre : ajoute-t-on toujours la même quantité ?"},
+ jeu:{nom:'Le jeu de stratégie',col:'#173a63',m:"Pense à la fin de la partie : quelle situation veux-tu laisser à ton adversaire pour qu'il soit obligé de perdre ?"}
+};
+
+/* ---------- jetons à déplacer (toucher puis toucher, ou glisser) ---------- */
+function tokens(wrap,list,onChange){
+  const st={sel:null,at:{}};const tray=$('.tray',wrap);const slots=$$('[data-slot]',wrap);
+  const used=i=>Object.values(st.at).includes(i);
+  const values=()=>{const v={};slots.forEach(s=>{const i=st.at[s.dataset.slot];v[s.dataset.slot]=i==null?null:list[i]});return v};
+  function render(){
+    tray.innerHTML=list.map((t,i)=>used(i)?`<span class="tok ghost">${t}</span>`:`<button class="tok ${st.sel===i?'sel':''}" data-i="${i}" aria-label="jeton ${t}">${t}</button>`).join('');
+    slots.forEach(s=>{const i=st.at[s.dataset.slot];s.textContent=i==null?'':list[i];s.classList.toggle('full',i!=null)});
+    onChange&&onChange(values());
+  }
+  function place(slot,i){for(const k in st.at)if(st.at[k]===i)delete st.at[k];st.at[slot]=i;st.sel=null;render()}
+  let drag=null,skip=false;
+  wrap.addEventListener('pointerdown',e=>{
+    const t=e.target.closest('.tok[data-i]'),s=e.target.closest('[data-slot]');
+    if(t)drag={i:+t.dataset.i,from:null,x:e.clientX,y:e.clientY,moved:false};
+    else if(s&&st.at[s.dataset.slot]!=null)drag={i:st.at[s.dataset.slot],from:s.dataset.slot,x:e.clientX,y:e.clientY,moved:false};
+  });
+  const mv=e=>{if(!drag)return;
+    if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8){drag.moved=true;drag.g=el(`<div class="tok sel drag-ghost">${list[drag.i]}</div>`);document.body.append(drag.g)}
+    if(drag.moved){drag.g.style.left=e.clientX+'px';drag.g.style.top=e.clientY+'px';e.preventDefault()}};
+  const up=e=>{if(!drag)return;
+    if(drag.moved){drag.g.remove();const tg=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-slot]');
+      if(tg&&wrap.contains(tg))place(tg.dataset.slot,drag.i);else if(drag.from){delete st.at[drag.from];render()}
+      skip=true;setTimeout(()=>skip=false,50)}
+    drag=null};
+  document.addEventListener('pointermove',mv,{passive:false});document.addEventListener('pointerup',up);
+  wrap.addEventListener('click',e=>{if(skip)return;
+    const t=e.target.closest('.tok[data-i]');if(t){const i=+t.dataset.i;st.sel=st.sel===i?null:i;render();return}
+    const s=e.target.closest('[data-slot]');if(!s)return;const id=s.dataset.slot;
+    if(st.sel!=null)place(id,st.sel);else if(st.at[id]!=null){delete st.at[id];render()}});
+  render();
+  return{values,reset(){st.at={};st.sel=null;render()},
+    set(map){st.at={};for(const k in map){const i=list.findIndex((t,j)=>String(t)===String(map[k])&&!used(j));if(i>=0)st.at[k]=i}render()},
+    kill(){document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up)}};
+}
+
+/* ---------- dessins ---------- */
+function balanceSVG(L,R,tilt=0){
+  const item=(it,x)=>{
+    if(it.t==='w')return`<g transform="translate(${x} 0)"><rect x="-17" y="-30" width="34" height="28" fill="#fff" stroke="#333" stroke-width="2"/><path d="M-6 -36 q6 6 6 6 q0 0 6 -6" stroke="#c8102e" stroke-width="3" fill="none"/><line x1="0" y1="-30" x2="0" y2="-2" stroke="#c8102e" stroke-width="3"/>${it.l?`<text x="0" y="-11" font-size="13" text-anchor="middle" font-weight="700" fill="#c8102e">${it.l}</text>`:''}</g>`;
+    if(it.t==='g')return`<g transform="translate(${x} 0)"><rect x="-14" y="-50" width="28" height="48" fill="#8a8f99" stroke="#333" stroke-width="2"/><path d="M-6 -56 q6 6 6 6 q0 0 6 -6" stroke="#17694a" stroke-width="3" fill="none"/>${it.l?`<text x="0" y="-22" font-size="13" text-anchor="middle" font-weight="700" fill="#fff">${it.l}</text>`:''}</g>`;
+    if(it.t==='m')return`<g transform="translate(${x} 0)"><circle cx="0" cy="-48" r="7" fill="#222"/><path d="M-20 -2 L-14 -40 H14 L20 -2Z" fill="#222"/><text x="0" y="-14" font-size="${it.l.length>2?15:17}" text-anchor="middle" font-weight="700" fill="#fff">${it.l}</text></g>`;
+    const juice=it.t==='full'?44:it.t==='half'?22:it.t==='jus'?22:0;
+    if(it.t==='jus')return`<g transform="translate(${x} 0)"><rect x="-12" y="-24" width="24" height="22" rx="4" fill="#f0a020" stroke="#b8740d" stroke-width="2"/></g>`;
+    return`<g transform="translate(${x} 0)"><rect x="-11" y="${-2-juice}" width="22" height="${juice}" fill="#f0a020"/><path d="M-11 -2 V-44 L-5 -52 V-60 H5 V-52 L11 -44 V-2Z" fill="none" stroke="#333" stroke-width="2"/></g>`;
+  };
+  const pan=items=>{const w=items.length>4?19:items.length>3?28:40,s=-(items.length-1)*w/2;return items.map((it,k)=>item(it,s+k*w)).join('')};
+  const a=Math.max(-12,Math.min(12,tilt));
+  return`<svg viewBox="0 0 360 170" style="width:100%;max-width:360px;height:auto"><g transform="rotate(${a} 180 70)">
+  <line x1="80" y1="70" x2="280" y2="70" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+  <g transform="rotate(${-a} 80 70)"><line x1="80" y1="70" x2="80" y2="140" stroke="#999" stroke-width="2"/><path d="M10 140 H150 L136 152 H24Z" fill="#555"/><g transform="translate(80 140)">${pan(L)}</g></g>
+  <g transform="rotate(${-a} 280 70)"><line x1="280" y1="70" x2="280" y2="140" stroke="#999" stroke-width="2"/><path d="M210 140 H350 L336 152 H224Z" fill="#555"/><g transform="translate(280 140)">${pan(R)}</g></g>
+  </g><path d="M180 70 L162 165 H198Z" fill="#333"/><circle cx="180" cy="70" r="7" fill="#c8102e"/></svg>`;
+}
+function flower(t){
+  const c={tulipe:['#d7263d','#a30d25'],lys:['#ffffff','#f2b632'],crocus:['#8e5cc7','#f2b632']}[t];
+  if(t==='tulipe')return`<svg width="26" height="34" viewBox="0 0 26 34"><line x1="13" y1="16" x2="13" y2="34" stroke="#1f8a5f" stroke-width="3"/><path d="M4 6 L8 12 L13 4 L18 12 L22 6 L21 16 Q13 22 5 16Z" fill="${c[0]}" stroke="${c[1]}"/></svg>`;
+  return`<svg width="26" height="34" viewBox="0 0 26 34"><line x1="13" y1="16" x2="13" y2="34" stroke="#1f8a5f" stroke-width="3"/>${[0,72,144,216,288].map(r=>`<ellipse cx="13" cy="5" rx="4" ry="7" fill="${c[0]}" stroke="#999" stroke-width=".6" transform="rotate(${r} 13 12)"/>`).join('')}<circle cx="13" cy="12" r="3.4" fill="${c[1]}"/></svg>`;
+}
+function isoCubes(step){
+  const cubes=[[0,0,0]];
+  for(let k=1;k<=step;k++)cubes.push([k,0,0],[-k,0,0],[0,k,0],[0,-k,0],[0,0,k]);
+  cubes.sort((a,b)=>(a[0]+a[1])-(b[0]+b[1])||a[2]-b[2]);
+  const s=24,c=Math.cos(Math.PI/6)*s,d=s/2;
+  const P=(x,y,z)=>[ (x-y)*c, (x+y)*d - z*s ];
+  const poly=pts=>pts.map(p=>p.join(',')).join(' ');
+  return`<svg viewBox="-190 -110 380 230" style="width:100%;max-width:420px;height:auto">${cubes.map(([x,y,z])=>{
+    const A=P(x,y,z+1),B=P(x+1,y,z+1),C=P(x+1,y+1,z+1),D=P(x,y+1,z+1),E=P(x+1,y,z),F=P(x+1,y+1,z),G=P(x,y+1,z);
+    return`<polygon points="${poly([A,B,C,D])}" fill="#9fb3cf" stroke="#2b3550"/><polygon points="${poly([B,C,F,E])}" fill="#5a6f94" stroke="#2b3550"/><polygon points="${poly([D,C,F,G])}" fill="#3e5176" stroke="#2b3550"/>`}).join('')}</svg>`;
+}
+
+/* ---------- les 24 énigmes ---------- */
+const OLD={},DAYS={};
+
+OLD[1]=()=>{let lab={w:'',g:''};return{fam:'bal',titre:'Pesées',src:'Demi-finale 2026 – énigme 6',
+ enonce:`<p>Voici trois balances. Les boîtes identiques ont toutes la même masse. <b>Chaque balance est en équilibre.</b></p><p><b>Quelle masse faut-il écrire sur le poids de la troisième balance ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Les trois balances</h3><div class="row" id="bals" style="justify-content:center"></div>`;draw()},
+ fields:[{l:'1 boîte blanche pèse',a:50,u:'g'},{l:'1 boîte grise pèse',a:30,u:'g'},{l:'Masse de la 3<sup>e</sup> balance',a:80,u:'g',main:1}],
+ onField(i,ok){if(ok&&i===0)lab.w='50';if(ok&&i===1)lab.g='30';draw()},
+ hint:"Commence par la balance qui n'a qu'une seule sorte de boîte.",
+ corr:`<ol><li>Balance 2 : 2 boîtes blanches = 100 g, donc 1 boîte blanche = 100 ÷ 2 = <b>50 g</b>.</li><li>Balance 1 : 1 boîte blanche + 40 g = 50 + 40 = 90 g. C'est le poids de 3 boîtes grises, donc 1 boîte grise = 90 ÷ 3 = <b>30 g</b>.</li><li>Balance 3 : 1 boîte blanche + 1 boîte grise = 50 + 30 = <b>80 g</b>.</li></ol>`};
+ function draw(){const W={t:'w',l:lab.w},G={t:'g',l:lab.g};$('#bals').innerHTML=balanceSVG([W,{t:'m',l:'40'}],[G,G,G])+balanceSVG([{t:'m',l:'100'}],[W,W])+balanceSVG([W,G],[{t:'m',l:'?'}])}};
+
+OLD[2]=()=>{let stage=0,n=0;return{fam:'bal',titre:'Jus de pomme',src:'Quart de finale 2025 – énigme 3',
+ enonce:`<p>Une bouteille de jus de pomme <b>à moitié pleine</b> pèse exactement autant que <b>quatre bouteilles vides</b> identiques.</p><p><b>Si on posait une bouteille pleine sur le plateau de droite, combien de bouteilles vides faudrait-il placer sur le plateau de gauche pour équilibrer la balance ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Manipule la balance</h3><div id="b2" style="text-align:center"></div><p id="b2t" class="big" style="text-align:center"></p><div class="row" id="b2c" style="justify-content:center"></div>`;draw()},
+ fields:[{l:'Nombre de bouteilles vides',a:7,main:1}],
+ hint:"Que se passe-t-il si tu enlèves une bouteille vide de chaque côté ?",
+ corr:`<ol><li>Au départ : 1 bouteille vide + un demi-jus = 4 bouteilles vides.</li><li>On enlève 1 bouteille vide de chaque côté : le jus d'une demi-bouteille pèse autant que <b>3 bouteilles vides</b>.</li><li>Une bouteille pleine = 1 bouteille vide + 2 demi-jus = 1 + 3 + 3 = <b>7 bouteilles vides</b>.</li></ol>`};
+ function draw(){const E={t:'e'};let html,txt,ctl;
+  if(stage===0){html=balanceSVG([{t:'half'}],[E,E,E,E]);txt="La bouteille à moitié pleine équilibre 4 bouteilles vides.";ctl=`<button class="btn" data-a="rm">Enlever 1 bouteille vide de chaque côté</button>`}
+  else if(stage===1){html=balanceSVG([{t:'jus'}],[E,E,E]);txt="Il ne reste que le jus d'une demi-bouteille à gauche… Et la balance est toujours en équilibre !";ctl=`<button class="btn" data-a="test">Tester avec une bouteille pleine</button><button class="btn light" data-a="back">Recommencer</button>`}
+  else{const L=Array(n).fill(E);html=balanceSVG(L,[{t:'full'}],(n-7)*3);txt=`${n} bouteille${n>1?'s':''} vide${n>1?'s':''} à gauche`+(n===7?' : équilibre !':'');ctl=`<button class="btn light" data-a="m">− 1</button><button class="btn" data-a="p">+ 1</button><button class="btn light" data-a="back">Recommencer</button>`}
+  $('#b2').innerHTML=html;$('#b2t').textContent=txt;$('#b2c').innerHTML=ctl;
+  $$('#b2c button').forEach(b=>b.onclick=()=>{const a=b.dataset.a;if(a==='rm')stage=1;if(a==='test')stage=2;if(a==='back'){stage=0;n=0}if(a==='p')n=Math.min(10,n+1);if(a==='m')n=Math.max(0,n-1);draw()})}};
+
+OLD[3]=()=>{let T;return{fam:'plac',titre:"Le chapeau de l'année",src:'Quart de finale 2026 – énigme 2',
+ enonce:`<p>En additionnant les trois nombres qui entourent chaque triangle, on doit toujours trouver <b>26</b>.</p><p><b>Place les nombres 7, 8, 9 et 11 dans les cercles vides.</b></p>`,
+ build(z){const P={a:[130,205],b:[265,55],c:[330,130],d:[480,130]};const pct=([x,y])=>`left:${x/540*100}%;top:${y/250*100}%`;
+  z.innerHTML=`<h3>Glisse les jetons dans les cercles (ou touche un jeton puis un cercle)</h3><div class="stage" style="max-width:560px;aspect-ratio:540/250">
+  <svg viewBox="0 0 540 250"><g stroke="#333" stroke-width="3"><path d="M50 130 L205 130 L130 205Z M205 130 L265 55 L330 130Z M330 130 L480 130 L405 205Z" fill="#fff6d8"/></g>
+  <g font-weight="700" font-size="20" text-anchor="middle"><text x="128" y="160">26</text><text x="267" y="112">26</text><text x="405" y="160">26</text></g></svg>
+  <div class="fixed round" style="left:${50/5.4}%;top:52%">12</div><div class="fixed round" style="left:${205/5.4}%;top:52%">6</div><div class="fixed round" style="left:${405/5.4}%;top:82%">10</div>
+  ${Object.entries(P).map(([k,p])=>`<div class="slot round" data-slot="${k}" style="${pct(p)}"></div>`).join('')}</div>
+  <p>Triangle de gauche : <span id="s1"></span> · du milieu : <span id="s2"></span> · de droite : <span id="s3"></span></p><div class="tray"></div>`;
+  T=tokens(z,[7,8,9,11],v=>{const s=(...a)=>a.includes(null)?'…':a.reduce((x,y)=>x+y,0);const w=(id,val)=>{const e=$('#'+id);e.innerHTML=val==='…'?'…':`<b class="chk ${val===26?'y':'n'}">${val}</b>`};w('s1',s(12,6,v.a));w('s2',s(6,v.b,v.c));w('s3',s(v.c,v.d,10))})},
+ verify(){const v=T.values();if(Object.values(v).includes(null))return[false,'Place tous les jetons.'];return v.a===8&&v.b===11&&v.c===9&&v.d===7?[true,'Bravo ! Les trois triangles font 26.']:[false,"Un des triangles ne fait pas 26. Regarde les sommes."]},
+ solve(){T.set({a:8,b:11,c:9,d:7})},
+ hint:"Le triangle de gauche n'a qu'une seule case vide : commence par lui !",
+ corr:`<ol><li>Triangle de gauche : 26 − 12 − 6 = <b>8</b>.</li><li>Triangle du milieu : il manque 26 − 6 = 20 avec deux nombres. Parmi 7, 9, 11 : 20 = 11 + 9.</li><li>Triangle de droite : il manque 26 − 10 = 16 = 9 + 7.</li><li>Le cercle commun aux triangles du milieu et de droite est donc <b>9</b>. Puis <b>11</b> en haut et <b>7</b> à droite.</li></ol>`,
+ kill(){T&&T.kill()}}};
+
+OLD[4]=()=>{let T;return{fam:'plac',titre:'Équi-cercles',src:'Demi-finale 2025 – énigme 3',
+ enonce:`<p>Cette figure est formée de 3 cercles. <b>Place les nombres 3, 4, 5, 6 et 7 dans les cases vides.</b></p><p>Quand on additionne les quatre nombres dans un cercle, on doit toujours trouver <b>14</b>.</p>`,
+ build(z){const P={lo:[55,88],ro:[245,88],c:[150,125],lb:[96,165],bo:[150,238]};const pct=([x,y])=>`left:${x/300*100}%;top:${y/280*100}%`;
+  z.innerHTML=`<h3>Glisse les jetons dans les cases</h3><div class="stage" style="max-width:440px;aspect-ratio:300/280">
+  <svg viewBox="0 0 300 280"><g fill="none" stroke-width="3"><circle cx="110" cy="100" r="85" stroke="#2f6db5"/><circle cx="190" cy="100" r="85" stroke="#c8102e"/><circle cx="150" cy="170" r="85" stroke="#17694a"/></g></svg>
+  ${Object.entries(P).map(([k,p])=>`<div class="slot round" data-slot="${k}" style="${pct(p)};width:44px;height:44px;font-size:21px"></div>`).join('')}
+  <div class="fixed round" style="${pct([150,52])};width:44px;height:44px;font-size:21px">1</div><div class="fixed round" style="${pct([204,165])};width:44px;height:44px;font-size:21px">2</div></div>
+  <p>Cercle <span style="color:#2f6db5;font-weight:700">bleu</span> : <span id="cb"></span> · <span style="color:#c8102e;font-weight:700">rouge</span> : <span id="cr"></span> · <span style="color:#17694a;font-weight:700">vert</span> : <span id="cv"></span></p><div class="tray"></div>`;
+  T=tokens(z,[3,4,5,6,7],v=>{const s=(...a)=>a.includes(null)?'…':a.reduce((x,y)=>x+y,0);const w=(id,val)=>{$('#'+id).innerHTML=val==='…'?'…':`<b class="chk ${val===14?'y':'n'}">${val}</b>`};w('cb',s(v.lo,1,v.c,v.lb));w('cr',s(1,v.ro,v.c,2));w('cv',s(v.c,v.lb,2,v.bo))})},
+ verify(){const v=T.values();if(Object.values(v).includes(null))return[false,'Place tous les jetons.'];const ok=v.lo+1+v.c+v.lb===14&&1+v.ro+v.c+2===14&&v.c+v.lb+2+v.bo===14;return ok?[true,'Bravo ! Chaque cercle fait 14.']:[false,"Un cercle ne fait pas 14. Regarde les sommes sous la figure."]},
+ solve(){T.set({lo:6,ro:7,c:4,lb:3,bo:5})},
+ hint:"Commence par le cercle rouge, qui contient déjà 1 et 2 : il manque 14 − 3 = 11 avec deux nombres.",
+ corr:`<ol><li>Cercle rouge : il contient 1 et 2, il manque 11 = 4 + 7 ou 5 + 6.</li><li>On teste les 4 façons de placer ces nombres (au centre ou à droite). Par exemple avec 4 au centre et 7 à droite : le cercle vert a déjà 4 + 2 = 6, il manque 8 = 3 + 5.</li><li>Le cercle bleu a alors 1 + 4 + 3 = 8 (si 3 est entre le bleu et le vert) : il manque 6. Ça marche !</li><li>Solution : <b>6</b> à gauche, <b>7</b> à droite, <b>4</b> au centre, <b>3</b> entre bleu et vert, <b>5</b> en bas.</li></ol>`,
+ kill(){T&&T.kill()}}};
+
+OLD[5]=()=>{let T;return{fam:'plac',titre:"Tr'addition",src:'Quart de finale 2025 – énigme 7',
+ enonce:`<p><b>Place les nombres 1, 2, 3, 4, 5 et 7 dans les six cases</b> de telle sorte que :</p><p>• dans trois cases côte à côte (n'importe lesquelles), l'un des nombres est égal à la somme des deux autres ;<br>• le premier nombre est plus petit que le dernier.</p>`,
+ build(z){z.innerHTML=`<h3>Glisse les jetons dans les cases</h3><div class="row" style="gap:8px">${[0,1,2,3,4,5].map(i=>`<div class="slot" data-slot="s${i}"></div>`).join('')}</div>
+  <div id="tri" style="margin-top:10px;font-size:18px"></div><div class="tray"></div>`;
+  T=tokens(z,[1,2,3,4,5,7],v=>{const a=[0,1,2,3,4,5].map(i=>v['s'+i]);let h='';for(let i=0;i<4;i++){const t=a.slice(i,i+3);if(t.includes(null)){h+=`Cases ${i+1}-${i+3} : …<br>`;continue}const [x,y,w]=t,ok=x===y+w||y===x+w||w===x+y;h+=`Cases ${i+1}-${i+3} (${t.join(', ')}) : <b class="chk ${ok?'y':'n'}">${ok?'✓ une somme':'✗ pas de somme'}</b><br>`}
+  if(a[0]!=null&&a[5]!=null)h+=`Premier plus petit que le dernier : <b class="chk ${a[0]<a[5]?'y':'n'}">${a[0]<a[5]?'✓':'✗'}</b>`;$('#tri').innerHTML=h})},
+ verify(){const v=T.values(),a=[0,1,2,3,4,5].map(i=>v['s'+i]);if(a.includes(null))return[false,'Place tous les jetons.'];for(let i=0;i<4;i++){const[x,y,w]=a.slice(i,i+3);if(!(x===y+w||y===x+w||w===x+y))return[false,'Un groupe de trois cases ne marche pas.']}return a[0]<a[5]?[true,'Bravo ! 4 1 3 2 5 7 fonctionne.']:[false,'Le premier nombre doit être plus petit que le dernier.']},
+ solve(){T.set({s0:4,s1:1,s2:3,s3:2,s4:5,s5:7})},
+ hint:"Où peut aller le 7 ? C'est le plus grand : il ne peut être que la somme de deux autres…",
+ corr:`<ol><li><b>7</b> est le plus grand nombre : il est forcément la somme des deux autres de son groupe. Au milieu de la rangée, il serait dans deux groupes à la fois, ce qui obligerait à utiliser deux fois le même nombre. Il est donc au bout, et comme le premier doit être plus petit que le dernier, <b>7 est à la fin</b>.</li><li>Juste avant le 7, on trouve de la même façon le <b>5</b> (7 = 5 + 2).</li><li>On remonte de droite à gauche : 7 − 5 = <b>2</b>, puis 5 − 2 = <b>3</b>, puis 3 − 2 = <b>1</b>, puis 3 + 1 = <b>4</b>.</li><li>Réponse : <b>4 1 3 2 5 7</b>.</li></ol>`,
+ kill(){T&&T.kill()}}};
+
+OLD[6]=()=>{let T;return{fam:'enq',titre:'Les trois cartes',src:'Demi-finale 2026 – énigme 5',
+ enonce:`<p>Mathilde a posé 3 cartes devant elle. Parmi ces cartes, il y a un <b>roi (R)</b>, une <b>dame (D)</b> et un <b>valet (V)</b>, et aussi un <b>cœur (C)</b>, un <b>pique (P)</b> et un <b>trèfle (T)</b>.</p><p>• Le trèfle se trouve juste à gauche du valet.<br>• La dame se trouve juste à droite du roi.<br>• Le cœur se trouve juste à gauche du trèfle.</p><p><b>Retrouve les trois cartes.</b></p>`,
+ build(z){z.innerHTML=`<h3>Place une figure et une couleur sur chaque carte</h3><div class="row" style="gap:20px;justify-content:center">${[0,1,2].map(i=>`<div style="background:#fff;border:3px solid #333;border-radius:14px;padding:14px;display:grid;gap:12px;justify-items:center"><span class="lab">Carte ${i+1}</span><div class="slot" data-slot="f${i}"></div><div class="slot" data-slot="c${i}"></div></div>`).join('')}</div>
+  <p id="cl" style="font-size:18px"></p><div class="tray"></div>`;
+  T=tokens(z,['R','D','V','C','P','T'],v=>{const pos=x=>{for(let i=0;i<3;i++)if(v['f'+i]===x||v['c'+i]===x)return i;return null};const c=(a,b)=>{const p=pos(a),q=pos(b);return p==null||q==null?'…':`<b class="chk ${q===p+1?'y':'n'}">${q===p+1?'✓':'✗'}</b>`};
+   $('#cl').innerHTML=`Trèfle juste à gauche du valet : ${c('T','V')}<br>Dame juste à droite du roi : ${c('R','D')}<br>Cœur juste à gauche du trèfle : ${c('C','T')}`})},
+ verify(){const v=T.values();if(Object.values(v).includes(null))return[false,'Place les six lettres.'];if(['f0','f1','f2'].some(k=>!'RDV'.includes(v[k]))||['c0','c1','c2'].some(k=>!'CPT'.includes(v[k])))return[false,'En haut : une figure (R, D, V). En bas : une couleur (C, P, T).'];
+  return v.f0==='R'&&v.f1==='D'&&v.f2==='V'&&v.c0==='C'&&v.c1==='T'&&v.c2==='P'?[true,'Bravo ! Roi de cœur, dame de trèfle, valet de pique.']:[false,'Un des indices n\'est pas respecté.']},
+ solve(){T.set({f0:'R',f1:'D',f2:'V',c0:'C',c1:'T',c2:'P'})},
+ hint:"Le cœur est juste à gauche du trèfle, et le trèfle juste à gauche du valet : cela fait déjà trois éléments dans l'ordre !",
+ corr:`<ol><li>Indices 1 et 3 : cœur, puis trèfle, puis valet. Donc le cœur est sur la carte 1, le trèfle sur la carte 2, et le valet sur la carte 3.</li><li>Indice 2 : le roi et la dame sont côte à côte, roi à gauche. Il reste les cartes 1 et 2 : <b>roi</b> sur la carte 1, <b>dame</b> sur la carte 2.</li><li>Il reste le <b>pique</b> pour la carte 3.</li><li>Réponse : <b>roi de cœur – dame de trèfle – valet de pique</b>.</li></ol>`,
+ kill(){T&&T.kill()}}};
+
+OLD[7]=()=>{const P=['Annabelle','Bertrand','Clarisse','Damien'],M=['archéologue','bibliothécaire','cardiologue','dentiste'];let g=P.map(()=>M.map(()=>''));return{fam:'enq',titre:'Les quatre amis',src:'Quart de finale 2025 – énigme 6',
+ enonce:`<p>Annabelle, Bertrand, Clarisse et Damien sont quatre amis. Chacun veut faire un métier précis : <b>archéologue, bibliothécaire, cardiologue</b>, et Bertrand veut devenir <b>dentiste</b>.</p><p>Une seule de ces personnes veut faire le métier qui a la même initiale que son prénom, mais ce n'est pas Annabelle. D'ailleurs, Annabelle ne voudrait surtout pas travailler dans le domaine médical.</p><p><b>Quels sont les métiers choisis par Annabelle et par Damien ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Le tableau de l'enquête : touche une case pour écrire O (oui) ou N (non)</h3><div class="scroll"><table class="logi"><tr><th></th>${M.map(m=>`<th>${m}</th>`).join('')}</tr>${P.map((p,i)=>`<tr><th>${p}</th>${M.map((m,j)=>`<td><button data-i="${i}" data-j="${j}" aria-label="${p} ${m}"></button></td>`).join('')}</tr>`).join('')}</table></div>`;
+  $$('.logi button',z).forEach(b=>b.onclick=()=>{const i=+b.dataset.i,j=+b.dataset.j;g[i][j]=g[i][j]===''?'O':g[i][j]==='O'?'N':'';b.textContent=g[i][j];b.style.color=g[i][j]==='O'?'#1d8a4e':'#c8102e'})},
+ verify(){const sol=[1,3,2,0];const ok=P.every((p,i)=>g[i][sol[i]]==='O'&&g[i].filter(x=>x==='O').length===1);if(ok)return[true,'Bravo ! Annabelle sera bibliothécaire et Damien archéologue.'];if(g[0][1]==='O'&&g[3][0]==='O')return[true,'Bravo ! Annabelle sera bibliothécaire et Damien archéologue.'];return[false,'Mets un O pour le métier de chaque ami (un seul O par ligne et par colonne).']},
+ solve(){g=[[ 'N','O','N','N'],['N','N','N','O'],['N','N','O','N'],['O','N','N','N']];$$('.logi button').forEach(b=>{const v=g[b.dataset.i][b.dataset.j];b.textContent=v;b.style.color=v==='O'?'#1d8a4e':'#c8102e'})},
+ hint:"Bertrand est dentiste. Annabelle n'est ni archéologue (même initiale A), ni cardiologue (domaine médical).",
+ corr:`<ol><li>Bertrand est dentiste.</li><li>Annabelle n'est pas archéologue (même initiale, interdit pour elle) ni cardiologue (médical) : elle est <b>bibliothécaire</b>.</li><li>Une seule personne a un métier qui commence comme son prénom. Ce n'est pas Bertrand (dentiste), ni Damien (le dentiste est déjà Bertrand). C'est donc Clarisse : elle est <b>cardiologue</b>.</li><li>Il reste archéologue pour <b>Damien</b>.</li></ol>`}};
+
+OLD[8]=()=>{const given={0:3,5:1};let c=[3,0,0,0,-1,1,0,0,0];return{fam:'gril',titre:'Les jetons de Mathurine',src:'Demi-finale 2026 – énigme 2',
+ enonce:`<p>Mathurine a déjà placé 4 jetons dans deux cases du tableau. Elle veut placer <b>les 10 jetons restants</b> dans les cases blanches vides avec :</p><p>• au moins un jeton dans chaque case blanche ;<br>• jamais 2 cases avec le même nombre de jetons dans une même rangée (horizontale ou verticale) de 3 cases blanches.</p><p><b>Place les jetons.</b></p>`,
+ build(z){z.innerHTML=`<h3>Touche une case pour ajouter un jeton (au-delà de 5, la case se vide)</h3><div class="row" style="gap:24px;align-items:flex-start"><div class="grid3" id="g8"></div><div><p class="big" id="r8"></p><p id="k8" style="font-size:17px"></p></div></div>`;draw()},
+ verify(){const placed=c.reduce((s,x,i)=>s+(i===4||given[i]!=null?0:x),0);if(c.some((x,i)=>i!==4&&x<1))return[false,'Chaque case blanche doit avoir au moins un jeton.'];if(placed!==10)return[false,`Il faut placer exactement 10 jetons (tu en as placé ${placed}).`];return lines().every(l=>l.ok)?[true,'Bravo ! Aucune rangée n\'a deux cases pareilles.']:[false,'Une rangée a deux cases avec le même nombre de jetons.']},
+ solve(){c=[3,1,2,1,-1,1,2,1,3];draw()},
+ hint:"Dans une rangée de 3 cases blanches, il faut au moins 1 + 2 + 3 = 6 jetons. Il y a 4 rangées de ce genre… Compte combien il faut de jetons au minimum en tout.",
+ corr:`<ol><li>Les 4 rangées de 3 cases blanches (en haut, en bas, à gauche, à droite) contiennent chacune au moins 1 + 2 + 3 = 6 jetons.</li><li>Les 4 coins comptent dans deux rangées. Les 4 cases du milieu des bords n'en comptent que dans une, avec au moins 1 jeton.</li><li>On a 4 + 10 = 14 jetons. Avec 2 rangées opposées : 6 + 6 = 12, plus les 2 cases du milieu restantes (au moins 1 chacune) : 14. Tout est donc au minimum !</li><li>Chaque rangée contient exactement 1, 2 et 3. Solution :<br><b>3 1 2 / 1 ■ 1 / 2 1 3</b></li></ol>`};
+ function lines(){return[[0,1,2,'en haut'],[6,7,8,'en bas'],[0,3,6,'à gauche'],[2,5,8,'à droite']].map(([a,b,d,n])=>{const v=[c[a],c[b],c[d]];return{n,v,ok:!v.includes(0)&&new Set(v).size===3}})}
+ function draw(){const g=$('#g8');g.innerHTML=c.map((x,i)=>i===4?`<div class="c blk"></div>`:`<button class="c ${given[i]!=null?'given':''}" data-i="${i}" aria-label="case ${i+1}, ${x} jetons">${Array(Math.max(0,x)).fill('<span class="dot t"></span>').join('')}</button>`).join('');
+  $$('button.c',g).forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(given[i]!=null)return;c[i]=(c[i]+1)%6;draw()});
+  const placed=c.reduce((s,x,i)=>s+(i===4||given[i]!=null?0:x),0);$('#r8').textContent=`Jetons à placer : ${10-placed}`;
+  $('#k8').innerHTML=lines().map(l=>`Rangée ${l.n} : ${l.v.join(' – ')} <span class="chk ${l.ok?'y':'n'}">${l.ok?'✓':''}</span>`).join('<br>')}};
+
+OLD[9]=()=>{const S=[null,{n:1,c:'N'},{n:2,c:'N'},{n:3,c:'N'},{n:1,c:'B'},{n:2,c:'B'},{n:3,c:'B'}];let st=[3,0,0,0,0,0,0,0,6];const fixed=[0,8];const rc=[3,4,2],cc=[3,5,1];return{fam:'gril',titre:'Sudoku-gommettes',src:'Demi-finale 2025 – énigme 4',
+ enonce:`<p>Lili veut placer des gommettes blanches et noires sur les cases de cette grille. Elle a déjà placé 3 gommettes noires et 3 gommettes blanches.</p><p>• Chaque case contient une, deux ou trois gommettes <b>d'une seule couleur</b> ;<br>• dans chaque rangée (horizontale ou verticale), aucune case n'a le même nombre de gommettes qu'une autre ;<br>• le nombre au début d'une rangée indique le <b>nombre total de gommettes noires</b> de cette rangée.</p><p><b>Complète la grille.</b></p>`,
+ build(z){z.innerHTML=`<h3>Touche une case plusieurs fois : 1, 2, 3 noires, puis 1, 2, 3 blanches, puis vide</h3><div id="g9"></div>`;draw()},
+ verify(){const g=cells();if(g.some(x=>!x))return[false,'Remplis toutes les cases.'];for(let r=0;r<3;r++){const L=[0,1,2].map(k=>g[r*3+k]),C=[0,1,2].map(k=>g[k*3+r]);if(new Set(L.map(x=>x.n)).size<3||new Set(C.map(x=>x.n)).size<3)return[false,'Une rangée a deux cases avec le même nombre de gommettes.'];if(L.filter(x=>x.c==='N').reduce((s,x)=>s+x.n,0)!==rc[r]||C.filter(x=>x.c==='N').reduce((s,x)=>s+x.n,0)!==cc[r])return[false,'Un indice de gommettes noires n\'est pas respecté.']}return[true,'Bravo ! La grille est juste.']},
+ solve(){st=[3,4,5,5,3,1,4,2,6];draw()},
+ hint:"Regarde la ligne marquée 3 : elle a déjà 3 gommettes noires. Les autres cases de cette ligne sont donc… blanches !",
+ corr:`<ol><li>Ligne « 3 » et colonne « 3 » : la case du coin a déjà 3 noires, donc le reste de cette ligne et de cette colonne est <b>blanc</b>.</li><li>Colonne « 1 » : il faut 1 noire. Ce ne peut pas être la case du bas (3 blanches) ni celle du haut (blanche) : c'est la case du milieu, avec <b>1 noire</b>.</li><li>Ligne « 2 » : il faut 2 noires, la case de gauche est blanche, celle de droite aussi : la case du milieu a <b>2 noires</b>.</li><li>Colonne « 5 » : il manque 5 − 2 = 3 noires, au centre : <b>3 noires</b>. La ligne « 4 » fait bien 3 + 1 = 4.</li><li>On complète les cases blanches pour avoir 1, 2, 3 dans chaque rangée :<br><b>3N 1B 2B / 2B 3N 1N / 1B 2N 3B</b>.</li></ol>`};
+ function cells(){return st.map(i=>S[i])}
+ function draw(){const g=cells();const nb=a=>a.filter(x=>x&&x.c==='N').reduce((s,x)=>s+x.n,0);
+  $('#g9').innerHTML=`<div style="display:grid;grid-template-columns:40px repeat(3,92px);width:max-content;font-weight:700;font-size:20px"><span></span>${cc.map((v,j)=>`<span style="text-align:center">${v} <small class="chk ${nb([0,1,2].map(k=>g[k*3+j]))===v?'y':'n'}">(${nb([0,1,2].map(k=>g[k*3+j]))})</small></span>`).join('')}</div>
+  <div style="display:flex"><div style="display:grid;grid-template-rows:repeat(3,92px);width:40px;font-weight:700;font-size:20px;align-items:center">${rc.map((v,r)=>`<span>${v}<br><small class="chk ${nb(g.slice(r*3,r*3+3))===v?'y':'n'}">(${nb(g.slice(r*3,r*3+3))})</small></span>`).join('')}</div>
+  <div class="grid3">${g.map((x,i)=>`<button class="c ${fixed.includes(i)?'given':''}" data-i="${i}" aria-label="case ${i+1}">${x?Array(x.n).fill(`<span class="dot ${x.c==='N'?'n':''}"></span>`).join(''):''}</button>`).join('')}</div></div>
+  <p style="font-size:16px;color:#56627a">Entre parenthèses : le nombre de gommettes noires que tu as déjà mises dans la rangée.</p>`;
+  $$('#g9 .c').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;if(fixed.includes(i))return;st[i]=(st[i]+1)%7;draw()})}};
+
+OLD[10]=()=>{let b=10,mis=false;return{fam:'parts',titre:'Inéquitable',src:'Finale 2025 – énigme 4',
+ enonce:`<p>Aly, Boby et Caly jouent dans la cour. Ils ont <b>87 billes en tout</b>.</p><p>Caly a <b>deux fois plus</b> de billes que Boby. Aly a <b>7 billes de plus</b> que Boby.</p><p><b>Combien de billes a chaque enfant ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Le schéma en barres : la part de Boby = une barre</h3><div class="row"><button class="btn light" id="m10">− 1</button><span class="big">Part de Boby : <span id="v10"></span> billes</span><button class="btn" id="p10">+ 1</button><button class="btn gold" id="t10">Mettre de côté les 7 billes en plus d'Aly</button></div><div class="bars" id="b10"></div><p class="big" id="tot10"></p>`;
+  $('#m10').onclick=()=>{b=Math.max(1,b-1);draw()};$('#p10').onclick=()=>{b=Math.min(30,b+1);draw()};$('#t10').onclick=()=>{mis=!mis;draw()};draw()},
+ fields:[{l:'Aly',a:27,u:'billes'},{l:'Boby',a:20,u:'billes'},{l:'Caly',a:40,u:'billes'}],
+ hint:"Prends la part de Boby comme une barre. Caly a 2 barres, Aly a 1 barre et 7 billes.",
+ corr:`<ol><li>Boby = 1 part ; Caly = 2 parts ; Aly = 1 part + 7 billes.</li><li>En tout : 4 parts + 7 billes = 87 billes. Donc 4 parts = 87 − 7 = 80 billes.</li><li>1 part = 80 ÷ 4 = 20. <b>Boby a 20 billes</b>, <b>Caly 40 billes</b>, <b>Aly 27 billes</b>.</li><li>Vérification : 20 + 40 + 27 = 87. ✓</li></ol>`};
+ function draw(){const sc=100/(30*4+7);const seg=(w,c,t)=>`<span style="width:${w*sc}%;background:${c}">${t}</span>`;const P=c=>seg(b,c,b);
+  $('#v10').textContent=b;$('#b10').innerHTML=`<b>Boby</b><div class="bar">${P('#2f6db5')}</div><b>Caly</b><div class="bar">${P('#c8102e')}${P('#c8102e')}</div><b>Aly</b><div class="bar">${P('#17694a')}${mis?'':seg(7,'#e09a1f','+7')}</div>`;
+  const t=4*b+(mis?0:7);$('#tot10').innerHTML=mis?`Sans les 7 billes : ${t} billes. Il faut arriver à 87 − 7 = 80.`:`Total : ${t} billes <span class="chk ${t===87?'y':'n'}">${t===87?'✓ c\'est 87 !':''}</span>`}};
+
+OLD[11]=()=>{let m=0;return{fam:'parts',titre:'Noël a trop par rapport à Léon',src:'Quart de finale 2026 – énigme 5',
+ enonce:`<p>Noël avait <b>2026 mathsous</b> ; Léon n'en avait que <b>206</b>.</p><p>Noël a donné des mathsous à Léon, mais il lui en reste encore <b>deux fois plus que Léon</b>.</p><p><b>Combien Noël a-t-il donné de mathsous à Léon ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Fais donner des mathsous à Noël</h3><div class="row">${[-100,-10,-1,1,10,100].map(d=>`<button class="btn ${d<0?'light':''}" data-d="${d}">${d>0?'+':'−'} ${Math.abs(d)}</button>`).join('')}</div><p class="big">Noël a donné : <span id="v11"></span> mathsous</p><div class="bars" id="b11"></div><p class="big" id="t11"></p>`;
+  $$('[data-d]',z).forEach(x=>x.onclick=()=>{m=Math.max(0,Math.min(2026,m+ +x.dataset.d));draw()});draw()},
+ fields:[{l:'Noël a donné',a:538,u:'mathsous',main:1}],
+ hint:"Quand Noël donne à Léon, le total de leurs mathsous ne change pas ! Calcule ce total.",
+ corr:`<ol><li>Le total ne change jamais : 2026 + 206 = <b>2232</b> mathsous.</li><li>À la fin, Noël a 2 parts et Léon 1 part : 3 parts = 2232, donc 1 part = 2232 ÷ 3 = <b>744</b>.</li><li>Léon doit finir avec 744 mathsous. Il en avait 206 : il a reçu 744 − 206 = <b>538</b>.</li><li>Vérification : Noël a 2026 − 538 = 1488 = 2 × 744. ✓</li></ol>`};
+ function draw(){const N=2026-m,L=206+m,sc=100/2232;$('#v11').textContent=m;
+  $('#b11').innerHTML=`<b>Noël</b><div class="bar"><span style="width:${N*sc}%;background:#c8102e">${N}</span></div><b>Léon</b><div class="bar"><span style="width:${Math.max(L*sc,6)}%;background:#17694a">${L}</span></div>`;
+  $('#t11').innerHTML=`Total des deux : 2232 (il ne change pas !)<br>Noël a-t-il exactement 2 fois plus que Léon ? ${N===2*L?'<span class="chk y">Oui !</span>':`Non : 2 × ${L} = ${2*L}`}`}};
+
+OLD[12]=()=>{let T;return{fam:'code',titre:'Multiplication à compléter',src:'Demi-finale 2026 – énigme 4',
+ enonce:`<p><b>Complète cette multiplication</b> en posant les cinq jetons 2, 4, 5, 6 et 9 sur les cases vides.</p><p><b>Quel sera le résultat ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Glisse les jetons dans les cases</h3><div style="display:grid;grid-template-columns:repeat(5,60px);gap:6px;justify-items:center;align-items:center;font-size:28px;font-weight:700;width:max-content">
+  <span></span><span></span><div class="slot" data-slot="a"></div><div class="fixed">3</div><div class="slot" data-slot="b"></div>
+  <span>×</span><span></span><span></span><span></span><div class="fixed">8</div>
+  <span style="grid-column:1/-1;width:100%;border-top:3px solid #333"></span>
+  <span>=</span><div class="fixed">7</div><div class="slot" data-slot="c"></div><div class="slot" data-slot="d"></div><div class="slot" data-slot="e"></div></div><p id="t12" class="big"></p><div class="tray"></div>`;
+  T=tokens(z,[2,4,5,6,9],v=>{if(v.a!=null&&v.b!=null){const p=(v.a*100+30+v.b)*8;$('#t12').textContent=`Calcul réel : ${v.a}3${v.b} × 8 = ${p}`}else $('#t12').textContent=''})},
+ verify(){const v=T.values();if(Object.values(v).includes(null))return[false,'Place tous les jetons.'];const p=(v.a*100+30+v.b)*8;return p===7000+v.c*100+v.d*10+v.e?[true,'Bravo ! 932 × 8 = 7456.']:[false,`${v.a}3${v.b} × 8 = ${p}, ce n'est pas le résultat écrit.`]},
+ solve(){T.set({a:9,b:2,c:4,d:5,e:6})},
+ hint:"Pour que le résultat commence par 7, quel chiffre mettre devant le 3 ? Calcule 800 × 8 et 900 × 8.",
+ corr:`<ol><li>Le résultat commence par 7 (plus de 7000). 800 × 8 = 6400, c'est trop petit. Le premier chiffre est donc <b>9</b>.</li><li>Il reste 2, 4, 5, 6 pour les unités du haut et le résultat. On essaie : 932 × 8 = <b>7456</b>. Les chiffres 4, 5, 6 sont bien les jetons restants !</li><li>(934 × 8 = 7472, 935 × 8 = 7480, 936 × 8 = 7488 ne marchent pas.)</li><li>Réponse : <b>932 × 8 = 7456</b>.</li></ol>`,
+ kill(){T&&T.kill()}}};
+
+function lettersWidget(z,letters,lines,opts){
+  const v={};letters.forEach(l=>v[l]=opts.start[l]);
+  z.innerHTML=`<h3>Choisis un chiffre pour chaque lettre</h3><div class="row" id="lw">${letters.map(l=>`<div style="background:#fff;border:2px solid #b9c9e3;border-radius:12px;padding:8px;text-align:center"><b style="font-size:24px">${l}</b><div class="row" style="gap:6px;justify-content:center"><button class="btn light" data-l="${l}" data-d="-1" aria-label="${l} moins">−</button><span class="big" id="lv${l}"></span><button class="btn light" data-l="${l}" data-d="1" aria-label="${l} plus">+</button></div></div>`).join('')}</div><div id="lop" style="font-size:28px;font-weight:700;font-family:monospace,Fredoka;margin-top:14px"></div><p id="lmsg" class="big"></p>`;
+  const draw=()=>{letters.forEach(l=>$('#lv'+l).textContent=v[l]);$('#lop').innerHTML=opts.show(v);$('#lmsg').innerHTML=opts.msg(v)};
+  $$('#lw button').forEach(b=>b.onclick=()=>{const l=b.dataset.l;v[l]=(v[l]+ +b.dataset.d+10)%10;draw()});draw();
+  return v;
+}
+OLD[13]=()=>{let v;const word=(s,v)=>s.split('').map(c=>v[c]).join('');return{fam:'code',titre:'Donnez-nous le LA',src:'Quart de finale 2025 – énigme 8',
+ enonce:`<p>Dans cette addition codée, des lettres différentes remplacent toujours des chiffres différents, et un même chiffre est toujours remplacé par la même lettre. Le premier chiffre d'un nombre ne peut pas être un 0.</p><p style="font-family:monospace;font-size:26px;font-weight:700;line-height:1.2">&nbsp;&nbsp;P L A Y<br>+&nbsp;&nbsp;&nbsp;&nbsp;L A<br>= 2 0 2 5</p><p><b>Quelle est la valeur de LA ?</b></p>`,
+ build(z){v=lettersWidget(z,['P','L','A','Y'],0,{start:{P:0,L:0,A:0,Y:0},
+   show:v=>`<pre style="margin:0;font:inherit">  ${word('PLAY',v)}\n+   ${word('LA',v)}\n= ${String(+word('PLAY',v)+ +word('LA',v)).padStart(4,' ')}</pre>`,
+   msg:v=>{const s=+word('PLAY',v)+ +word('LA',v);const d=new Set(Object.values(v)).size===4;return s===2025?(d&&v.P&&v.L?'<span class="chk y">2025 ! Et les lettres ont des chiffres différents.</span>':'<span class="chk n">2025… mais deux lettres ont le même chiffre ou un nombre commence par 0.</span>'):`Le total fait ${s}, pas 2025.`}})},
+ fields:[{l:'LA =',a:93,main:1}],
+ hint:"LA a 2 chiffres : il vaut moins de 100. Donc PLAY est très proche de 2025… Que valent P et L ?",
+ corr:`<ol><li>LA vaut moins de 100, donc PLAY est entre 1925 et 2025. PLAY ne peut pas commencer par 20 (sinon L = 0, interdit). Donc <b>P = 1</b> et <b>L = 9</b>.</li><li>On cherche 19AY + 9A = 2025. On essaie les valeurs de A : A = 3 donne 193Y + 93 = 2025, donc 193Y = 1932, <b>Y = 2</b>.</li><li>Vérification : 1932 + 93 = 2025. ✓ Et 1, 9, 3, 2 sont bien différents.</li><li>Réponse : <b>LA = 93</b>.</li></ol>`}};
+
+OLD[14]=()=>{let v;const word=(s,v)=>s.split('').map(c=>v[c]).join('');return{fam:'code',titre:'Soustraction glissante',src:'Demi-finale 2025 – énigme 7',
+ enonce:`<p>Dans cette opération, une même lettre remplace toujours le même chiffre, et deux lettres différentes remplacent deux chiffres différents. <b>Aucune lettre ne remplace un 0.</b></p><p style="font-family:monospace;font-size:26px;font-weight:700;line-height:1.2">&nbsp;&nbsp;D A M E<br>− E D A M<br>= 2 0 2 5</p><p><b>Que vaut DAME ?</b></p>`,
+ build(z){v=lettersWidget(z,['D','A','M','E'],0,{start:{D:1,A:1,M:1,E:1},
+   show:v=>`<pre style="margin:0;font:inherit">  ${word('DAME',v)}\n− ${word('EDAM',v)}\n= ${String(+word('DAME',v)- +word('EDAM',v)).padStart(4,' ')}</pre>`,
+   msg:v=>{const s=+word('DAME',v)- +word('EDAM',v);const ok=new Set(Object.values(v)).size===4&&!Object.values(v).includes(0);return s===2025?(ok?'<span class="chk y">2025 ! Et les lettres ont des chiffres différents.</span>':'<span class="chk n">2025… mais deux lettres ont le même chiffre ou il y a un 0.</span>'):`La différence fait ${s}, pas 2025.`}})},
+ fields:[{l:'DAME =',a:8916,main:1}],
+ hint:"Colonne des unités : E − M finit par 5. Il y a donc toujours 5 d'écart entre E et M. Essaie différentes valeurs de E.",
+ corr:`<ol><li>Unités : E − M donne 5 (avec ou sans retenue) : <b>5 d'écart</b> entre E et M.</li><li>Centaines : A − D donne 0. Sans retenue, A = D, interdit. Il y a donc une retenue : <b>A = D + 1</b>.</li><li>Milliers : D − E = 2 : <b>D = E + 2</b>.</li><li>On essaie E = 1, 2, 3, 4 : la retenue des centaines ne se produit pas. E = 5 donne M = 0, interdit. <b>E = 6</b> donne M = 1, D = 8, A = 9.</li><li>Vérification : 8916 − 6891 = 2025. ✓ Réponse : <b>DAME = 8916</b>.</li></ol>`}};
+
+OLD[15]=()=>{let cur=[],found=[];return{fam:'liste',titre:'LA SI DO',src:'Demi-finale 2025 – énigme 6',
+ enonce:`<p>Clara doit s'entraîner à la clarinette. Elle doit jouer les trois notes LA, SI, DO par groupes de 4 (comme par exemple LA-SI-DO-SI) avec trois conditions :</p><p>• dans chaque groupe de 4, il y a les 3 notes ;<br>• deux notes qui se suivent doivent être différentes ;<br>• la première et la dernière note ne doivent pas être les mêmes.</p><p><b>Combien de groupes différents peut-elle former ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Compose un groupe de 4 notes</h3><div class="row">${['LA','SI','DO'].map(n=>`<button class="btn" data-n="${n}" style="min-width:80px">${n}</button>`).join('')}<button class="btn light" id="e15">Effacer</button></div><p class="big" id="c15"></p><div class="row"><button class="btn green" id="a15">Ajouter à ma liste</button></div><p id="m15" class="big"></p><h3>Ma liste (<span id="n15">0</span>)</h3><div class="coll" id="l15"></div>`;
+  $$('[data-n]',z).forEach(b=>b.onclick=()=>{if(cur.length<4)cur.push(b.dataset.n);draw()});$('#e15').onclick=()=>{cur=[];draw()};
+  $('#a15').onclick=()=>{let m;if(cur.length<4)m='Il faut 4 notes.';else if(new Set(cur).size<3)m='Il manque une des trois notes.';else if(cur.some((x,i)=>i&&x===cur[i-1]))m='Deux notes qui se suivent sont pareilles.';else if(cur[0]===cur[3])m='La première et la dernière sont pareilles.';else if(found.includes(cur.join('-')))m='Tu l\'as déjà trouvé !';else{found.push(cur.join('-'));m='<span class="chk y">Nouveau groupe !</span>'}cur=[];draw();$('#m15').innerHTML=m};draw()},
+ fields:[{l:'Nombre de groupes',a:12,main:1}],
+ hint:"Une note est forcément jouée 2 fois. Cherche d'abord tous les groupes où SI est joué 2 fois, puis LA, puis DO.",
+ corr:`<ol><li>Il y a 4 notes et 3 notes différentes : une note est jouée <b>2 fois</b>.</li><li>Avec SI deux fois : LA-SI-DO-SI, DO-SI-LA-SI, SI-LA-SI-DO, SI-DO-LA-SI : <b>4 groupes</b>.</li><li>De la même façon, 4 groupes avec LA deux fois, et 4 avec DO deux fois.</li><li>Total : 4 + 4 + 4 = <b>12 groupes</b>.</li></ol>`};
+ function draw(){$('#c15').textContent=cur.length?cur.join(' – '):'(choisis des notes)';$('#n15').textContent=found.length;$('#l15').innerHTML=found.map(f=>`<span class="chip">${f}</span>`).join('')}};
+
+OLD[16]=()=>{const G=[8,1,6,3,5,7,4,9,2];let off=new Set(),found=[];return{fam:'liste',titre:'Les 9 pions',src:'Demi-finale 2025 – énigme 8',
+ enonce:`<p>Neuf pions sont posés sur cette grille. Mathilde veut retirer <b>3 ou 4 pions</b>, mais en laissant le 5, son chiffre préféré. Le total des numéros des pions restant sur la grille (y compris le 5) doit être égal à <b>25</b>.</p><p><b>Combien y a-t-il de dispositions différentes des pions restant sur la grille ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Touche un pion pour l'enlever ou le remettre</h3><div class="row" style="gap:24px;align-items:flex-start"><div style="display:grid;grid-template-columns:repeat(3,64px);gap:10px" id="g16"></div><div><p class="big" id="s16"></p><button class="btn green" id="k16">Garder cette disposition</button><p id="m16" class="big"></p></div></div><h3>Mes dispositions (<span id="n16">0</span>)</h3><div class="coll" id="l16"></div>`;
+  $('#k16').onclick=()=>{const k=off.size,s=45-[...off].reduce((a,b)=>a+b,0),key=[...off].sort().join();let m;if(k<3||k>4)m='Il faut enlever 3 ou 4 pions.';else if(s!==25)m=`Le total restant est ${s}, pas 25.`;else if(found.includes(key))m='Tu l\'as déjà trouvée !';else{found.push(key);m='<span class="chk y">Nouvelle disposition !</span>'}$('#m16').innerHTML=m;draw()};draw()},
+ fields:[{l:'Nombre de dispositions',a:10,main:1}],
+ hint:"Tous les pions ensemble font 45. Il faut en garder 25… donc les pions enlevés doivent faire 20. Range-les du plus grand au plus petit.",
+ corr:`<ol><li>Tous les pions : 1 + 2 + … + 9 = 45. On garde 25, donc les pions enlevés font <b>45 − 25 = 20</b>.</li><li>Avec 3 pions (sans le 5) : 9+8+3 et 9+7+4 : <b>2 façons</b>.</li><li>Avec 4 pions : 9+8+2+1, 9+7+3+1, 9+6+4+1, 9+6+3+2, 8+7+4+1, 8+7+3+2, 8+6+4+2, 7+6+4+3 : <b>8 façons</b>.</li><li>Total : 2 + 8 = <b>10 dispositions</b>.</li></ol>`};
+ function draw(){$('#g16').innerHTML=G.map(n=>`<button class="pion ${n===5?'lock':''} ${off.has(n)?'off':''}" data-n="${n}">${n}</button>`).join('');
+  $$('#g16 .pion').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;if(n===5)return;off.has(n)?off.delete(n):off.add(n);$('#m16').textContent='';draw()});
+  $('#s16').innerHTML=`Pions enlevés : ${off.size}<br>Total restant : ${45-[...off].reduce((a,b)=>a+b,0)}`;$('#n16').textContent=found.length;
+  $('#l16').innerHTML=found.map(f=>{const o=f.split(',').map(Number);return`<span class="mini">${G.map(n=>`<span class="${o.includes(n)?'k':''}">${o.includes(n)?'':n}</span>`).join('')}</span>`}).join('')}};
+
+OLD[17]=()=>{const Pt=[[0,-1],[1,-1],[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1]];const tri=i=>{const a=Pt[i],b=Pt[(i+1)%8];return`0,0 ${a[0]*100},${a[1]*100} ${b[0]*100},${b[1]*100}`};
+ const syms=[0,1,2,3].flatMap(k=>[i=>(i+2*k)%8,i=>(7-i+2*k)%8]);const canon=s=>syms.map(g=>s.map(g).sort((a,b)=>a-b).join()).sort()[0];
+ let sel=new Set(),found=[canon([7,0,4])];
+ const sq=(s,size)=>`<svg viewBox="-104 -104 208 208" width="${size}" height="${size}">${[0,1,2,3,4,5,6,7].map(i=>`<polygon points="${tri(i)}" fill="${s.includes(i)?'#222':'#fff'}" stroke="#555" stroke-width="3" ${size>100?`data-t="${i}" style="cursor:pointer"`:''}/>`).join('')}</svg>`;
+ return{fam:'liste',titre:'Trois sur huit',src:'Demi-finale 2026 – énigme 7',
+ enonce:`<p>Mathias a créé 8 triangles, <b>3 noirs et 5 blancs</b>, qu'il assemble pour former un grand carré. En choisissant au hasard quels seront les 3 triangles noirs, il peut obtenir des résultats différents.</p><p>On peut tourner et retourner l'œuvre d'art obtenue : deux résultats qui se déduisent l'un de l'autre en tournant ou en retournant le grand carré ne comptent que pour un seul.</p><p><b>Combien peut-il obtenir de résultats différents (en comptant l'exemple) ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Touche 3 triangles pour les noircir</h3><div class="row" style="gap:24px;align-items:flex-start"><div id="sq17"></div><div><button class="btn green" id="a17">Ajouter à ma collection</button> <button class="btn light" id="e17">Effacer</button><p id="m17" class="big"></p></div></div><h3>Ma collection (<span id="n17"></span>) — la première est l'exemple de l'énoncé</h3><div class="coll" id="l17"></div>`;
+  $('#e17').onclick=()=>{sel.clear();draw()};
+  $('#a17').onclick=()=>{let m;if(sel.size!==3)m='Il faut exactement 3 triangles noirs.';else{const c=canon([...sel]);if(found.includes(c))m='C\'est la même œuvre qu\'une de ta collection, simplement tournée ou retournée !';else{found.push(c);m='<span class="chk y">Nouvelle œuvre !</span>';sel.clear()}}draw();$('#m17').innerHTML=m};draw()},
+ fields:[{l:"Nombre d'œuvres différentes",a:7,main:1}],
+ hint:"Classe tes œuvres : les 3 triangles noirs se touchent tous ; seulement 2 se touchent ; aucun ne se touche.",
+ corr:`<ol><li>On numérote les 8 triangles autour du centre et on cherche avec méthode.</li><li>Les 3 noirs se touchent en chaîne : <b>2 œuvres</b> (selon que la chaîne est « centrée » sur un trait du milieu ou sur une diagonale).</li><li>Seulement 2 noirs se touchent, le 3<sup>e</sup> est séparé : <b>3 œuvres</b>.</li><li>Aucun noir ne touche un autre : <b>2 œuvres</b>.</li><li>Total : 2 + 3 + 2 = <b>7 résultats</b>.</li></ol>`};
+ function draw(){$('#sq17').innerHTML=sq([...sel],220);$$('#sq17 [data-t]').forEach(p=>p.onclick=()=>{const i=+p.dataset.t;sel.has(i)?sel.delete(i):sel.size<3&&sel.add(i);$('#m17').textContent='';draw()});
+  $('#n17').textContent=found.length;$('#l17').innerHTML=found.map(f=>sq(f.split(',').map(Number),70)).join('')}};
+
+function datesWidget(z,cards,onAdd){
+  z.innerHTML=`<h3>Glisse les cartes : jour . mois . année</h3><div class="row" style="gap:6px;font-size:28px;font-weight:700"><div class="slot" data-slot="j1"></div><div class="slot" data-slot="j2"></div><span>.</span><div class="slot" data-slot="m1"></div><div class="slot" data-slot="m2"></div><span>.</span>${[1,2,3,4].map(i=>`<div class="slot" data-slot="a${i}"></div>`).join('')}</div><div class="tray"></div><div class="row" style="margin-top:10px"><button class="btn green" id="dAdd">${onAdd.label}</button><button class="btn light" id="dClr">Tout reprendre</button></div><p id="dMsg" class="big"></p><div class="coll" id="dList"></div>`;
+  const T=tokens(z,cards);
+  $('#dClr').onclick=()=>{T.reset();$('#dMsg').textContent=''};
+  $('#dAdd').onclick=()=>{const v=T.values();if(Object.values(v).includes(null)){$('#dMsg').textContent='Utilise 8 cartes : 2 pour le jour, 2 pour le mois, 4 pour l\'année.';return}
+    const j=+(v.j1+''+v.j2),m=+(v.m1+''+v.m2),a=+[v.a1,v.a2,v.a3,v.a4].join('');
+    if(a!==2025){$('#dMsg').textContent='L\'année doit être 2025.';return}
+    const ok=m>=1&&m<=12&&j>=1&&j<=new Date(2025,m,0).getDate();
+    if(!ok){$('#dMsg').textContent=`${String(j).padStart(2,'0')}.${String(m).padStart(2,'0')}.2025 n'existe pas dans le calendrier.`;return}
+    $('#dMsg').innerHTML=onAdd.fn(j,m);};
+  return T;
+}
+const MOIS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+OLD[18]=()=>{let T,found=[];return{fam:'dates',titre:'Dates',src:'Finale 2025 – énigme 2',
+ enonce:`<p>On note la date du 17 mai 2025 de la manière suivante : <b>17.05.2025</b>.</p><p><b>Combien de dates de l'année 2025 peut-on écrire de la même façon, en utilisant uniquement les huit chiffres 0, 0, 0, 2, 2, 3, 4, 5 ?</b></p>`,
+ build(z){T=datesWidget(z,[0,0,0,2,2,3,4,5],{label:'Ajouter cette date',fn:(j,m)=>{const k=`${j} ${MOIS[m-1]}`;if(found.includes(k))return'Tu l\'as déjà trouvée !';found.push(k);$('#dList').innerHTML=found.map(f=>`<span class="chip">${f} 2025</span>`).join('');return`<span class="chk y">Bravo, le ${k} 2025 existe ! (${found.length} trouvée${found.length>1?'s':''})</span>`}})},
+ fields:[{l:'Nombre de dates',a:3,main:1}],
+ hint:"L'année 2025 utilise déjà 2, 0, 2 et 5. Il reste 0, 0, 3, 4 pour le jour et le mois.",
+ corr:`<ol><li>L'année 2025 prend 2, 0, 2, 5. Il reste <b>0, 0, 3, 4</b>.</li><li>Le mois commence par 0 : c'est 03 (mars) ou 04 (avril).</li><li>Mars (03) : il reste 0 et 4, le jour est 04 (40 n'existe pas). → 04.03.2025</li><li>Avril (04) : il reste 0 et 3, le jour est 03 ou 30. → 03.04.2025 et 30.04.2025</li><li>Réponse : <b>3 dates</b>.</li></ol>`,
+ kill(){T&&T.kill()}}};
+
+OLD[19]=()=>{let T;let best=null;return{fam:'dates',titre:'Deux dates',src:'Quart de finale 2025 – énigme 1',
+ enonce:`<p>Mathias dispose de ces douze cartes : <b>0 0 1 1 2 2 3 3 4 4 5 5</b>.</p><p>En 2025, la première date de l'année qu'il pourra former en utilisant deux cartes pour le jour, deux cartes pour le mois et quatre pour l'année sera le 13 janvier : <b>13 01 2025</b>.</p><p><b>Quelle sera la dernière date de 2025 qu'il pourra former en utilisant huit de ces douze cartes ?</b></p>`,
+ build(z){T=datesWidget(z,[0,0,1,1,2,2,3,3,4,4,5,5],{label:'Tester cette date',fn:(j,m)=>{const d=j+m*100;best=Math.max(best||0,d);if(j===30&&m===11)return'<span class="chk y">Bravo ! Le 30 novembre 2025 est la dernière date possible.</span>';return`Le ${j} ${MOIS[m-1]} 2025 est possible… mais peux-tu trouver une date plus tard dans l'année ?`}})},
+ verify(){return best===1130?[true,'Bravo ! 30.11.2025.']:[false,'Ce n\'est pas encore la dernière date possible.']},
+ hint:"Le mois 12 a besoin d'un 2… mais les deux cartes 2 servent déjà pour 2025 !",
+ corr:`<ol><li>L'année 2025 utilise les <b>deux</b> cartes 2 (et un 0, un 5).</li><li>Décembre (12) est impossible : il n'y a plus de 2.</li><li>Novembre (11) utilise les deux cartes 1. Il reste 0, 3, 3, 4, 4, 5 pour le jour : le plus grand jour possible de novembre est <b>30</b> (novembre a 30 jours).</li><li>Réponse : <b>30.11.2025</b>.</li></ol>`,
+ kill(){T&&T.kill()}}};
+
+OLD[20]=()=>{const G=[[9,12,15,2],[6,7,4,5],[3,10,11,8],[0,13,14,1]];let pos=[3,0],path=[0],done=false;return{fam:'chem',titre:'Le labyrinthe',src:'Quart de finale 2025 – énigme 5',
+ enonce:`<p>Dans ce labyrinthe, les pièces sont numérotées de 0 à 15. Quand on passe d'une pièce à une pièce voisine par une porte, une <b>alarme</b> se déclenche, sauf :</p><p>• si le numéro de la pièce où l'on entre est égal à celui de la pièce que l'on quitte <b>augmenté de 3</b> ;<br>• si le numéro de la pièce où l'on entre est égal à celui de la pièce que l'on quitte <b>diminué de 13</b>.</p><p>On entre par la pièce 0 et on sort par la pièce 1. <b>Combien de pièces aura-t-on traversées (y compris la pièce 0 et la pièce 1) sans déclencher d'alarme ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Touche une pièce voisine pour avancer</h3><div class="row" style="gap:24px;align-items:flex-start"><div><div style="font-size:15px">→ entrée en bas à gauche, sortie en bas à droite →</div><div class="maze" id="mz"></div></div><div><p class="big" id="mm"></p><button class="btn light" id="mr">Recommencer</button></div></div><p id="mp" style="font-size:18px"></p>`;$('#mr').onclick=()=>{pos=[3,0];path=[0];done=false;$('#mm').textContent='';draw()};draw()},
+ fields:[{l:'Nombre de pièces traversées',a:12,main:1}],
+ hint:"Depuis la pièce 0, une seule porte n'allume pas l'alarme : celle de la pièce 3 (0 + 3).",
+ corr:`<ol><li>On suit la règle « + 3 » ou « − 13 » : 0 → 3 → 6 → 9 → 12 → 15 → 2 (15 − 13) → 5 → 8 → 11 → 14 → 1 (14 − 13).</li><li>On compte : <b>12 pièces</b>.</li><li>Autre façon : il y a 16 pièces et on n'est jamais passé par 4, 7, 10 et 13 : 16 − 4 = 12.</li></ol>`};
+ function draw(){$('#mz').innerHTML=G.flatMap((r,i)=>r.map((n,j)=>`<button class="room ${pos[0]===i&&pos[1]===j?'here':path.includes(n)?'seen':''}" data-i="${i}" data-j="${j}">${n}</button>`)).join('');
+  $('#mp').textContent='Chemin : '+path.join(' → ');
+  $$('#mz .room').forEach(b=>b.onclick=()=>{if(done)return;const i=+b.dataset.i,j=+b.dataset.j;if(Math.abs(i-pos[0])+Math.abs(j-pos[1])!==1)return;const a=G[pos[0]][pos[1]],n=G[i][j];
+   if(n===a+3||n===a-13){pos=[i,j];path.push(n);if(n===1){done=true;$('#mm').innerHTML='<span class="chk y">Sortie ! Compte les pièces de ton chemin.</span>'}draw()}
+   else{b.classList.add('alarm');$('#mm').innerHTML=`<span class="chk n">Alarme ! ${a} → ${n} n'est ni « + 3 » ni « − 13 ». Retour au départ.</span>`;setTimeout(()=>{pos=[3,0];path=[0];draw()},900)}})}};
+
+OLD[21]=()=>{const G=[[1,4,2,5],[3,1,2,7],[8,7,6,10]];let pos=null,seen=[],hand=0,log=[],out=null;return{fam:'chem',titre:'Pièces mathéfiques',src:'Finale 2025 – énigme 5',
+ enonce:`<p>Matou explore un manoir magique. Dans chaque salle, il trouve des pièces de monnaie (leur nombre est écrit sur le plan). Il ramasse toutes les pièces des salles qu'il traverse, mais ces pièces sont ensorcelées : <b>quand il a un nombre pair de pièces en main, elles disparaissent toutes !</b></p><p>Matou ne doit pas passer plus d'une fois dans chaque salle.</p><p><b>Combien de pièces Matou peut-il emporter, au maximum, en sortant du manoir ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Fais avancer Matou de salle en salle</h3><div class="row" style="gap:24px;align-items:flex-start"><div><div style="font-size:15px">Entrée → en haut à gauche · sortie → à droite du 10</div><div class="maze" id="mz2"></div></div><div><p class="big" id="h21"></p><div class="row"><button class="btn green" id="o21">Sortir du manoir</button><button class="btn light" id="r21">Recommencer</button></div></div></div><p id="l21" style="font-size:17px"></p><div class="coll" id="x21"></div>`;
+  $('#r21').onclick=()=>{pos=null;seen=[];hand=0;log=[];draw()};
+  $('#o21').onclick=()=>{if(!pos||pos[0]!==2||pos[1]!==3){$('#h21').textContent='On ne peut sortir que depuis la salle 10.';return}out=(out||[]).concat(hand);$('#x21').innerHTML='Mes sorties : '+out.map(o=>`<span class="chip">${o} pièces</span>`).join('');pos=null;seen=[];hand=0;log=[];draw()};draw()},
+ fields:[{l:'Maximum de pièces',a:25,main:1}],
+ hint:"Tu commences avec 1 pièce (impair). Si tu entres dans une salle avec un nombre impair de pièces… tout disparaît ! Pour garder tes pièces, passe par des salles paires.",
+ corr:`<ol><li>Impair + pair = impair : les pièces restent. Impair + impair = pair : tout disparaît.</li><li>Matou commence avec 1 pièce. Pour ne rien perdre ensuite, il passe uniquement par des salles <b>paires</b>.</li><li>Chemin : 1 → 4 → 2 → 2 → 6 → 10. En main : 1, 5, 7, 9, 15, <b>25</b>.</li><li>On ne peut pas faire mieux : Matou peut emporter <b>25 pièces</b> au maximum.</li></ol>`};
+ function draw(){$('#mz2').innerHTML=G.flatMap((r,i)=>r.map((n,j)=>`<button class="room ${pos&&pos[0]===i&&pos[1]===j?'here':seen.some(s=>s[0]===i&&s[1]===j)?'seen':''}" data-i="${i}" data-j="${j}">${n}</button>`)).join('');
+  $('#h21').innerHTML=pos?`Pièces en main : ${hand}`:'Touche la salle 1 pour entrer.';$('#l21').textContent=log.join('   ');
+  $$('#mz2 .room').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,j=+b.dataset.j;
+   if(!pos){if(i||j)return}else{if(Math.abs(i-pos[0])+Math.abs(j-pos[1])!==1)return;if(seen.some(s=>s[0]===i&&s[1]===j)){$('#h21').textContent='Déjà visitée !';return}}
+   pos=[i,j];seen.push([i,j]);hand+=G[i][j];let t=`+${G[i][j]} → ${hand}`;if(hand%2===0){t+=' (pair : pouf !)';hand=0}log.push(t);draw()})}};
+
+OLD[22]=()=>{let s=0;return{fam:'motif',titre:'Évolution',src:'Demi-finale 2025 – énigme 1',
+ enonce:`<p>Lucas fait une construction à l'aide de petits cubes. À chaque étape, il ajoute un cube à chaque extrémité de sa construction.</p><p><b>Combien de petits cubes aura-t-il utilisés pour construire entièrement l'étape 4 ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Regarde la construction grandir</h3><div class="row">${['Départ','Étape 1','Étape 2','Étape 3'].map((t,i)=>`<button class="btn ${i?'light':''}" data-s="${i}">${t}</button>`).join('')}</div><div id="c22" style="text-align:center"></div>`;
+  $$('[data-s]',z).forEach(b=>b.onclick=()=>{s=+b.dataset.s;$$('[data-s]',z).forEach(x=>x.classList.toggle('light',x!==b));draw()});draw()},
+ fields:[{l:"Cubes à l'étape 4",a:21,main:1}],
+ hint:"Combien de bouts (extrémités) a la construction ? C'est le nombre de cubes ajoutés à chaque étape.",
+ corr:`<ol><li>La construction a <b>5 extrémités</b> : devant, derrière, à gauche, à droite et en haut.</li><li>À chaque étape, on ajoute donc 5 cubes.</li><li>Départ : 1. Étape 1 : 6. Étape 2 : 11. Étape 3 : 16. Étape 4 : <b>21 cubes</b>.</li><li>Autrement dit : 1 + 5 + 5 + 5 + 5 = 21.</li></ol>`};
+ function draw(){$('#c22').innerHTML=isoCubes(s)}};
+
+OLD[23]=()=>{let r=0;const types=['tulipe','lys','crocus'];return{fam:'motif',titre:'Les fleurs de Rose',src:'Finale 2025 – énigme 6',
+ enonce:`<p>Rose plante des fleurs en rangées. Elle commence avec <b>une tulipe</b> dans la première rangée, puis <b>deux lys</b> dans la deuxième, <b>trois crocus</b> dans la troisième, <b>quatre tulipes</b> dans la quatrième, et ainsi de suite : une fleur de plus à chaque rangée, en alternant tulipes, lys et crocus, toujours dans cet ordre.</p><p>Elle s'arrête lorsqu'elle vient de planter sa <b>25<sup>e</sup> et dernière tulipe</b>, sans finir la rangée.</p><p><b>Combien de fleurs Rose a-t-elle plantées en tout ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Plante les premières rangées</h3><div class="row"><button class="btn green" id="p23">Planter la rangée suivante</button><button class="btn light" id="r23">Recommencer</button><span>${flower('tulipe')} tulipe ${flower('lys')} lys ${flower('crocus')} crocus</span></div><div class="flowers" id="f23"></div><p class="big" id="t23"></p>`;
+  $('#p23').onclick=()=>{if(r<7)r++;draw()};$('#r23').onclick=()=>{r=0;draw()};draw()},
+ fields:[{l:'Nombre de fleurs',a:81,main:1}],
+ hint:"Les tulipes sont dans les rangées 1, 4, 7, 10… Combien de tulipes y a-t-il dans chacune ?",
+ corr:`<ol><li>Les tulipes sont dans les rangées 1, 4, 7, 10, 13 (on ajoute 3 à chaque fois).</li><li>Tulipes : 1 + 4 + 7 + 10 = 22. Il manque 25 − 22 = 3 tulipes : Rose s'arrête après <b>3 tulipes dans la rangée 13</b>.</li><li>Rangées complètes 1 à 12 : 1 + 2 + … + 12 = (1+12) + (2+11) + … + (6+7) = 6 × 13 = 78 fleurs.</li><li>Total : 78 + 3 = <b>81 fleurs</b>.</li></ol>`};
+ function draw(){let h='',tul=0,tot=0;for(let i=1;i<=r;i++){const t=types[(i-1)%3];if(t==='tulipe')tul+=i;tot+=i;h+=`<div class="frow"><small>rangée ${i}</small>${Array(i).fill(flower(t)).join('')}</div>`}
+  $('#f23').innerHTML=h;$('#t23').textContent=r?`Tulipes plantées : ${tul} · Fleurs en tout : ${tot}`+(r===7?' — à toi de continuer en calculant !':''):''}};
+
+OLD[24]=()=>{let h=[1,3,5,7],phase=0,sel=null,msg='';const script=[[2,'Bad'],[2,'Marie'],[6,'Bad']];
+ const best=h=>{const big=h.filter(x=>x>1).length;if(!big){const r=h.findIndex(x=>x>0);return[r,1]}if(big===1){const r=h.findIndex(x=>x>1),ones=h.filter(x=>x===1).length;return ones%2?[r,h[r]]:[r,h[r]-1]}const x=h.reduce((a,b)=>a^b,0);if(x)for(let r=0;r<4;r++){const t=h[r]^x;if(t<h[r])return[r,h[r]-t]}const r=h.indexOf(Math.max(...h));return[r,1]};
+ return{fam:'jeu',titre:'Marienbad',src:'Demi-finale 2026 – énigme 8',
+ enonce:`<p>Marie et Bad jouent au jeu de bâtonnets. Au début, 4 rangées contiennent 1, 3, 5 et 7 bâtonnets. À chaque tour, un joueur enlève autant de bâtonnets qu'il veut, <b>mais dans une seule rangée</b>. <b>Le joueur qui prend le dernier bâtonnet perd.</b></p><p>Bad commence et enlève 2 bâtonnets, Marie en enlève 2 à son tour, puis Bad en enlève 6. Marie joue alors et affirme qu'elle va bientôt gagner.</p><p><b>Combien de bâtonnets enlève-t-elle à ce tour-là ?</b></p>`,
+ build(z){z.innerHTML=`<h3 id="q24"></h3><div class="sticks" id="s24"></div><div class="row" style="justify-content:center"><button class="btn red" id="g24">Enlever les bâtonnets choisis</button><button class="btn light" id="r24">Recommencer</button></div><p class="big" id="m24" style="text-align:center"></p>`;
+  $('#g24').onclick=play;$('#r24').onclick=()=>{h=[1,3,5,7];phase=0;sel=null;msg='';draw()};draw()},
+ fields:[{l:'Marie enlève',a:3,u:'bâtonnets',main:1}],
+ hint:"Le 6 ne peut être enlevé que dans une seule rangée. Ensuite, essaie de laisser à Bad un nombre impair de rangées d'un seul bâtonnet.",
+ corr:`<ol><li>Bad enlève 6 bâtonnets : seule la rangée de 7 en a assez. Il y reste 1 bâtonnet.</li><li>Les deux « 2 » ont été pris dans les rangées de 3 et de 5 (ou deux fois dans celle de 5). Dans tous les cas, Marie trouve : <b>trois rangées d'1 bâtonnet et une rangée de 3</b>.</li><li>Marie enlève les <b>3 bâtonnets</b> de cette rangée. Il reste 3 rangées d'un seul bâtonnet : Bad en prend un, Marie un autre, et Bad est obligé de prendre le dernier. Marie gagne !</li></ol>`};
+ function draw(){const q=phase<3?`Rejoue le début : ${script[phase][1]} enlève ${script[phase][0]} bâtonnets. Touche un bâtonnet : il est choisi avec tous ceux à sa droite.`:phase===3?'À toi de jouer : tu es Marie ! Choisis les bâtonnets à enlever.':'';
+  $('#q24').textContent=q;$('#m24').innerHTML=msg;
+  $('#s24').innerHTML=h.map((n,r)=>`<div class="srow">${Array.from({length:[1,3,5,7][r]},(_,k)=>`<button class="stick ${k>=n?'gone':''} ${sel&&sel[0]===r&&k>=sel[1]&&k<n?'sel':''}" data-r="${r}" data-k="${k}" aria-label="bâtonnet"></button>`).join('')}</div>`).join('');
+  $$('#s24 .stick').forEach(b=>b.onclick=()=>{if(phase>3)return;const r=+b.dataset.r,k=+b.dataset.k;if(k>=h[r])return;sel=[r,k];draw()})}
+ function play(){if(!sel||phase>3)return;const[r,k]=sel,take=h[r]-k;
+  if(phase<3){if(take!==script[phase][0]){msg=`Il faut enlever exactement ${script[phase][0]} bâtonnets, dans une seule rangée.`;draw();return}
+    h[r]=k;sel=null;phase++;msg=phase===3?`Situation : ${h.join(' – ')}. Quelle rangée vas-tu attaquer ?`:'';draw();return}
+  h[r]=k;sel=null;if(h.every(x=>!x)){msg='<span class="chk n">Tu as pris le dernier bâtonnet : Bad gagne. Recommence !</span>';phase=4;draw();return}
+  const[br,bt]=best(h);h[br]-=bt;msg=`Bad enlève ${bt} bâtonnet${bt>1?'s':''}.`;
+  if(h.every(x=>!x)){msg+=' <span class="chk y">Il a pris le dernier : tu as gagné !</span>';phase=4}draw()}};
+
+/* ---------- énigmes du calendrier n°2 ---------- */
+Object.assign(FAM,{
+ essai:{nom:'Essayer, ajuster',col:'#d1495b',m:"Fais un premier essai, regarde si c'est trop ou pas assez, puis corrige petit à petit. Note tes essais pour ne pas tourner en rond."},
+ prod:{nom:'Décomposer les multiplications',col:'#5b3fa0',m:"Décompose les nombres en petites multiplications (par exemple 45 = 5 × 3 × 3), puis répartis les morceaux avec malice."},
+ forme:{nom:'Voir et recomposer des formes',col:'#0f7c8c',m:"Imagine les morceaux : on peut les déplacer, les regrouper, les empiler. Manipule ou dessine pour vérifier ce que tu vois."},
+ tour:{nom:'Tourner et retourner',col:'#c25e00',m:"Fais tourner ou retourner la figure (dans ta tête ou pour de vrai), puis compare : est-ce exactement pareil ?"}
+});
+FAM.parts.nom='Les parts et les partages';
+FAM.parts.m="Fais des parts égales (des barres ou des paquets). Cherche ce que vaut une part, puis combien de parts il faut.";
+const NEW={};
+const plusMinus=(id,lab)=>`<div style="background:#fff;border:2px solid #b9c9e3;border-radius:12px;padding:8px 10px;text-align:center"><b>${lab}</b><div class="row" style="gap:6px;justify-content:center"><button class="btn light" data-pm="${id}" data-d="-1" aria-label="${lab} moins">−</button><span class="big" id="pm_${id}"></span><button class="btn light" data-pm="${id}" data-d="1" aria-label="${lab} plus">+</button></div></div>`;
+const bindPM=(z,st,lim,draw)=>$$('[data-pm]',z).forEach(b=>b.onclick=()=>{const k=b.dataset.pm;st[k]=Math.max(lim[k][0],Math.min(lim[k][1],st[k]+ +b.dataset.d));draw()});
+
+NEW.aquarium=()=>{const st={p:0,e:0},tries=[];
+ const octo=`<svg width="40" height="40" viewBox="0 0 40 40"><g stroke="#c8102e" stroke-width="2.4" stroke-linecap="round">${[0,1,2,3,4,5,6,7].map(i=>`<line x1="${8+i*3.4}" y1="22" x2="${4+i*4.6}" y2="38"/>`).join('')}</g><ellipse cx="20" cy="15" rx="12" ry="12" fill="#e4475b"/><circle cx="15" cy="14" r="2.2" fill="#fff"/><circle cx="25" cy="14" r="2.2" fill="#fff"/></svg>`;
+ const star=`<svg width="40" height="40" viewBox="-20 -20 40 40"><polygon points="${[0,1,2,3,4,5,6,7,8,9].map(i=>{const r=i%2?7:18,a=-Math.PI/2+i*Math.PI/5;return(r*Math.cos(a)).toFixed(1)+','+(r*Math.sin(a)).toFixed(1)}).join(' ')}" fill="#f2b632" stroke="#b8740d"/></svg>`;
+ return{fam:'essai',titre:"L'aquarium",src:'Quart de finale 2025 – énigme 4',
+ enonce:`<p>Dans un aquarium vivent des <b>pieuvres, qui ont huit bras</b>, et des <b>étoiles de mer à cinq bras</b>.</p><p><b>Combien y a-t-il d'étoiles de mer dans l'aquarium, sachant que le nombre total de bras de tous les animaux est égal à 41 ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Remplis l'aquarium</h3><div class="row">${plusMinus('p','Pieuvres (8 bras)')}${plusMinus('e','Étoiles de mer (5 bras)')}<button class="btn gold" id="n1">Noter cet essai</button></div><div id="aq" style="min-height:60px;background:linear-gradient(#bfe3f5,#7fc3e6);border-radius:14px;padding:10px;margin-top:10px;display:flex;flex-wrap:wrap;gap:4px"></div><p class="big" id="t1"></p><div class="coll" id="l1"></div>`;
+  bindPM(z,st,{p:[0,6],e:[0,10]},draw);$('#n1').onclick=()=>{tries.push(`${st.p} pieuvre${st.p>1?'s':''} + ${st.e} étoile${st.e>1?'s':''} = ${st.p*8+st.e*5} bras`);draw()};draw()},
+ fields:[{l:"Nombre d'étoiles de mer",a:5,main:1}],
+ hint:"Essaie avec 1 pieuvre : il reste 41 − 8 = 33 bras. Est-ce un nombre de la table de 5 ? Et avec 2 pieuvres ?",
+ corr:`<ol><li>On enlève les bras des pieuvres une par une, et on regarde si ce qui reste est dans la table de 5.</li><li>1 pieuvre : 41 − 8 = 33, pas dans la table de 5.</li><li>2 pieuvres : 41 − 16 = 25 = 5 × 5. Ça marche !</li><li>Il y a 2 pieuvres et <b>5 étoiles de mer</b>. Vérification : 16 + 25 = 41. ✓</li></ol>`};
+ function draw(){$('#pm_p').textContent=st.p;$('#pm_e').textContent=st.e;$('#aq').innerHTML=octo.repeat(st.p)+star.repeat(st.e);const t=st.p*8+st.e*5;
+  $('#t1').innerHTML=`Nombre de bras : ${st.p} × 8 + ${st.e} × 5 = ${t} `+(t===41?'<span class="chk y">c\'est 41 !</span>':t>41?'<span class="chk n">trop</span>':'<span class="chk n">pas assez</span>');$('#l1').innerHTML=tries.map(x=>`<span class="chip">${x}</span>`).join('')}};
+
+NEW.tirelire=()=>{const st={a:1,b:1,c:1},tries=[];const coin=(v,col)=>`<svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" fill="${col}" stroke="#8a6a1a" stroke-width="2"/><text x="18" y="23" text-anchor="middle" font-size="14" font-weight="700" fill="#3a2a00">${v}</text></svg>`;
+ return{fam:'essai',titre:'Tirelire',src:'Quart de finale 2026 – énigme 3',
+ enonce:`<p>Dans sa tirelire, Tom a <b>26 centimes</b> d'euro avec des pièces de 5, 2 et 1 centime.</p><p><b>Combien de pièces a-t-il au minimum, sachant qu'il a au moins une pièce de chaque sorte ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Choisis les pièces de la tirelire</h3><div class="row">${plusMinus('a','Pièces de 5 c')}${plusMinus('b','Pièces de 2 c')}${plusMinus('c','Pièces de 1 c')}<button class="btn gold" id="n2">Noter cet essai</button></div><div id="pc" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:10px"></div><p class="big" id="t2"></p><div class="coll" id="l2"></div>`;
+  bindPM(z,st,{a:[1,6],b:[1,13],c:[1,26]},draw);$('#n2').onclick=()=>{const v=st.a*5+st.b*2+st.c;tries.push(v===26?`${st.a+st.b+st.c} pièces`:`${v} c (pas 26)`);draw()};draw()},
+ fields:[{l:'Nombre de pièces au minimum',a:8,main:1}],
+ hint:"Pour avoir peu de pièces, il faut beaucoup de grosses pièces. Mets d'abord une pièce de chaque sorte : combien reste-t-il à faire ?",
+ corr:`<ol><li>Une pièce de chaque sorte : 5 + 2 + 1 = 8 centimes, avec 3 pièces. Il reste 26 − 8 = 18 centimes.</li><li>Pour faire 18 avec le moins de pièces possible, on prend le plus de pièces de 5 : 3 × 5 = 15. Il reste 3 = 2 + 1.</li><li>En tout : 4 pièces de 5, 2 pièces de 2 et 2 pièces de 1, soit <b>8 pièces</b>.</li><li>Vérification : 20 + 4 + 2 = 26. ✓</li></ol>`};
+ function draw(){['a','b','c'].forEach(k=>$('#pm_'+k).textContent=st[k]);$('#pc').innerHTML=coin(5,'#f2c94c').repeat(st.a)+coin(2,'#e0b43a').repeat(st.b)+coin(1,'#d19a2a').repeat(st.c);
+  const v=st.a*5+st.b*2+st.c;$('#t2').innerHTML=`Somme : ${v} centimes ${v===26?'<span class="chk y">✓ 26</span>':''} · Nombre de pièces : ${st.a+st.b+st.c}`;$('#l2').innerHTML=tries.map(x=>`<span class="chip">${x}</span>`).join('')}};
+
+NEW.pairs=()=>{const st={x:0,y:0};return{fam:'essai',titre:'Pairs et impairs',src:'Demi-finale 2025 – énigme 5',
+ enonce:`<p><b>Complète la phrase écrite dans le cadre avec des nombres écrits en chiffres, de façon qu'elle soit vraie.</b></p><div style="border:2px solid #333;display:inline-block;padding:8px 16px;text-align:center;background:#fff">15 mars 2025<br>Dans ce cadre, on compte :<br>… chiffres pairs,<br>et … chiffres impairs.</div><p>Rappel : les chiffres pairs sont 0, 2, 4, 6 et 8.</p>`,
+ build(z){z.innerHTML=`<h3>Essaie des nombres dans le cadre</h3><div class="row">${plusMinus('x','1er nombre (pairs)')}${plusMinus('y','2e nombre (impairs)')}</div><div id="fr" style="font-size:24px;border:3px solid #333;display:inline-block;padding:10px 20px;text-align:center;background:#fff;margin-top:12px"></div><p style="font-size:16px"><span style="color:#2f6db5;font-weight:700">bleu = chiffre pair</span> · <span style="color:#d1495b;font-weight:700">rouge = chiffre impair</span></p><p class="big" id="t3"></p>`;
+  bindPM(z,st,{x:[0,9],y:[0,9]},draw);draw()},
+ fields:[{l:'Chiffres pairs',a:3},{l:'Chiffres impairs',a:5}],
+ hint:"Sans compter tes deux nombres, le cadre contient déjà 3 chiffres pairs (2, 0, 2) et 3 impairs (1, 5, 5). Tes deux nombres comptent aussi !",
+ corr:`<ol><li>Dans « 15 mars 2025 », il y a déjà 3 chiffres pairs (2, 0, 2) et 3 chiffres impairs (1, 5, 5). On ajoute 2 chiffres.</li><li>Si les deux sont pairs : 5 pairs et 3 impairs. Mais il faudrait écrire 5 et 3, qui sont impairs : faux.</li><li>Si l'un est pair et l'autre impair : 4 pairs et 4 impairs. Il faudrait écrire 4 et 4, deux chiffres pairs : faux.</li><li>Si les deux sont impairs : 3 pairs et 5 impairs. On écrit 3 et 5, deux chiffres impairs : vrai !</li><li>Réponse : <b>3 chiffres pairs et 5 chiffres impairs</b>.</li></ol>`};
+ function draw(){$('#pm_x').textContent=st.x;$('#pm_y').textContent=st.y;const col=s=>s.replace(/\d/g,d=>`<b style="color:${+d%2?'#d1495b':'#2f6db5'}">${d}</b>`);
+  $('#fr').innerHTML=`${col('15')} mars ${col('2025')}<br>Dans ce cadre, on compte :<br>${col(String(st.x))} chiffres pairs,<br>et ${col(String(st.y))} chiffres impairs.`;
+  const digits=('152025'+st.x+st.y).split('').map(Number),P=digits.filter(d=>d%2===0).length,I=digits.length-P;
+  $('#t3').innerHTML=`En vrai, le cadre contient ${P} chiffres pairs et ${I} chiffres impairs.<br>${P===st.x&&I===st.y?'<span class="chk y">La phrase est vraie !</span>':'<span class="chk n">La phrase est fausse.</span>'}`}};
+
+const pip={0:[],1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+const half=(n,x)=>pip[n].map(k=>`<circle cx="${x+10+(k%3)*15}" cy="${10+Math.floor(k/3)*15}" r="4.5" fill="#222"/>`).join('');
+const domino=(a,b)=>`<svg width="104" height="54" viewBox="-2 -2 104 54"><rect x="0" y="0" width="100" height="50" rx="8" fill="#fff" stroke="#222" stroke-width="2.5"/><line x1="50" y1="5" x2="50" y2="45" stroke="#222" stroke-width="2"/><g transform="translate(0 0)">${half(a,0)}</g><g>${half(b,50)}</g></svg>`;
+NEW.dominos=()=>{const st={a:1,b:1,c:1,d:1,e:1};return{fam:'prod',titre:'Les dominos',src:'Finale 2025 – énigme 7',
+ enonce:`<p>Un domino est constitué de deux demi-dominos portant chacun entre 0 et 6 points.</p><p>Mathias a placé <b>quatre dominos différents « en chaîne »</b> : deux demi-dominos qui se touchent doivent porter le même nombre de points. Il a <b>multiplié entre eux les nombres de points des huit demi-dominos</b> et a trouvé <b>2025</b>.</p><p><b>Quel est le nombre total de points de la chaîne ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Construis la chaîne (les demi-dominos qui se touchent changent ensemble)</h3><div class="row">${['a','b','c','d','e'].map((k,i)=>plusMinus(k,['1er bout','1re jonction','2e jonction','3e jonction','dernier bout'][i])).join('')}</div><div id="ch" class="row" style="gap:2px;margin-top:12px"></div><p class="big" id="t4"></p>`;
+  bindPM(z,st,{a:[0,6],b:[0,6],c:[0,6],d:[0,6],e:[0,6]},draw);draw()},
+ fields:[{l:'Nombre total de points',a:24,main:1}],
+ hint:"Décompose 2025 en multiplications de petits nombres entre 1 et 6 : 2025 = 45 × 45, et 45 = 5 × 9 = 5 × 3 × 3…",
+ corr:`<ol><li>2025 = 45 × 45 = 5 × 5 × 3 × 3 × 3 × 3. Aucun demi-domino ne porte 0 (sinon le produit ferait 0).</li><li>Il y a 8 demi-dominos et seulement 6 facteurs : les deux qui restent valent 1 (multiplier par 1 ne change rien).</li><li>Les huit nombres sont donc 5, 5, 3, 3, 3, 3, 1, 1. Total : 5 + 5 + 3 + 3 + 3 + 3 + 1 + 1 = <b>24 points</b>.</li><li>Exemple de chaîne : 1-3, 3-3, 3-5, 5-1.</li></ol>`,
+ solve(){Object.assign(st,{a:1,b:3,c:3,d:5,e:1});draw()}};
+ function draw(){['a','b','c','d','e'].forEach(k=>$('#pm_'+k).textContent=st[k]);const D=[[st.a,st.b],[st.b,st.c],[st.c,st.d],[st.d,st.e]];
+  $('#ch').innerHTML=D.map(([x,y])=>domino(x,y)).join('');const h=D.flat(),p=h.reduce((x,y)=>x*y,1),s=h.reduce((x,y)=>x+y,0);
+  const diff=new Set(D.map(([x,y])=>Math.min(x,y)+'-'+Math.max(x,y))).size===4;
+  $('#t4').innerHTML=`Produit des 8 demi-dominos : ${h.join(' × ')} = ${p} ${p===2025?'<span class="chk y">✓ 2025</span>':''}<br>Dominos tous différents : ${diff?'<span class="chk y">oui</span>':'<span class="chk n">non</span>'}`}};
+
+NEW.minimax=()=>{let T,best=null;return{fam:'prod',titre:'Un mini maximum pour Max',src:'Finale 2025 – énigme 8',
+ enonce:`<p>Max a réparti les neuf jetons 1, 2, 3, 4, 5, 6, 7, 8, 9 en <b>trois paquets de trois jetons</b>. Dans chaque paquet, il a multiplié entre eux les nombres écrits sur les jetons, et a noté <b>le plus grand des trois résultats</b> (ou l'un des plus grands s'ils sont égaux).</p><p><b>Que vaut ce plus grand résultat, au minimum ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Range les jetons dans les trois paquets</h3><div class="row" style="gap:18px">${[0,1,2].map(p=>`<div style="background:#fff;border:3px solid #5b3fa0;border-radius:14px;padding:10px;text-align:center"><b>Paquet ${p+1}</b><div class="row" style="gap:6px;margin:6px 0">${[0,1,2].map(k=>`<div class="slot round" data-slot="p${p}${k}"></div>`).join('')}</div><span class="big" id="pr${p}">…</span></div>`).join('')}</div><p class="big" id="t5"></p><div class="tray"></div>`;
+  T=tokens(z,[1,2,3,4,5,6,7,8,9],v=>{const P=[0,1,2].map(p=>{const a=[0,1,2].map(k=>v['p'+p+k]);return a.includes(null)?null:a[0]*a[1]*a[2]});
+   P.forEach((x,p)=>$('#pr'+p).textContent=x==null?'…':'= '+x);if(!P.includes(null)){const m=Math.max(...P);best=best==null?m:Math.min(best,m);$('#t5').innerHTML=`Le plus grand des trois : ${m} · Ton meilleur résultat : ${best}`}else $('#t5').innerHTML=best==null?'':`Ton meilleur résultat : ${best}`})},
+ fields:[{l:'Plus grand résultat, au minimum',a:72,main:1}],
+ hint:"Pour que le plus grand soit petit, les trois produits doivent être proches. Mets ensemble un très grand et un très petit jeton : 9 et 1, par exemple.",
+ corr:`<ol><li>On veut trois produits proches les uns des autres. On met les plus grands jetons avec les plus petits.</li><li>Un premier essai : 9 × 5 × 2 = 90, 8 × 4 × 3 = 96, 7 × 6 × 1 = 42. Le plus grand vaut 96.</li><li>On équilibre mieux : <b>9 × 8 × 1 = 72</b>, <b>6 × 4 × 3 = 72</b>, <b>7 × 5 × 2 = 70</b>. Le plus grand vaut <b>72</b>.</li><li>On ne peut pas faire mieux : 71 n'est le produit d'aucun trio de jetons, et trois produits tous inférieurs ou égaux à 70 seraient trop petits ensemble (70 × 70 × 70 = 343 000 &lt; 1 × 2 × … × 9 = 362 880).</li></ol>`,
+ solve(){T.set({p00:9,p01:8,p02:1,p10:6,p11:4,p12:3,p20:7,p21:5,p22:2})},kill(){T&&T.kill()}}};
+
+NEW.etoile=()=>{const C=[200,190],R=[150,138,156,134,150],OFF=[0,7,-5,6,-4];const P=R.map((r,k)=>{const a=(-90+72*k+OFF[k])*Math.PI/180;return[C[0]+r*Math.cos(a),C[1]+r*Math.sin(a)]});
+ const S=[0,1,2,3,4].map(k=>[P[k],P[(k+2)%5]]),N='ABCDE',COL=['#c8102e','#2f6db5','#17694a','#b8740d','#6b4fa0'];
+ const X=(s,t)=>{const[[x1,y1],[x2,y2]]=s,[[x3,y3],[x4,y4]]=t,d=(x1-x2)*(y3-y4)-(y1-y2)*(x3-x4),u=((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/d;return[x1+u*(x2-x1),y1+u*(y2-y1)]};
+ let sel=[],found=[];return{fam:'liste',titre:'Étoile dansante',src:'Demi-finale 2026 – énigme 1',
+ enonce:`<p><b>Combien de triangles entièrement dessinés peut-on voir dans cette étoile ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Un triangle, c'est 3 traits. Touche 3 traits de l'étoile pour voir le triangle qu'ils forment</h3><div class="row" style="gap:20px;align-items:flex-start"><svg id="st6" viewBox="30 20 340 340" style="width:100%;max-width:380px;background:#fff;border-radius:14px"></svg><div><button class="btn green" id="a6">Ajouter ce triangle</button> <button class="btn light" id="e6">Effacer</button><p id="m6" class="big"></p><h3>Mes triangles (<span id="n6">0</span>)</h3><div class="coll" id="l6"></div></div></div>`;
+  $('#e6').onclick=()=>{sel=[];draw()};$('#a6').onclick=()=>{let m;if(sel.length!==3)m='Choisis exactement 3 traits.';else{const k=sel.slice().sort().map(i=>N[i]).join('');if(found.includes(k))m='Déjà trouvé !';else{found.push(k);m='<span class="chk y">Nouveau triangle !</span>'}sel=[]}draw();$('#m6').innerHTML=m};draw()},
+ fields:[{l:'Nombre de triangles',a:10,main:1}],
+ hint:"Il y a 5 petits triangles aux pointes de l'étoile. Mais il y en a d'autres, plus grands ! Chaque triangle est formé de 3 traits.",
+ corr:`<ol><li>On voit d'abord les <b>5 petits triangles</b> des pointes.</li><li>En regroupant trois régions, on trouve <b>5 grands triangles</b> : chacun part d'une pointe et s'étend jusqu'au côté opposé.</li><li>Autre méthode : chaque triangle est formé de 3 traits parmi les 5 (A, B, C, D, E). On liste toutes les façons de choisir 3 traits : ABC, ABD, ABE, ACD, ACE, ADE, BCD, BCE, BDE, CDE. Il y en a 10.</li><li>Réponse : <b>10 triangles</b>.</li></ol>`};
+ function draw(){let tri='';if(sel.length===3){const[i,j,k]=sel;const v=[X(S[i],S[j]),X(S[j],S[k]),X(S[i],S[k])];tri=`<polygon points="${v.map(p=>p.join(',')).join(' ')}" fill="#f2b632" opacity=".75"/>`}
+  $('#st6').innerHTML=tri+S.map((s,i)=>{const on=sel.includes(i),m=[s[0][0]*.82+s[1][0]*.18,s[0][1]*.82+s[1][1]*.18];return`<line x1="${s[0][0]}" y1="${s[0][1]}" x2="${s[1][0]}" y2="${s[1][1]}" stroke="${on?COL[i]:'#333'}" stroke-width="${on?7:3.5}" stroke-linecap="round"/><line x1="${s[0][0]}" y1="${s[0][1]}" x2="${s[1][0]}" y2="${s[1][1]}" stroke="transparent" stroke-width="26" data-s="${i}" style="cursor:pointer"/><text x="${m[0]+8}" y="${m[1]-6}" font-size="18" font-weight="700" fill="${COL[i]}">${N[i]}</text>`}).join('');
+  $$('#st6 [data-s]').forEach(l=>l.onclick=()=>{const i=+l.dataset.s;sel=sel.includes(i)?sel.filter(x=>x!==i):sel.length<3?sel.concat(i):sel;$('#m6').textContent='';draw()});
+  $('#n6').textContent=found.length;$('#l6').innerHTML=found.map(f=>`<span class="chip">${f}</span>`).join('')}};
+
+NEW.inter=()=>{const W=600,H=400;const st={c:[{x:190,y:210,r:95},{x:440,y:200,r:75}],l:[[{x:40,y:50},{x:560,y:70}],[{x:40,y:370},{x:560,y:350}]]};let drag=null;
+ function pts(){const out=[],add=p=>{if(p[0]>=0&&p[0]<=W&&p[1]>=0&&p[1]<=H&&!out.some(q=>Math.hypot(q[0]-p[0],q[1]-p[1])<4))out.push(p)};
+  const L=st.l.map(([p,q])=>{const dx=q.x-p.x,dy=q.y-p.y,n=Math.hypot(dx,dy)||1;return{p,d:[dx/n,dy/n]}});
+  {const[a,b]=L,den=a.d[0]*b.d[1]-a.d[1]*b.d[0];if(Math.abs(den)>1e-6){const t=((b.p.x-a.p.x)*b.d[1]-(b.p.y-a.p.y)*b.d[0])/den;add([a.p.x+t*a.d[0],a.p.y+t*a.d[1]])}}
+  for(const a of L)for(const c of st.c){const fx=a.p.x-c.x,fy=a.p.y-c.y,bb=fx*a.d[0]+fy*a.d[1],cc=fx*fx+fy*fy-c.r*c.r,disc=bb*bb-cc;if(disc>=0){for(const s of[-1,1]){const t=-bb+s*Math.sqrt(disc);add([a.p.x+t*a.d[0],a.p.y+t*a.d[1]])}}}
+  {const[c1,c2]=st.c,d=Math.hypot(c2.x-c1.x,c2.y-c1.y);if(d>0&&d<=c1.r+c2.r&&d>=Math.abs(c1.r-c2.r)){const a=(c1.r*c1.r-c2.r*c2.r+d*d)/(2*d),h=Math.sqrt(Math.max(0,c1.r*c1.r-a*a)),mx=c1.x+a*(c2.x-c1.x)/d,my=c1.y+a*(c2.y-c1.y)/d;for(const s of[-1,1])add([mx+s*h*(c1.y-c2.y)/d,my+s*h*(c2.x-c1.x)/d])}}
+  return out}
+ return{fam:'liste',titre:'Intersections',src:'Quart de finale 2025 – énigme 2',
+ enonce:`<p>Si on trace deux cercles et une droite, on obtient au maximum 6 points d'intersection.</p><p><b>Combien de points d'intersection obtiendrait-on au maximum en traçant deux cercles et deux droites ?</b></p><p>Il faut compter les intersections entre deux droites, entre deux cercles, et entre une droite et un cercle.</p>`,
+ build(z){z.innerHTML=`<h3>Déplace les poignées (les petits ronds) pour croiser le plus possible</h3><svg id="sv7" viewBox="0 0 ${W} ${H}" style="width:100%;max-width:640px;background:#fff;border-radius:14px;touch-action:none"></svg><p class="big" id="t7"></p>`;
+  const sv=$('#sv7');const P=e=>{const m=sv.getScreenCTM().inverse(),p=new DOMPoint(e.clientX,e.clientY).matrixTransform(m);return{x:Math.max(0,Math.min(W,p.x)),y:Math.max(0,Math.min(H,p.y))}};
+  sv.addEventListener('pointerdown',e=>{const h=e.target.closest('[data-h]');if(!h)return;drag=h.dataset.h;sv.setPointerCapture(e.pointerId);e.preventDefault()});
+  sv.addEventListener('pointermove',e=>{if(!drag)return;const p=P(e),[k,i,j]=drag.split('');if(k==='c'){st.c[i].x=p.x;st.c[i].y=p.y}else{st.l[i][j].x=p.x;st.l[i][j].y=p.y}draw()});
+  sv.addEventListener('pointerup',()=>drag=null);draw()},
+ fields:[{l:"Nombre maximum de points",a:11,main:1}],
+ hint:"Compte les paires d'objets : 2 droites ensemble, 2 cercles ensemble, et chaque droite avec chaque cercle. Combien de points au maximum pour chaque paire ?",
+ corr:`<ol><li>Deux droites se coupent en <b>1 point</b> au maximum. Deux cercles : <b>2 points</b>. Une droite et un cercle : <b>2 points</b>.</li><li>On liste toutes les paires : droite 1 et droite 2 → 1 ; cercle 1 et cercle 2 → 2 ; droite 1 avec cercle 1, droite 1 avec cercle 2, droite 2 avec cercle 1, droite 2 avec cercle 2 → 4 × 2 = 8.</li><li>Total : 1 + 2 + 8 = <b>11 points</b>, à condition que tous ces points soient différents (il faut bien placer les figures, comme tu l'as fait).</li></ol>`};
+ function draw(){const ext=([p,q])=>{const dx=q.x-p.x,dy=q.y-p.y;return`<line x1="${p.x-dx*20}" y1="${p.y-dy*20}" x2="${q.x+dx*20}" y2="${q.y+dy*20}" stroke="#2f6db5" stroke-width="3"/>`};
+  const I=pts();$('#sv7').innerHTML=st.c.map(c=>`<circle cx="${c.x}" cy="${c.y}" r="${c.r}" fill="none" stroke="#17694a" stroke-width="3"/>`).join('')+st.l.map(ext).join('')+I.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="#c8102e"/>`).join('')+
+   st.c.map((c,i)=>`<circle data-h="c${i}0" cx="${c.x}" cy="${c.y}" r="13" fill="#17694a" opacity=".55" style="cursor:grab"/>`).join('')+st.l.map((l,i)=>l.map((p,j)=>`<circle data-h="l${i}${j}" cx="${p.x}" cy="${p.y}" r="13" fill="#2f6db5" opacity=".55" style="cursor:grab"/>`).join('')).join('');
+  $('#t7').textContent=`Points d'intersection : ${I.length}`}};
+
+NEW.ficelles=()=>{let on=new Set(),color=false;const G=(i,j)=>[70+100*i,50+100*j];const L2=(i,j)=>i*i+(2-j)*(2-j);const COLS={1:'#c8102e',2:'#2f6db5',4:'#17694a',5:'#b8740d',8:'#6b4fa0'};
+ return{fam:'liste',titre:'Ficelles',src:'Finale 2025 – énigme 1',
+ enonce:`<p>Sur une planche avec neuf clous placés en carré (3 rangées de 3), Zoé veut attacher des ficelles tendues entre le clou A (en bas à gauche) et un autre clou de la planche.</p><p><b>Combien de ficelles de longueurs différentes pourra-t-elle placer au maximum ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Touche un clou pour tendre une ficelle depuis A</h3><div class="row" style="gap:20px;align-items:flex-start"><svg id="sv8" viewBox="0 0 340 300" style="width:100%;max-width:340px;background:#e9d8b4;border-radius:14px"></svg><div><button class="btn gold" id="c8">Colorier selon la longueur</button><p style="font-size:17px">Les ficelles de même longueur prennent la même couleur.</p></div></div>`;
+  $('#c8').onclick=()=>{color=!color;draw()};draw()},
+ fields:[{l:'Longueurs différentes',a:5,main:1}],
+ hint:"Deux ficelles qui sont symétriques par rapport à la diagonale qui part de A ont la même longueur.",
+ corr:`<ol><li>Depuis A, il y a 8 autres clous, donc 8 ficelles possibles.</li><li>Certaines ont la même longueur, par symétrie par rapport à la diagonale qui part de A : 1 carreau vers le haut = 1 carreau vers la droite ; 2 carreaux vers le haut = 2 carreaux vers la droite ; « 1 à droite et 2 en haut » = « 2 à droite et 1 en haut ».</li><li>Il reste les longueurs : 1 carreau, 2 carreaux, la petite diagonale, le « 1 et 2 », la grande diagonale.</li><li>Réponse : <b>5 longueurs différentes</b>.</li></ol>`};
+ function draw(){const A=G(0,2);let h='';on.forEach(k=>{const[i,j]=k.split(',').map(Number),p=G(i,j);h+=`<line x1="${A[0]}" y1="${A[1]}" x2="${p[0]}" y2="${p[1]}" stroke="${color?COLS[L2(i,j)]:'#7a2e2e'}" stroke-width="5" stroke-linecap="round"/>`});
+  for(let i=0;i<3;i++)for(let j=0;j<3;j++){const p=G(i,j),isA=i===0&&j===2;h+=`<circle cx="${p[0]}" cy="${p[1]}" r="${isA?9:8}" fill="#555" ${isA?'':`data-k="${i},${j}" style="cursor:pointer"`}/><circle cx="${p[0]}" cy="${p[1]}" r="22" fill="transparent" ${isA?'':`data-k="${i},${j}" style="cursor:pointer"`}/>`}
+  h+=`<text x="${A[0]-30}" y="${A[1]+8}" font-size="22" font-weight="700">A</text>`;$('#sv8').innerHTML=h;
+  $$('#sv8 [data-k]').forEach(c=>c.onclick=()=>{const k=c.dataset.k;on.has(k)?on.delete(k):on.add(k);draw()})}};
+
+NEW.choco=()=>{let ch=[];const N=7,S=46;return{fam:'forme',titre:'Le défi du chocolatier',src:'Quart de finale 2026 – énigme 1',
+ enonce:`<p>Un chocolatier prépare une boîte de chocolats. Il utilise une <b>boîte carrée de 7 cm de côté</b>, dans laquelle il veut ranger des <b>chocolats carrés de 2 cm de côté</b>.</p><p>Tous les chocolats doivent être posés à plat, sans empilement, et doivent tenir entièrement dans la boîte.</p><p><b>Quel est le nombre maximal de chocolats qu'il peut ranger dans cette boîte ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Touche un carreau pour y poser un chocolat (1 carreau = 1 cm). Touche un chocolat pour l'enlever</h3><div class="row" style="gap:20px;align-items:flex-start"><svg id="sv9" viewBox="0 0 ${N*S+8} ${N*S+8}" style="width:100%;max-width:340px"></svg><p class="big" id="t9"></p></div>`;draw()},
+ fields:[{l:'Nombre maximal de chocolats',a:9,main:1}],
+ hint:"Combien de chocolats de 2 cm peut-on aligner le long d'un côté de 7 cm ? Attention : on ne peut pas couper un chocolat !",
+ corr:`<ol><li>Le long d'un côté de 7 cm, on aligne 3 chocolats de 2 cm (3 × 2 = 6 cm) : il reste 1 cm, trop peu pour un 4<sup>e</sup>.</li><li>On fait 3 rangées de 3 : <b>9 chocolats</b>.</li><li>Attention au piège des aires : 49 cm² ÷ 4 cm² donne un peu plus de 12, mais les chocolats ne se coupent pas ! Les mathématiciens ont montré qu'on ne peut pas en mettre 10, même en les tournant.</li></ol>`};
+ function cover(x,y){return ch.findIndex(([a,b])=>x>=a&&x<a+2&&y>=b&&y<b+2)}
+ function draw(){let h=`<rect x="2" y="2" width="${N*S+4}" height="${N*S+4}" fill="#8b5a2b" rx="6"/><rect x="4" y="4" width="${N*S}" height="${N*S}" fill="#f6e6c8"/>`;
+  for(let x=0;x<N;x++)for(let y=0;y<N;y++)h+=`<rect x="${4+x*S}" y="${4+y*S}" width="${S}" height="${S}" fill="transparent" stroke="#d9c39a" data-x="${x}" data-y="${y}" style="cursor:pointer"/>`;
+  h+=ch.map(([a,b])=>`<g style="pointer-events:none"><rect x="${4+a*S+3}" y="${4+b*S+3}" width="${2*S-6}" height="${2*S-6}" rx="10" fill="#5a3418"/><rect x="${4+a*S+14}" y="${4+b*S+14}" width="${2*S-28}" height="${2*S-28}" rx="6" fill="#7a4a26"/></g>`).join('');
+  $('#sv9').innerHTML=h;$('#t9').innerHTML=`Chocolats rangés : ${ch.length}<br><span style="font-size:17px;font-weight:400">Surface encore libre : ${49-4*ch.length} cm²</span>`;
+  $$('#sv9 [data-x]').forEach(r=>r.onclick=()=>{const x=+r.dataset.x,y=+r.dataset.y,i=cover(x,y);if(i>=0){ch.splice(i,1)}else if(x+2<=N&&y+2<=N&&[[0,0],[1,0],[0,1],[1,1]].every(([dx,dy])=>cover(x+dx,y+dy)<0))ch.push([x,y]);draw()})}};
+
+NEW.vitrail=()=>{const w=120,H=160,Wd=2.5*w;const pieces=[[w/2,H/2,4,w/2,H/2],[3*w/2,H/2,4,3*w/2,H/2],[Wd,H/2,2,Wd-w/7,H/2],[w,0,2,w,H*.15],[2*w,0,2,2*w,H*.15],[w,H,2,w,H*.85],[2*w,H,2,2*w,H*.85],[0,0,1,w/9,H*.11],[0,H,1,w/9,H*.89]];let on=new Set();
+ const lab={4:'1',2:'½',1:'¼'};return{fam:'forme',titre:'Vitrail',src:'Finale 2025 – énigme 3',
+ enonce:`<p>Un vitrail est constitué de <b>six rectangles</b> identiques. Dans chaque rectangle, il y a un pavage fait à partir de losanges identiques, comme dans le premier rectangle.</p><p>Lorsque le vitrier découpe un losange, il peut utiliser <b>toutes les parties</b> de ce losange dans le vitrail.</p><p><b>Combien le vitrier a-t-il utilisé de losanges pour construire ce vitrail ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Touche chaque morceau du premier rectangle : il affiche quelle part de losange il représente</h3><div class="row" style="gap:24px;align-items:flex-start"><svg id="sv10" viewBox="-6 -6 ${Wd+12} ${H+12}" style="width:100%;max-width:400px"></svg><div><p class="big" id="t10"></p><p style="font-size:16px;margin:4px 0">Le vitrail entier :</p><svg viewBox="0 0 124 112" width="150">${[0,1,2].flatMap(r=>[0,1].map(c=>`<rect x="${2+c*60}" y="${2+r*36}" width="60" height="36" fill="${r||c?'#fff':'#d8ecf7'}" stroke="#333" stroke-width="2"/>`)).join('')}</svg></div></div>`;draw()},
+ fields:[{l:'Nombre de losanges',a:30,main:1}],
+ hint:"Dans un rectangle : compte les losanges entiers, puis les moitiés et les quarts. Deux moitiés font un losange, quatre quarts aussi.",
+ corr:`<ol><li>Dans un rectangle, il y a <b>2 losanges entiers</b>.</li><li>En haut et en bas, il y a <b>4 moitiés</b> de losanges : cela fait 2 losanges.</li><li>À droite, il y a une moitié, et à gauche, deux quarts : ½ + ¼ + ¼ = 1 losange.</li><li>Un rectangle utilise donc 2 + 2 + 1 = <b>5 losanges</b>.</li><li>Pour les 6 rectangles : 6 × 5 = <b>30 losanges</b>.</li></ol>`};
+ function draw(){const q=[...on].reduce((s,i)=>s+pieces[i][2],0),ent=Math.floor(q/4),r=q%4;
+  $('#sv10').innerHTML=`<defs><clipPath id="cp10"><rect x="0" y="0" width="${Wd}" height="${H}"/></clipPath></defs><g clip-path="url(#cp10)">${pieces.map(([cx,cy,f],i)=>`<polygon data-i="${i}" points="${cx-w/2},${cy} ${cx},${cy-H/2} ${cx+w/2},${cy} ${cx},${cy+H/2}" fill="${on.has(i)?['','#f2b632','#7fc3e6','','#c8102e'][f]:'#eef6fb'}" stroke="#333" stroke-width="2.5" style="cursor:pointer"/>`).join('')}</g><rect x="0" y="0" width="${Wd}" height="${H}" fill="none" stroke="#333" stroke-width="4"/>${pieces.map(([,,f,lx,ly],i)=>on.has(i)?`<text x="${lx}" y="${ly+7}" text-anchor="middle" font-size="${f===1?16:22}" font-weight="700" fill="#111" style="pointer-events:none">${lab[f]}</text>`:'').join('')}`;
+  $('#t10').innerHTML=`Losanges comptés : ${ent}${r?' et '+['','¼','½','¾'][r]:''}`;
+  $$('#sv10 [data-i]').forEach(p=>p.onclick=()=>{const i=+p.dataset.i;on.has(i)?on.delete(i):on.add(i);draw()})}};
+
+function isoColor(cubes){const s=24,c=Math.cos(Math.PI/6)*s,d=s/2;const P=(x,y,z)=>[(x-y)*c,(x+y)*d-z*s],poly=a=>a.map(p=>p.map(v=>v.toFixed(1)).join(',')).join(' ');
+ const F={w:['#ffffff','#dfe5ee','#c3ccd9'],g:['#a7adb8','#7d8492','#5f6676']};
+ return`<svg viewBox="-120 -120 230 230" style="width:100%;max-width:380px;height:auto">${cubes.slice().sort((a,b)=>(a[0]+a[1])-(b[0]+b[1])||a[2]-b[2]).map(([x,y,z,k])=>{const A=P(x,y,z+1),B=P(x+1,y,z+1),C=P(x+1,y+1,z+1),D=P(x,y+1,z+1),E=P(x+1,y,z),Fp=P(x+1,y+1,z),G=P(x,y+1,z);
+  return`<polygon points="${poly([A,B,C,D])}" fill="${F[k][0]}" stroke="#2b3550"/><polygon points="${poly([B,C,Fp,E])}" fill="${F[k][1]}" stroke="#2b3550"/><polygon points="${poly([D,C,Fp,G])}" fill="${F[k][2]}" stroke="#2b3550"/>`}).join('')}</svg>`}
+NEW.cubes=()=>{const all=[];for(let x=0;x<3;x++)for(let y=0;y<4;y++){if(x===0&&y===3)continue;all.push([x,y,0,'w']);if(!(x===2&&y===3)){all.push([x,y,1,'g']);if(!(x===2&&y===2)){all.push([x,y,2,'w']);if(x<2&&y<2)all.push([x,y,3,'g'])}}}
+ let v='all';return{fam:'forme',titre:'Les cubes',src:'Demi-finale 2026 – énigme 3',
+ enonce:`<p>Lulu et Lili ont réalisé cette construction avec des petits cubes gris et blancs. <b>Les cubes d'un même étage sont tous de la même couleur.</b></p><p>La couche du bas comporte <b>11 cubes</b>, et dans les couches supérieures, <b>chaque cube est posé directement sur un cube</b> de la couche précédente.</p><p><b>Combien de cubes de chaque sorte ont-ils utilisés ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Observe la construction, puis soulève les étages un par un</h3><div class="row"><button class="btn" data-v="all">Toute la construction</button>${[1,2,3,4].map(k=>`<button class="btn light" data-v="${k-1}">Étage ${k}</button>`).join('')}</div><div id="c11" style="text-align:center"></div>`;
+  $$('[data-v]',z).forEach(b=>b.onclick=()=>{v=b.dataset.v;$$('[data-v]',z).forEach(x=>x.classList.toggle('light',x!==b));draw()});draw()},
+ fields:[{l:'Cubes gris',a:14},{l:'Cubes blancs',a:20}],
+ hint:"Compte étage par étage. Un cube caché est forcément là s'il y a un cube posé au-dessus de lui !",
+ corr:`<ol><li>Étage 1 (en bas, blanc) : <b>11 cubes</b>, comme le dit l'énoncé.</li><li>Étage 2 (gris) : un cube de moins que l'étage du dessous, soit <b>10 cubes</b>.</li><li>Étage 3 (blanc) : encore un de moins, soit <b>9 cubes</b>.</li><li>Étage 4 (gris, tout en haut) : <b>4 cubes</b>.</li><li>Blancs : 11 + 9 = <b>20</b>. Gris : 10 + 4 = <b>14</b>.</li></ol>`};
+ function draw(){$('#c11').innerHTML=isoColor(v==='all'?all:all.filter(c=>c[2]===+v).map(c=>[c[0],c[1],0,c[3]]))}};
+
+const SEG={a:[6,0,28,6],b:[34,6,6,28],c:[34,40,6,28],d:[6,68,28,6],e:[0,40,6,28],f:[0,6,6,28],g:[6,34,28,6]},DIG={1:'bc',2:'abged',5:'afgcd',8:'abcdefg'};
+const seven=s=>`<svg viewBox="-4 -4 ${s.length*50} 82" width="${s.length*40}" height="66">${s.split('').map((d,i)=>DIG[d].split('').map(k=>{let[x,y,w,h]=SEG[k];if(d==='1')x=17;return`<rect x="${x+i*50}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="#1a1a1a"/>`}).join('')).join('')}</svg>`;
+NEW.intrus=()=>{const NB=['15182','18152','28151','58121','58151'];const st=NB.map(()=>({r:0,v:1,h:1,x:false}));return{fam:'tour',titre:'Les intrus',src:'Quart de finale 2026 – énigme 4',
+ enonce:`<p>Parmi ces cinq nombres, trois se déduisent l'un de l'autre en les <b>tournant</b> (rotation) ou en les <b>retournant</b> (symétrie).</p><p><b>Quels sont les deux intrus ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Fais tourner (demi-tour) ou retourner les nombres (haut ↕ bas, gauche ↔ droite), puis marque les deux intrus</h3><div id="c13" style="display:grid;gap:10px"></div>`;draw()},
+ verify(){const s=st.map((x,i)=>x.x?i:-1).filter(i=>i>=0);return s.length===2&&s[0]===1&&s[1]===4?[true,'Bravo ! Les intrus sont 18152 et 58151.']:[false,s.length!==2?'Marque exactement deux intrus.':'Ce ne sont pas les bons intrus.']},
+ hint:"Fais faire un demi-tour à 15182. Que lis-tu ? Puis retourne ce nouveau nombre de haut en bas.",
+ corr:`<ol><li>Si on fait faire un demi-tour à <b>15182</b>, on lit <b>28151</b>.</li><li>Si on retourne <b>28151</b> de haut en bas (comme dans un miroir posé dessous), le 2 devient un 5 et le 5 devient un 2 : on lit <b>58121</b>.</li><li>Ces trois nombres vont ensemble. Les intrus sont donc <b>18152</b> et <b>58151</b>.</li><li>Astuce : 1 et 8 ne changent pas quand on les tourne. Seul 18152 a un 8 entre deux 1, et seul 58151 a deux 5.</li></ol>`};
+ function draw(){$('#c13').innerHTML=NB.map((n,i)=>{const s=st[i];return`<div class="row" style="background:#fff;border:2px solid ${s.x?'#c8102e':'#c8d4ea'};border-radius:12px;padding:8px"><div style="width:210px;display:grid;place-items:center;background:#f6ecd4;border-radius:8px;padding:6px"><div style="transition:transform .5s;transform:rotate(${s.r*180}deg) scale(${s.h},${s.v})">${seven(n)}</div></div><button class="btn light" data-a="r" data-i="${i}">Demi-tour</button><button class="btn light" data-a="v" data-i="${i}">Haut ↕ bas</button><button class="btn light" data-a="h" data-i="${i}">Gauche ↔ droite</button><button class="btn ${s.x?'red':'light'}" data-a="x" data-i="${i}">${s.x?'Intrus !':'Intrus ?'}</button></div>`}).join('');
+  $$('#c13 [data-a]').forEach(b=>b.onclick=()=>{const s=st[+b.dataset.i],a=b.dataset.a;if(a==='r')s.r^=1;if(a==='v')s.v*=-1;if(a==='h')s.h*=-1;if(a==='x')s.x=!s.x;draw()})}};
+
+NEW.decor=()=>{const need={n:2,b:3,g:5};let stock={n:10,b:15,g:20},made=0;
+ const art=`<svg viewBox="0 0 160 130" width="170"><rect x="1" y="1" width="158" height="128" fill="#fff" stroke="#333" stroke-width="2"/>
+ <polygon points="45,10 65,40 25,40" fill="#9aa0aa" stroke="#333"/><polygon points="45,32 69,66 21,66" fill="#9aa0aa" stroke="#333"/><polygon points="45,58 73,94 17,94" fill="#9aa0aa" stroke="#333"/><rect x="39" y="94" width="12" height="22" fill="#222"/>
+ <polygon points="105,40 127,72 83,72" fill="#9aa0aa" stroke="#333"/><polygon points="105,64 131,98 79,98" fill="#9aa0aa" stroke="#333"/><rect x="99" y="98" width="12" height="18" fill="#222"/>
+ <circle cx="140" cy="20" r="8" fill="#fff" stroke="#333" stroke-width="2"/><circle cx="140" cy="44" r="8" fill="#fff" stroke="#333" stroke-width="2"/><circle cx="140" cy="68" r="8" fill="#fff" stroke="#333" stroke-width="2"/></svg>`;
+ return{fam:'parts',titre:'Le décor',src:'Demi-finale 2025 – énigme 2',
+ enonce:`<p>La maîtresse propose de faire ce décor avec des gommettes <b>grises</b>, <b>blanches</b> et <b>noires</b>.</p>${art}<p>Dans la boîte de gommettes, il y a : <b>10 gommettes noires</b>, <b>15 gommettes blanches</b> et <b>20 gommettes grises</b>.</p><p><b>Combien de décors peut-on faire au maximum ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Fabrique des décors avec la boîte de gommettes</h3><div class="row"><button class="btn green" id="m15">Fabriquer un décor</button><button class="btn light" id="r15">Recommencer</button></div><div id="s15" style="margin-top:10px"></div><p class="big" id="t15"></p>`;
+  $('#m15').onclick=()=>{if(Object.keys(need).every(k=>stock[k]>=need[k])){Object.keys(need).forEach(k=>stock[k]-=need[k]);made++}draw()};$('#r15').onclick=()=>{stock={n:10,b:15,g:20};made=0;draw()};draw()},
+ fields:[{l:'Nombre de décors',a:4,main:1}],
+ hint:"Compte d'abord combien il faut de gommettes de chaque couleur pour UN décor.",
+ corr:`<ol><li>Un décor utilise 2 gommettes noires, 3 blanches et 5 grises.</li><li>Noires : 10 = 5 × 2, assez pour 5 décors. Blanches : 15 = 5 × 3, assez pour 5 décors. Grises : 20 = 4 × 5, assez pour <b>seulement 4 décors</b>.</li><li>Ce sont les gommettes grises qui manquent en premier : on peut faire <b>4 décors</b>.</li></ol>`};
+ function draw(){const row=(k,lab,cls)=>`<div class="row" style="gap:4px;margin:4px 0"><b style="width:8em;flex:none">${lab} (${stock[k]})</b>${Array(stock[k]).fill(`<span class="dot ${cls}"></span>`).join('')}</div>`;
+  $('#s15').innerHTML=row('n','Noires','n')+row('b','Blanches','')+row('g','Grises','t');const can=Object.keys(need).every(k=>stock[k]>=need[k]);$('#m15').disabled=!can;
+  $('#t15').textContent=`Décors fabriqués : ${made}`+(can?'':' — il n\'y a plus assez de gommettes !')}};
+
+NEW.recette=()=>{let g=6;return{fam:'parts',titre:'Ma recette',src:'Quart de finale 2026 – énigme 6',
+ enonce:`<p>Ma recette d'œufs brouillés pour 4 personnes demande <b>60 g de beurre, 12 œufs et 6 cuillères à soupe de lait</b>.</p><p>Malheureusement, je n'ai que <b>10 œufs</b>. <b>Combien vais-je utiliser de beurre et de lait pour respecter les proportions ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Partage la recette en paquets égaux</h3><div class="row"><button class="btn light" id="m16">− 1 paquet</button><span class="big" id="n16"></span><button class="btn" id="p16">+ 1 paquet</button></div><div id="g16" class="row" style="gap:10px;margin-top:10px;align-items:stretch"></div><p class="big" id="t16"></p>`;
+  $('#m16').onclick=()=>{g=Math.max(1,g-1);draw()};$('#p16').onclick=()=>{g=Math.min(6,g+1);draw()};draw()},
+ fields:[{l:'Beurre',a:50,u:'g'},{l:'Lait',a:5,u:'cuillères'}],
+ hint:"Fais des petits paquets de 2 œufs : combien de paquets dans la recette ? Que faut-il pour un seul paquet ?",
+ corr:`<ol><li>12 œufs = 6 paquets de 2 œufs.</li><li>Pour un paquet : 60 ÷ 6 = <b>10 g de beurre</b> et 6 ÷ 6 = <b>1 cuillère de lait</b>.</li><li>10 œufs = 5 paquets de 2 œufs. Il faut donc 5 × 10 = <b>50 g de beurre</b> et 5 × 1 = <b>5 cuillères de lait</b>.</li></ol>`};
+ function draw(){const egg=`<svg width="22" height="28" viewBox="0 0 22 28"><ellipse cx="11" cy="15" rx="9" ry="12" fill="#fff4dc" stroke="#b8740d" stroke-width="1.5"/></svg>`;
+  $('#n16').textContent=`${g} paquet${g>1?'s':''}`;$('#g16').innerHTML=Array(g).fill(`<div style="background:#fff;border:2px solid #e07a1f;border-radius:12px;padding:8px;text-align:center;font-size:16px">${egg}${egg}<br>10 g de beurre<br>1 cuillère de lait</div>`).join('');
+  $('#t16').innerHTML=`${2*g} œufs · ${10*g} g de beurre · ${g} cuillère${g>1?'s':''} de lait ${g===6?'(la recette entière)':''}`}};
+
+NEW.oeufs=()=>{let d=1;return{fam:'motif',titre:'À la chasse aux œufs',src:'Quart de finale 2026 – énigme 7',
+ enonce:`<p>Claude possède 4 poules et il ramasse les œufs chaque soir.</p><p>La première pond un œuf <b>tous les jours</b>. La deuxième pond un œuf <b>tous les deux jours</b>. La troisième pond un œuf <b>tous les 3 jours</b> et la quatrième <b>tous les 4 jours</b>.</p><p>Claude a pu ramasser 4 œufs pondus le jour même le <b>1<sup>er</sup> octobre</b>.</p><p><b>Quel jour pourra-t-il de nouveau ramasser 4 œufs ?</b></p>`,
+ build(z){z.innerHTML=`<h3>Avance jour après jour dans le tableau des pontes</h3><div class="row"><button class="btn green" id="n19">Jour suivant</button><button class="btn light" id="r19">Recommencer</button></div><div class="scroll" style="margin-top:10px"><table class="logi" id="t19"></table></div>`;
+  $('#n19').onclick=()=>{d=Math.min(16,d+1);draw()};$('#r19').onclick=()=>{d=1;draw()};draw()},
+ fields:[{l:'Le … octobre',a:13,main:1}],
+ hint:"Quand les 4 poules pondent-elles le même jour ? Cherche un nombre de jours qui est à la fois dans la table de 2, de 3 et de 4.",
+ corr:`<ol><li>La poule 2 pond tous les 2 jours, la poule 3 tous les 3 jours, la poule 4 tous les 4 jours.</li><li>Elles pondent à nouveau ensemble après un nombre de jours qui est dans les tables de 2, de 3 et de 4 : le plus petit est <b>12</b>.</li><li>12 jours après le 1<sup>er</sup> octobre, c'est le <b>13 octobre</b>.</li></ol>`};
+ function draw(){let h=`<tr><th>Octobre</th>${Array.from({length:d},(_,i)=>`<th>${i+1}</th>`).join('')}</tr>`;
+  for(let k=1;k<=4;k++)h+=`<tr><th>Poule ${k}</th>${Array.from({length:d},(_,i)=>`<td style="font-size:20px">${i%k===0?'🥚':''}</td>`).join('')}</tr>`;
+  h+=`<tr><th>Œufs</th>${Array.from({length:d},(_,i)=>{const n=[1,2,3,4].filter(k=>i%k===0).length;return`<td style="font-weight:700;${n===4?'background:#ffe08a':''}">${n}</td>`}).join('')}</tr>`;$('#t19').innerHTML=h}};
+
+/* le calendrier n°2 : énigmes nouvelles + reprises du calendrier n°1 */
+const re=(n,fam)=>()=>{const o=OLD[n]();if(fam)o.fam=fam;return o};
+const CAL=[NEW.aquarium,NEW.tirelire,NEW.pairs,NEW.dominos,NEW.minimax,NEW.etoile,NEW.inter,NEW.ficelles,NEW.choco,NEW.vitrail,NEW.cubes,re(17,'tour'),NEW.intrus,re(10),NEW.decor,NEW.recette,re(22),re(23),NEW.oeufs,re(1),re(2),re(20),re(21),re(24)];
+CAL.forEach((f,i)=>DAYS[i+1]=f);
+
+/* ---------- calendrier ---------- */
+const ORDER=[13,5,21,9,1,17,24,11,3,19,7,15,22,2,10,18,6,14,23,4,12,20,8,16];
+const famOf={};for(let d=1;d<=24;d++)famOf[d]=DAYS[d]().fam;
+const firstOf={};for(let d=1;d<=24;d++)if(!firstOf[famOf[d]])firstOf[famOf[d]]=d;
+const famDays=f=>Object.keys(famOf).map(Number).filter(d=>famOf[d]===f);
+const isToday=n=>{const d=new Date();return d.getFullYear()===2026&&d.getMonth()===11&&d.getDate()===n};
+const isOpen=n=>store.free||new Date()>=new Date(2026,11,n);
+function renderDoors(){
+  $('#doors').innerHTML=ORDER.map((n,i)=>{const o=isOpen(n),f=FAM[famOf[n]];return`<button class="door c${i%4} ${o?'':'locked'} ${store.solved[n]?'solved':''} ${isToday(n)?'today':''}" data-n="${n}" aria-label="Jour ${n}${o?'':' (fermé)'}"><svg class="bow" viewBox="0 0 60 34"><path d="M30 18 C14 2 2 6 6 16 C9 24 22 22 30 18Z" fill="#f2c94c" stroke="#b8860b" stroke-width="1.5"/><path d="M30 18 C46 2 58 6 54 16 C51 24 38 22 30 18Z" fill="#f2c94c" stroke="#b8860b" stroke-width="1.5"/><path d="M27 19 L20 33 M33 19 L40 33" stroke="#e0a82e" stroke-width="5" stroke-linecap="round"/><circle cx="30" cy="18" r="6" fill="#ffe28a" stroke="#b8860b" stroke-width="1.5"/></svg><span class="num">${n}</span>${o?`<span class="tag" style="border-bottom:5px solid ${f.col}">${f.nom}</span>`:''}</button>`}).join('');
+  $$('.door').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;if(isOpen(n))openDay(n);else toast(`Patience ! Cette case s'ouvrira le ${n} décembre.`)});
+  const s=Object.keys(store.solved).length;$('#legend').innerHTML=s?`<b>${s}</b> énigme${s>1?'s':''} résolue${s>1?'s':''} ★`:'';
+}
+let tt;function toast(t){const e=$('#toast');e.innerHTML=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
+let D=null;
+function openDay(n){
+  if(D&&D.kill)D.kill();D=DAYS[n]();D.n=n;const f=FAM[D.fam],list=famDays(D.fam),rank=list.indexOf(n)+1;
+  const prev=list.filter(d=>d<n);
+  $('#card').innerHTML=`<div class="top"><button class="back" id="bk">← Calendrier</button><span class="date">${n} décembre</span><span class="fam" style="background:${f.col}">${f.nom}${list.length>1?` · énigme ${rank} sur ${list.length}`:''}</span></div>
+  <h2>${D.titre}</h2><p class="src">${D.src}</p>
+  <div class="methode" style="border-color:${f.col};background:${f.col}12"><b>${prev.length?`Même façon de raisonner que le ${prev.join(' et le ')} décembre. `:'Nouvelle façon de raisonner ! '}</b>${f.m}</div>
+  <div class="enonce">${D.enonce}</div><div class="zone" id="zone"></div>
+  <div class="answer"><h3 style="margin:0 0 6px">Ma réponse</h3><div id="flds"></div><div class="row" style="margin-top:8px"><button class="btn green" id="ck">Vérifier</button><button class="btn light" id="hi">Un coup de pouce</button><button class="btn light" id="co">Voir la correction</button></div><div class="fb" id="fb"></div><div id="hz"></div><div id="cz"></div></div>`;
+  D.build($('#zone'));
+  if(D.fields)$('#flds').innerHTML=D.fields.map((x,i)=>`<label class="field"><span>${x.l}</span><input id="f${i}" inputmode="numeric" autocomplete="off">${x.u?`<span>${x.u}</span>`:''}</label>`).join('');
+  else $('#flds').innerHTML='<p style="margin:0">Complète la manipulation ci-dessus, puis vérifie.</p>';
+  $('#ck').onclick=check;$('#bk').onclick=closeDay;
+  $('#hi').onclick=()=>{$('#hz').innerHTML=`<div class="hint"><b>Coup de pouce :</b> ${D.hint}</div>`};
+  $('#co').onclick=()=>{$('#cz').innerHTML=`<div class="corr"><b>Correction</b>${D.corr}${D.solve?'<button class="btn gold" id="sv">Montrer la solution dans le jeu</button>':''}</div>`;if(D.solve)$('#sv').onclick=()=>D.solve()};
+  $$('#flds input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  $('#day').classList.add('on');$('#day').scrollTop=0;document.body.style.overflow='hidden';
+}
+function check(){let ok=true,msg='';
+  if(D.fields){D.fields.forEach((x,i)=>{const inp=$('#f'+i),g=num(inp.value)===x.a;inp.classList.toggle('good',g);inp.classList.toggle('bad',!g&&inp.value!=='');if(!g)ok=false;D.onField&&D.onField(i,g)});
+    msg=ok?'Bravo, c\'est juste !':(D.fields.some((x,i)=>$('#f'+i).value==='')?'Complète toutes les cases.':'Pas encore… Relis l\'énoncé ou demande un coup de pouce.')}
+  if(D.verify){const[v,m]=D.verify();if(!D.fields||ok){ok=ok&&v;msg=m}}
+  const fb=$('#fb');fb.className='fb '+(ok?'ok':'ko');fb.textContent=msg;
+  if(ok){store.solved[D.n]=1;save();burst()}}
+function closeDay(){if(D&&D.kill)D.kill();D=null;$('#day').classList.remove('on');document.body.style.overflow='';renderDoors()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&D)closeDay()});
+
+/* ---------- mode libre (triple clic sur le titre) ---------- */
+let clicks=0,ct;$('#title').addEventListener('click',()=>{clicks++;clearTimeout(ct);ct=setTimeout(()=>clicks=0,700);if(clicks>=3){clicks=0;store.free=!store.free;save();renderDoors();toast(store.free?'Toutes les cases sont ouvertes.':'Les cases s\'ouvrent jour après jour.')}});
+
+/* ---------- neige ---------- */
+const cv=$('#snow'),cx=cv.getContext('2d');let flakes=[],extra=[];
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function size(){cv.width=innerWidth;cv.height=innerHeight;flakes=Array.from({length:Math.round(innerWidth/14)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:1+Math.random()*2.6,v:.4+Math.random()*1.1,w:Math.random()*6,g:Math.random()<.12}))}
+function burst(){for(let i=0;i<60;i++)extra.push({x:innerWidth/2+(Math.random()-.5)*innerWidth*.8,y:-10-Math.random()*200,r:4+Math.random()*5,v:2+Math.random()*3,w:Math.random()*6,c:['#f2b632','#c8102e','#17694a','#fff'][i%4],life:260})}
+function tick(t){cx.clearRect(0,0,cv.width,cv.height);
+  for(const f of flakes){f.y+=f.v;f.x+=Math.sin(t/1400+f.w)*.4;if(f.y>cv.height){f.y=-5;f.x=Math.random()*cv.width}if(f.g){const a=.45+.55*Math.abs(Math.sin(t/400+f.w*3)),r=f.r*2.2;cx.fillStyle=`rgba(255,220,120,${a})`;cx.beginPath();cx.moveTo(f.x,f.y-r);cx.lineTo(f.x+r*.25,f.y-r*.25);cx.lineTo(f.x+r,f.y);cx.lineTo(f.x+r*.25,f.y+r*.25);cx.lineTo(f.x,f.y+r);cx.lineTo(f.x-r*.25,f.y+r*.25);cx.lineTo(f.x-r,f.y);cx.lineTo(f.x-r*.25,f.y-r*.25);cx.fill()}else{cx.fillStyle='rgba(255,255,255,.88)';cx.beginPath();cx.arc(f.x,f.y,f.r,0,7);cx.fill()}}
+  extra=extra.filter(e=>e.life-->0);for(const e of extra){e.y+=e.v;e.x+=Math.sin(t/300+e.w);cx.fillStyle=e.c;cx.save();cx.translate(e.x,e.y);cx.rotate(t/400+e.w);cx.fillRect(-e.r/2,-e.r/2,e.r,e.r*1.6);cx.restore()}
+  requestAnimationFrame(tick)}
+size();addEventListener('resize',size);if(!still)requestAnimationFrame(tick);else burst=()=>{};
+
+renderDoors();
+}
+</script>
+</body>
+</html>
