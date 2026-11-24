@@ -54,6 +54,11 @@ h1{font-size:32px} h2{font-size:27px} h3{font-size:23px}
 .btn.green{background:#43a047;box-shadow:0 4px 0 #2e7d32}
 .btn.grey{background:#8e8eaa;box-shadow:0 4px 0 #66667f}
 .btn.yellow{background:#ffca28;color:#1c1c36;box-shadow:0 4px 0 #c79a00}
+.secret{font-size:25px;letter-spacing:1px;line-height:1.9;background:#0b0e2e;color:#fff;border-radius:16px;padding:12px 14px;border:3px solid #ffca28;word-spacing:10px}
+.secret .sg{display:inline-block;min-width:1em;text-align:center;color:#ffca28}
+.secret .sl{display:inline-block;min-width:1em;text-align:center;color:#69f0ae;font-weight:700}
+.secret .sl.new{animation:pop .8s;color:#fff;background:#43a047;border-radius:6px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#0b0e2e;color:#fff;border:3px solid #ffca28;border-radius:16px;padding:10px 16px;z-index:60;font-size:20px;box-shadow:0 6px 20px rgba(0,0,0,.4);animation:pop .5s;max-width:92vw}
 .spk{background:#ffca28;border-radius:50%;width:46px;height:46px;font-size:24px;line-height:46px;padding:0;vertical-align:middle;margin:0 6px;flex:none;box-shadow:0 3px 0 #c79a00}
 .spk.speaking{animation:pulse 1s infinite}
 @keyframes pulse{50%{transform:scale(1.12)}}
@@ -69,6 +74,8 @@ h1{font-size:32px} h2{font-size:27px} h3{font-size:23px}
 .rad.irr{background:var(--irr)}
 .rm{color:var(--rmark);background:var(--rbg);font-weight:700;border-radius:4px;padding:0 1px}
 .te{background:var(--term);border-radius:6px;padding:0 2px}
+.tc{background:#CE93D8;border-radius:6px;padding:0 2px}
+.tile.c-tile{background:#CE93D8}
 .mute{color:#6a1b9a;font-weight:700;text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:3px}
 .pr{font-weight:700;color:#283593}
 .legend{display:flex;flex-wrap:wrap;gap:8px;font-size:16px;margin-top:8px}
@@ -171,6 +178,7 @@ textarea{width:100%;min-height:140px;border-radius:14px;border:3px solid #b39ddb
    DONNÉES
    ========================================================= */
 const END=['ai','as','a','ons','ez','ont'];
+const COND=['ais','ais','ait','ions','iez','aient'];
 const PLAB=['je','tu','il / elle','nous','vous','ils / elles'];
 const PRON=[{p:'je',k:0},{p:'tu',k:1},{p:'il',k:2},{p:'elle',k:2},{p:'on',k:2},{p:'nous',k:3},{p:'vous',k:4},{p:'ils',k:5},{p:'elles',k:5}];
 const ADV=['Demain,','Lundi prochain,','L\'année prochaine,','Ce soir,','Bientôt,','Dans dix ans,','Plus tard,','Cet été,','La semaine prochaine,','Après la récréation,'];
@@ -240,6 +248,7 @@ const PLANETS=[
  {name:'Planète Double R',emoji:'🪐',color:'#80CBC4',sub:'pouvoir, voir, venir, vouloir'},
  {name:'Planète Métamorphose',emoji:'🦋',color:'#F48FB1',sub:'appeler, jeter, acheter, envoyer…'},
  {name:'Station CM2',emoji:'🛰️',color:'#90CAF9',sub:'Phrases et textes au futur'},
+ {name:'Planète Rêverie',emoji:'🌈',color:'#E1BEE7',sub:'Bonus 6e : le conditionnel présent',bonus:1},
 ];
 
 /* Codes du Livret de Réussite (Étude de la langue CM 2026-2027)
@@ -266,6 +275,7 @@ const CODES={
  ACC1:'Je sais accorder le verbe et son sujet dans une phrase simple.',
  ACC2:'Je sais accorder le verbe et son sujet dans une phrase complexe.',
  ACC10:'Je transforme à l\'écrit des phrases en faisant varier le temps.',
+ C6:'6ème : Je sais conjuguer des verbes au conditionnel présent.',
  O2:'Je sais orthographier les verbes en -yer/-eter/-eler (au présent dans le livret).',
 };
 const PCODES=[
@@ -277,6 +287,7 @@ const PCODES=[
  {ev:['F8','F9','F10','F12'],tr:['C3','ACC1']},
  {ev:['F1'],tr:['O2','C3','ACC1']},
  {ev:['F','ACC10','ACC2'],tr:['G31','G32','G33','ACC1']},
+ {ev:['C6'],tr:['F','ACC1']},
 ];
 function codeChips(list,withLabel){
   if(!list.length) return '';
@@ -371,15 +382,17 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const form=(v,k)=>v.rad+'r'+END[k];
 const VOW=/^[aeiouyéèêàâîïôûh]/i;
-function colorForm(v,k){
+function colorForm(v,k,E){
+  E=E||END;
   let r=esc(v.rad);
   if(v.mute){r=esc(v.rad.slice(0,-1))+'<span class="mute">e</span>';}
-  return `<span class="rad${v.irr?' irr':''}">${r}</span><span class="rm">r</span><span class="te">${END[k]}</span>`;
+  return `<span class="rad${v.irr?' irr':''}">${r}</span><span class="rm">r</span><span class="${E===COND?'tc':'te'}">${E[k]}</span>`;
 }
+const formE=(v,k,E)=>v.rad+'r'+(E||END)[k];
 function pronFor(k,f){ if(k===0) return VOW.test(f)?"j'":'je'; return ['je','tu','il','nous','vous','ils'][k]; }
-function tableHTML(v,title){
-  const rows=[0,1,2,3,4,5].map(k=>{const f=form(v,k);const p=k===2?'il, elle, on':k===5?'ils, elles':pronFor(k,f);return `<tr><td class="pr">${esc(p)}</td><td>${colorForm(v,k)}</td></tr>`;}).join('');
-  const say=[0,1,2,3,4,5].map(k=>{const f=form(v,k);const p=k===0&&VOW.test(f)?"j'"+f:(['je','tu','il','nous','vous','ils'][k]+' '+f);return p;}).join(', ')+'.';
+function tableHTML(v,title,E){
+  const rows=[0,1,2,3,4,5].map(k=>{const f=formE(v,k,E);const p=k===2?'il, elle, on':k===5?'ils, elles':pronFor(k,f);return `<tr><td class="pr">${esc(p)}</td><td>${colorForm(v,k,E)}</td></tr>`;}).join('');
+  const say=[0,1,2,3,4,5].map(k=>{const f=formE(v,k,E);const p=k===0&&VOW.test(f)?"j'"+f:(['je','tu','il','nous','vous','ils'][k]+' '+f);return p;}).join(', ')+'.';
   return `<div class="tbox"><h4>${esc(title||v.inf)} ${spk(say)}</h4><table class="conj">${rows}</table></div>`;
 }
 const LEGEND=`<div class="legend"><span class="rad">radical</span><span class="rad irr">radical qui change : à apprendre par cœur</span><span class="rm">r = marque du futur</span><span class="te">terminaison</span></div>`;
@@ -393,8 +406,8 @@ const KEY='missionFutur_v1';
 let S={name:'',placed:false,unlocked:0,tabs:{},auto:false,slow:false};
 try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-const WORDS=['LUNE','COMETE','ETOILE','ORBITE','FUSEE','SATURNE','NEBULEUSE','GALAXIE','SUPERNOVA'];
-const WSAY=['LUNE','COMÈTE','ÉTOILE','ORBITE','FUSÉE','SATURNE','NÉBULEUSE','GALAXIE','SUPERNOVA'];
+const WORDS=['LUNE','COMETE','ETOILE','ORBITE','FUSEE','SATURNE','NEBULEUSE','GALAXIE','SUPERNOVA','ASTRONAUTE'];
+const WSAY=['LUNE','COMÈTE','ÉTOILE','ORBITE','FUSÉE','SATURNE','NÉBULEUSE','GALAXIE','SUPERNOVA','ASTRONAUTE'];
 const num=u=>String(((u+3)*29)%89+10);
 const code=u=>WSAY[u]+'-'+num(u);
 function parseCode(s){
@@ -519,6 +532,7 @@ function whenItem(row){return {type:'when',t:row[0],a:row[1],clue:row[2]};}
 function whichItem(row){return {type:'which',opts:shuffle(row),a:row[0]};}
 function qcmChoices(it){
   const v=it.v,k=it.k; const c=it.ans; const out=[c];
+  if(it.E===COND){ out.push(formE(v,k,END)); for(const kk of shuffle([0,1,2,3,4,5])){ if(out.length>=3) break; const d=formE(v,kk,COND); if(!out.includes(d)) out.push(d);} return shuffle(out); }
   if(v.reg){const d=v.reg+END[k]; if(d!==c) out.push(d);}
   for(const kk of shuffle([0,1,2,3,4,5])){ if(out.length>=3) break; const d=v.rad+'r'+END[kk]; if(!out.includes(d)) out.push(d);}
   return shuffle(out);
@@ -541,7 +555,18 @@ function hintRad(v){
   if(v.pl===1||v.pl===2) return `Rappelle-toi : on garde l'infinitif entier (« ${v.inf} »), puis on ajoute la terminaison.`;
   return `Ce verbe change de radical au futur. Regarde le tableau.`;
 }
+function analyseCond(it,typed){
+  const a=it.ans, t=norm(typed), v=it.v, stem=v.rad+'r';
+  if(!t) return {ok:false,msg:'Écris ta réponse dans la case.'};
+  if(t===a) return {ok:true};
+  if(noAcc(t)===noAcc(a)) return {ok:false,msg:'Presque ! Regarde bien les accents.'};
+  if(t===formE(v,it.k,END)) return {ok:false,msg:`✋ IniBO : Stop ! « ${esc(t)} », c'est le futur. Au conditionnel, on garde le radical du futur mais on met les terminaisons de l'imparfait : -ais, -ais, -ait, -ions, -iez, -aient.`};
+  if(t.startsWith(stem)) return {ok:false,msg:`Le radical est juste 👍. Regarde le sujet : quelle terminaison de l'imparfait va avec « ${PLAB[it.k]} » ?`};
+  if(t.endsWith('r'+COND[it.k])) return {ok:false,msg:`La terminaison est juste 👍. Le radical est le même qu'au futur. ${hintRad(v)}`};
+  return {ok:false,msg:'Pas encore. Conditionnel = radical du futur + terminaison de l\'imparfait.'};
+}
 function analyse(it,typed){
+  if(it.E===COND) return analyseCond(it,typed);
   const a=it.ans, t=norm(typed), v=it.v, end=END[it.k], stem=v.rad+'r';
   if(!t) return {ok:false,msg:'Écris ta réponse dans la case.'};
   if(t===a) return {ok:true};
@@ -569,24 +594,26 @@ function sentenceHTML(it,id){
   const sep=it.before.endsWith("'")?'':' ';
   return `<div class="row">${spk(it.say)}<div class="sent" id="${id}">${esc(it.before)}${sep}<span class="blank">&nbsp;</span>${esc(it.after)} <span class="inf">(${esc(it.v.inf)})</span></div></div>`;
 }
-function fillBlank(box,it){const b=box.querySelector('.blank'); if(b){b.innerHTML=colorForm(it.v,it.k); b.style.borderBottom='none';}}
+function fillBlank(box,it){const b=box.querySelector('.blank'); if(b){b.innerHTML=colorForm(it.v,it.k,it.E); b.style.borderBottom='none';}}
 function nextBtn(box,cb,label){const d=document.createElement('p');d.className='center';d.innerHTML=`<button class="btn green">${label||'Suivant ➜'}</button>`;box.appendChild(d);d.querySelector('button').onclick=cb;d.querySelector('button').focus();}
 function fbHTML(cls,html,sayTxt){return `<div class="fb ${cls}"><div class="row">${sayTxt?spk(sayTxt):''}<div>${html}</div></div></div>`;}
 function stripTags(h){const d=document.createElement('div');d.innerHTML=h;return d.textContent;}
 function helpBtn(box,it){
   if(box.querySelector('.helpb')) return;
   const p=document.createElement('p');p.className='center helpb';p.innerHTML=`<button class="btn yellow">📋 Voir le tableau</button>`;box.appendChild(p);
-  p.querySelector('button').onclick=()=>modal(`${tableHTML(it.v)}${LEGEND}<p class="center"><button class="btn" data-close>Fermer</button></p>`);
+  p.querySelector('button').onclick=()=>modal(`${tableHTML(it.v,null,it.E)}${LEGEND}<p class="center"><button class="btn" data-close>Fermer</button></p>`);
 }
 
 function renderQ(box,it,cfg,done){
   const id='q'+(++QID);
   if(it.type==='when') return renderWhen(box,it,cfg,done,id);
   if(it.type==='which') return renderWhich(box,it,cfg,done,id);
+  if(it.type==='mc') return renderMC(box,it,cfg,done);
+  const tname=it.E===COND?'au conditionnel présent':'au futur';
   if(cfg.mode==='guided') return it.cm2?renderGuidedCM2(box,it,done,id):renderGuided(box,it,done,id);
-  box.innerHTML=`<p><b>${cfg.input==='qcm'?'Choisis':'Écris'} le verbe au futur.</b></p>${sentenceHTML(it,id)}<div class="zone"></div>`;
+  box.innerHTML=`<p><b>${cfg.input==='qcm'?'Choisis':'Écris'} le verbe ${tname}.</b></p>${sentenceHTML(it,id)}<div class="zone"></div>`;
   const zone=box.querySelector('.zone');
-  autoSay((cfg.input==='qcm'?'Choisis':'Écris')+' le verbe au futur. '+it.say);
+  autoSay((cfg.input==='qcm'?'Choisis':'Écris')+' le verbe '+tname+'. '+it.say);
   let tries=cfg.mode==='solo'?2:1, firstOk=null;
   const finish=(ok,fbh)=>{
     if(cfg.mode==='scan'){done(ok);return;}
@@ -600,7 +627,7 @@ function renderQ(box,it,cfg,done){
     tries--; if(firstOk===null) firstOk=false;
     if(tries>0){ const f=zone.querySelector('.fb'); if(f) f.remove(); zone.insertAdjacentHTML('beforeend',fbHTML('ko',msg,stripTags(msg))); autoSay(stripTags(msg)); helpBtn(zone,it); return false; }
     const f=zone.querySelector('.fb'); if(f) f.remove(); const hb=zone.querySelector('.helpb'); if(hb) hb.remove();
-    finish(false,fbHTML('info',`La bonne réponse est : <b>${colorForm(it.v,it.k)}</b>.<br>${esc(fullSentence(it))}`,`La bonne réponse est : ${it.ans}. ${fullSentence(it)}`));
+    finish(false,fbHTML('info',`La bonne réponse est : <b>${colorForm(it.v,it.k,it.E)}</b>.<br>${esc(fullSentence(it))}`,`La bonne réponse est : ${it.ans}. ${fullSentence(it)}`));
     return true;
   };
   if(cfg.input==='qcm'){
@@ -630,6 +657,7 @@ function renderQ(box,it,cfg,done){
 }
 function qcmHint(it,c){
   const v=it.v;
+  if(it.E===COND){ if(c===formE(v,it.k,END)) return `✋ IniBO : Stop ! « ${esc(c)} », c'est le futur. Au conditionnel : terminaisons de l'imparfait.`; return `Le radical est juste, mais la terminaison ne va pas avec le sujet. Qui fait l'action ?`; }
   if(v.reg && c===v.reg+END[it.k]){
     if(v.pl===3) return `✋ IniBO : Stop ! « ${esc(c)} », c'est le verbe ${v.inf==='être'?'avoir':'être'}. Ici, c'est « ${v.inf} ».`;
     if(v.mute) return `✋ IniBO : Stop ! Il manque le <b>e</b> de l'infinitif « ${v.inf} ».`;
@@ -838,6 +866,7 @@ function placeAt(p){
    <div class="badge-big">${P.emoji}</div><h2>${P.name}</h2>${inibo(t,'ptxt')}
    <p>Ton mot de passe : <span class="pass">${code(p)}</span> ${spk('Ton mot de passe est : '+code(p).replace('-',', tiret, ')+'.')}</p>
    <p class="small">Note-le : il te permet de continuer sur n'importe quel appareil.</p>
+   ${p>0?`<p>🔐 Les planètes déjà validées t'ont donné ${found1().size} lettres du message secret. Va voir sur la carte !</p>`:`<p>🔐 À chaque planète validée, tu gagneras des lettres d'un message secret…</p>`}
    <p><button class="btn green" id="tomap">🗺️ Voir la carte de la galaxie</button></p></div>`;
   autoSay(t,document.getElementById('ptxt'));
   document.getElementById('tomap').onclick=()=>showMap();
@@ -849,36 +878,106 @@ function placeAt(p){
 function showMap(msg){
   window.scrollTo(0,0); if(HAS_TTS) speechSynthesis.cancel();
   const u=S.unlocked;
-  const hello=(S.name?`Commandant ${S.name}, `:'')+(msg||(u>=8?'tu as terminé toute la mission. Bravo !':'choisis une planète.'));
+  const hello=(S.name?`Commandant ${S.name}, `:'')+(msg||(u>=9?'tu as terminé toute la mission, bonus compris. Bravo !':'choisis une planète.'));
   app().innerHTML=`<div class="center white"><h2>🗺️ La galaxie du futur</h2>
     <p>${esc(hello)} ${spk(hello)}</p>
     <p class="small" style="color:#cfd3ff">Mot de passe : <span class="pass">${code(u)}</span></p></div>
+    ${secretsHTML()}
     <div class="map">${PLANETS.map((P,i)=>{
       const st=i<u?'done':i===u?'current':'locked';
-      const lab=st==='done'?'⭐ Planète validée':st==='current'?'🚀 Tu es ici':'🔒 Pas encore ouverte';
+      const lab=st==='done'?'⭐ Planète validée':st==='current'?'🚀 Tu es ici':(P.bonus?'🔒 Bonus 6e : réussis la Station CM2 pour l\'ouvrir':'🔒 Pas encore ouverte');
       return `<button class="planet ${st}" data-p="${i}" ${st==='locked'?'aria-disabled="true"':''}><div class="orb" style="background:${P.color}">${P.emoji}</div><div><div class="pn">${P.name}</div><div class="ps">${P.sub}</div><div class="st">${lab}</div></div></button>`;}).join('')}</div>`;
   app().querySelectorAll('.planet').forEach(b=>b.onclick=()=>{
     const i=+b.dataset.p;
     if(i>u){const m='Cette planète est encore fermée. Réussis le défi de la planète d\'avant pour l\'ouvrir !'; speak(m); modal(`<p class="big">🔒</p><p>${m}</p><p class="center"><button class="btn" data-close>OK</button></p>`);return;}
     showPlanet(i,'d');
   });
+  bindGuess(app());
 }
 
 /* =========================================================
    PLANÈTE + ONGLETS
    ========================================================= */
 const TABS=[['d','🔭','Découvrir'],['g','🧭','Guidé'],['s','🚀','Seul'],['c','🏆','Défi']];
-function markTab(p,t){S.tabs[p]=S.tabs[p]||{}; S.tabs[p][t]=1; save();}
+const TABS8=[['d','🔭','Découvrir'],['m','🧪','Manipuler'],['q','❓','Quiz'],['p','✍️','Phrases'],['c','🏆','Défi']];
+function markTab(p,t){
+  S.tabs[p]=S.tabs[p]||{}; const first=!S.tabs[p][t]; S.tabs[p][t]=1; save();
+  if(p===8 && first && t!=='c' && SECRET2.keys[t]) toastLetters(SECRET2.keys[t],2);
+}
+
+/* =========================================================
+   MESSAGES SECRETS
+   ========================================================= */
+const SECRET1={title:'Message secret n°1',
+  text:'SUR LA LUNE, LES TRACES DE PAS RESTERONT DES MILLIONS D\'ANNÉES !',
+  keys:[['E'],['S'],['A','N'],['R','T'],['L','O'],['U','D'],['C','I'],['P','M']],
+  expl:'Sur la Lune, il n\'y a ni vent ni pluie pour effacer les traces. Les empreintes laissées par les astronautes en 1969 sont toujours là, et elles pourraient rester des millions d\'années ! Et tu as remarqué ? « resteront » est au futur.'};
+const SECRET2={title:'Message secret n°2',
+  text:'LE CONDITIONNEL VIENT DU LATIN : CHANTER + J\'AVAIS',
+  keys:{d:['E','L','N'],m:['I','T','O'],q:['A','C','D'],p:['V','U','S'],c:['H','R','J']},
+  expl:'Il y a très longtemps, en latin, on disait « cantare habebam » : « j\'avais à chanter ». Avec les siècles, c\'est devenu « je chanterais ». Voilà pourquoi le conditionnel garde le r de l\'infinitif et prend les terminaisons de l\'imparfait, comme « avais » ! Et le futur ? Même histoire : « cantare habeo », « j\'ai à chanter », est devenu « je chanterai ».'};
+const GLYPHS='▲△▼▽◆◇○●□■◐◑◒◓◢◣◤◥◧◨◩◪◬◭◮◎';
+const base=c=>noAcc(c).toUpperCase();
+const glyphOf=c=>GLYPHS[base(c).charCodeAt(0)-65]||'?';
+function found1(){const n=Math.min(S.unlocked,8); const f=new Set(); for(let i=0;i<n;i++) SECRET1.keys[i].forEach(x=>f.add(x)); return f;}
+function found2(){const f=new Set(); const all=S.unlocked>=9; Object.entries(SECRET2.keys).forEach(([t,ks])=>{ if(all||(t!=='c'&&S.tabs[8]&&S.tabs[8][t])) ks.forEach(x=>f.add(x)); }); return f;}
+function lettersOf(txt){return new Set([...txt].map(base).filter(c=>/[A-Z]/.test(c)));}
+function isComplete(M,f){return [...lettersOf(M.text)].every(c=>f.has(c));}
+function codedHTML(M,f,fresh){
+  fresh=fresh||[];
+  return M.text.split(' ').map(w=>'<span style="white-space:nowrap">'+[...w].map(c=>{const b=base(c); if(!/[A-Z]/.test(b)) return esc(c);
+    return f.has(b)?`<span class="sl${fresh.includes(b)?' new':''}">${esc(c)}</span>`:`<span class="sg">${glyphOf(c)}</span>`;}).join('')+'</span>').join(' ');
+}
+function secretCard(M,f,label){
+  const done=isComplete(M,f); const id='sx'+Math.random().toString(36).slice(2,7);
+  return `<div class="card"><h3>🔐 ${M.title}</h3>
+    <div class="secret">${codedHTML(M,f)}</div>
+    ${done?`<div class="fb ok"><div class="row">${spk(M.text.toLowerCase()+'. '+M.expl)}<div><b>Message décodé !</b><br><span id="${id}" class="kara">${esc(M.expl)}</span></div></div></div>`
+      :`<p class="small">${label}</p><p class="center"><button class="btn yellow guess" data-m="${M===SECRET1?1:2}">🕵️ Je crois avoir deviné !</button></p>`}</div>`;
+}
+function bindGuess(root){
+  root.querySelectorAll('.guess').forEach(b=>b.onclick=()=>{
+    const M=b.dataset.m==='1'?SECRET1:SECRET2;
+    const m=modal(`<h3>🕵️ Tu as deviné le message ?</h3><p>Écris-le en entier :</p><textarea id="gs" style="min-height:90px"></textarea><div id="gfb"></div><p class="center"><button class="btn green" id="gok">Vérifier</button> <button class="btn grey" data-close>Fermer</button></p>`);
+    m.querySelector('#gok').onclick=()=>{
+      const clean=x=>noAcc(x).toUpperCase().replace(/[^A-Z]/g,'');
+      if(clean(m.querySelector('#gs').value)===clean(M.text)){ m.querySelector('#gfb').innerHTML=fbHTML('ok','🏅 Bravo, décodeur de génie ! Tu as trouvé le message avant d\'avoir toutes les lettres. Garde le secret pour tes camarades !','Bravo, décodeur de génie !'); speak('Bravo, décodeur de génie !'); }
+      else { m.querySelector('#gfb').innerHTML=fbHTML('ko','Pas encore… Continue ta mission pour gagner d\'autres lettres !','Pas encore. Continue ta mission pour gagner d\'autres lettres !'); speak('Pas encore. Continue ta mission pour gagner d\'autres lettres !'); }
+    };
+  });
+}
+function secretsHTML(){
+  let h=secretCard(SECRET1,found1(),`Chaque planète validée te donne de nouvelles lettres. Les symboles qui restent cachent les lettres qu'il te manque.`);
+  if(S.unlocked>=8) h+=secretCard(SECRET2,found2(),`Sur la Planète Rêverie, chaque étape terminée (Découvrir, Manipuler, Quiz, Phrases, Défi) te donne de nouvelles lettres.`);
+  return h;
+}
+function toastLetters(ls,which){
+  const t=document.createElement('div'); t.className='toast';
+  t.innerHTML=`🔐 Message secret n°${which} : tu gagnes ${ls.length>1?'les lettres':'la lettre'} ${ls.map(l=>`<b style="color:#69f0ae">${l}</b>`).join(', ')} !`;
+  document.body.appendChild(t); speak(`Message secret : tu gagnes ${ls.length>1?'les lettres':'la lettre'} ${ls.join(', ')} !`);
+  setTimeout(()=>t.remove(),4000);
+}
+function secretGainHTML(p,newU){
+  if(!newU) return '';
+  if(p<=7){ const ls=SECRET1.keys[p]; const f=found1();
+    return `<div class="card" style="box-shadow:none;border:3px dashed #ffca28"><h3>🔐 Tu gagnes ${ls.length>1?'les lettres':'la lettre'} ${ls.join(', ')} du message secret !</h3><div class="secret">${codedHTML(SECRET1,f,ls)}</div>
+      ${isComplete(SECRET1,f)?`<div class="fb ok"><div class="row">${spk(SECRET1.text.toLowerCase()+'. '+SECRET1.expl)}<div><b>Message décodé !</b><br>${esc(SECRET1.expl)}</div></div></div>`:''}</div>`; }
+  if(p===8){ const f=found2();
+    return `<div class="card" style="box-shadow:none;border:3px dashed #ffca28"><h3>🔐 Message secret n°2 décodé !</h3><div class="secret">${codedHTML(SECRET2,f,SECRET2.keys.c)}</div>
+      <div class="fb ok"><div class="row">${spk(SECRET2.text.toLowerCase()+'. '+SECRET2.expl)}<div>${esc(SECRET2.expl)}</div></div></div></div>`; }
+  return '';
+}
 function showPlanet(p,tab){
   window.scrollTo(0,0); if(HAS_TTS) speechSynthesis.cancel();
   const P=PLANETS[p]; const tb=S.tabs[p]||{};
   app().innerHTML=`<div class="ptitle"><button class="btn grey" id="back" style="padding:8px 12px">🗺️</button><div class="orb" style="background:${P.color}">${P.emoji}</div><div><h2 style="margin:0">${P.name}</h2><div class="small" style="color:#cfd3ff">${P.sub}</div></div></div>
-   <div class="tabs">${TABS.map(([k,ic,lab])=>`<button class="tab ${k===tab?'active':''}" data-t="${k}"><span class="ic">${ic}</span>${lab} ${tb[k]?'<span class="ck">✓</span>':''}</button>`).join('')}</div>
+   <div class="tabs" ${p===8?'style="grid-template-columns:repeat(5,1fr)"':''}>${(p===8?TABS8:TABS).map(([k,ic,lab])=>`<button class="tab ${k===tab?'active':''}" data-t="${k}"><span class="ic">${ic}</span>${lab} ${tb[k]?'<span class="ck">✓</span>':''}</button>`).join('')}</div>
    <div class="card" id="pc"></div>`;
   document.getElementById('back').onclick=()=>showMap();
   app().querySelectorAll('.tab').forEach(b=>b.onclick=()=>showPlanet(p,b.dataset.t));
   const pc=document.getElementById('pc');
   if(tab==='d') return tabDiscover(pc,p);
+  if(p===8){ if(tab==='m') return tabManip(pc); if(tab==='q') return tabQuizC(pc); if(tab==='p') return tabPhrasesC(pc); if(tab==='c') return defiCond(pc); }
   if(tab==='g') return tabGuided(pc,p);
   if(tab==='s') return tabSolo(pc,p);
   if(tab==='c') return tabDefi(pc,p);
@@ -964,6 +1063,20 @@ function slidesFor(p){
       <p class="big">Demain ${colorForm(V('venir'),5)} mes cousins.<br><span class="small">Qui viendra ? mes cousins → ils</span></p>
       <p class="big">Mamie nous ${colorForm(V('envoyer'),2)} un colis.<br><span class="small">« nous » n'est pas le sujet ! Qui enverra ? Mamie → elle</span></p>`}
   ];
+  case 8: return [
+    {h:'Le conditionnel : le temps des rêves',say:'Le conditionnel présent sert à imaginer : si j\'étais un oiseau, je volerais. Il sert aussi à demander poliment : je voudrais un verre d\'eau. Et dans un récit au passé, il dit ce qui allait arriver ensuite : Léo a dit qu\'il viendrait.',
+     html:`<p class="kara">Le conditionnel présent sert à :</p><p class="big">🌈 <b>imaginer</b> : Si j'étais un oiseau, je ${colorForm(V('chanter'),0,COND)}…<br>🙏 <b>demander poliment</b> : Je ${colorForm(V('vouloir'),0,COND)} un verre d'eau.<br>📖 <b>dire ce qui allait arriver</b> : Léo a dit qu'il ${colorForm(V('venir'),2,COND)}.</p>`},
+    {h:'La recette du conditionnel',say:'Bonne nouvelle : tu connais déjà le radical ! Le conditionnel, c\'est le radical du futur, avec son r, plus les terminaisons de l\'imparfait : a i s, a i s, a i t, i o n s, i e z, a i e n t. Je viendrais.',
+     html:`<p class="kara">Bonne nouvelle : tu connais déjà le radical ! Le conditionnel, c'est le radical du futur (avec son r) + les terminaisons de l'imparfait.</p>
+      <p class="eq"><span class="rad irr">viend</span><span class="rm">r</span> + <span class="tc">ais</span> → je ${colorForm(V('venir'),0,COND)}</p>
+      <p class="eq"><span class="tc">ais · ais · ait · ions · iez · aient</span></p>
+      <div class="legend"><span class="te">bleu : terminaison du futur</span><span class="tc">violet : terminaison du conditionnel (imparfait)</span></div>`},
+    {h:'Futur ou conditionnel ?',say:'Compare les deux tableaux : le radical est le même, seules les terminaisons changent.',
+     html:`<p class="kara">Compare : le radical est le même, seules les terminaisons changent.</p><div class="tables">${tableHTML(V('venir'),'futur')}${tableHTML(V('venir'),'conditionnel',COND)}</div>`},
+    {h:'Le piège qui s\'entend pareil',say:'Je serai et je serais, à l\'oral, c\'est pareil ! Astuce d\'IniBO : remplace je par tu. Tu seras, c\'est le futur : je serai, sans s. Tu serais, c\'est le conditionnel : je serais, avec un s.',
+     html:`${inibo('Je serai ou je serais ? À l\'oral, c\'est pareil ! Astuce : remplace « je » par « tu ».','k8')}
+      <p class="big">tu ser<b>as</b> → futur → je ${colorForm(V('être'),0)}<br>tu ser<b>ais</b> → conditionnel → je ${colorForm(V('être'),0,COND)}</p>`}
+  ];
   }
 }
 function tabDiscover(pc,p){
@@ -973,12 +1086,12 @@ function tabDiscover(pc,p){
     pc.innerHTML=`<div class="slide"><div class="row"><h3 style="flex:1">${s.h}</h3>${spk(s.say)}</div>${s.html}</div>
      <div class="sdots">${sl.map((_,j)=>`<span class="dot ${j===i?'cur':j<i?'y':''}"></span>`).join('')}</div>
      <div class="nav"><button class="btn grey" id="pv" ${i===0?'style="visibility:hidden"':''}>⬅ Avant</button>
-     ${i<sl.length-1?'<button class="btn" id="nx">Suite ➜</button>':'<button class="btn green" id="fin">J\'ai compris ! Étape Guidé ➜</button>'}</div>
+     ${i<sl.length-1?'<button class="btn" id="nx">Suite ➜</button>':`<button class="btn green" id="fin">J'ai compris ! ${p===8?'Je manipule':'Étape Guidé'} ➜</button>`}</div>
      ${i===sl.length-1&&p>0?`<p class="small center">Tu es sûr(e) de toi ? Tu peux aller directement au 🏆 Défi.</p>`:''}`;
     autoSay(s.say);
     const pv=pc.querySelector('#pv'); if(pv) pv.onclick=()=>{i--;show();};
     const nx=pc.querySelector('#nx'); if(nx) nx.onclick=()=>{i++;show();};
-    const fn=pc.querySelector('#fin'); if(fn) fn.onclick=()=>{markTab(p,'d');showPlanet(p,'g');};
+    const fn=pc.querySelector('#fin'); if(fn) fn.onclick=()=>{markTab(p,'d');showPlanet(p,p===8?'m':'g');};
   };
   show();
 }
@@ -1031,24 +1144,26 @@ function defiResult(pc,p,win,scoreTxt){
   S.defi=S.defi||{}; const prev=S.defi[p];
   S.defi[p]={last:scoreTxt,ok:win||!!(prev&&prev.ok),date:new Date().toLocaleDateString('fr-FR'),n:((prev&&prev.n)||0)+1};
   save();
-  if(win && S.unlocked===p){S.unlocked=Math.min(8,p+1);save();newU=true;}
+  if(win && S.unlocked===p){S.unlocked=Math.min(9,p+1);save();newU=true;}
   window.scrollTo(0,0);
   if(win){
-    const nextName=p<7?PLANETS[p+1].name:'';
-    const m=p===7?`Mission accomplie ! Tu as réussi la Station CM2. Tu es un vrai commandant du futur !`:
+    const nextName=p<8?PLANETS[p+1].name:'';
+    const m=p===8?`Mission accomplie ! Tu maîtrises le futur ET le conditionnel présent, comme un élève de 6e. Bravo, commandant !`:
+      p===7?`Tu as réussi la Station CM2 : tu es un vrai commandant du futur !`+(newU?` Une planète secrète s'ouvre : la Planète Rêverie, le bonus 6e !`:''):
       `Bravo ! Tu as gagné l'étoile de la ${PLANETS[p].name}.`+(newU?` La ${nextName} est maintenant ouverte !`:'');
     const ev=PCODES[p].ev;
     pc.innerHTML=`<div class="center"><div class="badge-big">⭐</div><h2>Défi réussi : ${scoreTxt}</h2>${inibo(m,'dr')}
      ${ev.length?`<div class="fb info" style="text-align:left">📘 <b>Dans ton livret de réussite :</b>${codeChips(ev,true)}</div>`:''}
+     ${secretGainHTML(p,newU)}
      ${newU?`<p>Ton nouveau mot de passe : <span class="pass">${code(S.unlocked)}</span> ${spk('Ton nouveau mot de passe est : '+code(S.unlocked).replace('-',', tiret, ')+'. Note-le !')}</p><p class="small">Note-le dans ton cahier !</p>`:''}
-     <p>${p<7?`<button class="btn green" id="nxp">${PLANETS[p+1].emoji} Aller à la ${nextName}</button>`:''}<button class="btn" id="tm">🗺️ La carte</button></p></div>`;
+     <p>${p<8?`<button class="btn green" id="nxp">${PLANETS[p+1].emoji} Aller à la ${nextName}</button>`:''}<button class="btn" id="tm">🗺️ La carte</button></p></div>`;
     autoSay(m,document.getElementById('dr'));
     const n=pc.querySelector('#nxp'); if(n) n.onclick=()=>showPlanet(p+1,'d');
   } else {
-    const m=`Tu as eu ${scoreTxt}. Il faut ${p===7?'au moins 80 sur 100 de bonnes réponses':'4 bonnes réponses'}. Ce n'est pas grave : retourne t'entraîner dans les étapes Guidé ou Seul, puis réessaie. Chaque erreur fait grandir ton cerveau !`;
-    pc.innerHTML=`<div class="center"><div class="badge-big">💪</div>${inibo(m,'dr')}<p><button class="btn" id="tg">🧭 Guidé</button><button class="btn" id="ts">🚀 Seul</button><button class="btn yellow" id="tc">🔁 Réessayer le défi</button></p><p><button class="btn grey" id="tm">🗺️ La carte</button></p></div>`;
+    const m=`Tu as eu ${scoreTxt}. Il faut ${p>=7?'au moins 80 sur 100 de bonnes réponses':'4 bonnes réponses'}. Ce n'est pas grave : retourne t'entraîner dans les étapes Guidé ou Seul, puis réessaie. Chaque erreur fait grandir ton cerveau !`;
+    pc.innerHTML=`<div class="center"><div class="badge-big">💪</div>${inibo(m,'dr')}<p><button class="btn" id="tg">${p===8?'🧪 Manipuler':'🧭 Guidé'}</button><button class="btn" id="ts">${p===8?'✍️ Phrases':'🚀 Seul'}</button><button class="btn yellow" id="tc">🔁 Réessayer le défi</button></p><p><button class="btn grey" id="tm">🗺️ La carte</button></p></div>`;
     autoSay(m,document.getElementById('dr'));
-    pc.querySelector('#tg').onclick=()=>showPlanet(p,'g'); pc.querySelector('#ts').onclick=()=>showPlanet(p,'s'); pc.querySelector('#tc').onclick=()=>showPlanet(p,'c');
+    pc.querySelector('#tg').onclick=()=>showPlanet(p,p===8?'m':'g'); pc.querySelector('#ts').onclick=()=>showPlanet(p,p===8?'p':'s'); pc.querySelector('#tc').onclick=()=>showPlanet(p,'c');
   }
   pc.querySelector('#tm').onclick=()=>showMap();
 }
@@ -1110,6 +1225,191 @@ function bonus(pc){
 }
 
 /* =========================================================
+   PLANÈTE RÊVERIE : CONDITIONNEL PRÉSENT (BONUS 6e)
+   ========================================================= */
+const CTX=['Si c\'était possible,','Dans un monde idéal,','Avec plus de temps,','Si nous gagnions le concours,','Sans la pluie,','Si j\'avais une baguette magique,'];
+const CSPEC=[
+ ['Je ____ un verre d\'eau, s\'il vous plaît.','vouloir',0,'demander poliment'],
+ ['Vous ____ m\'aider, s\'il vous plaît ?','pouvoir',4,'demander poliment'],
+ ['Léo a dit qu\'il ____ demain.','venir',2,'dire ce qui allait arriver'],
+ ['Mes parents ont promis qu\'ils ____ un chien.','acheter',5,'dire ce qui allait arriver'],
+ ['Si j\'avais des ailes, j\'____ au-dessus des nuages.','aller',0,'imaginer'],
+ ['Si nous étions riches, nous ____ le tour du monde.','faire',3,'imaginer'],
+ ['Si tu étais là, tu ____ la mer.','voir',1,'imaginer'],
+ ['À ta place, je ____ la vérité.','dire',0,'donner un conseil'],
+ ['Si elle avait le temps, elle ____ ses amies.','appeler',2,'imaginer'],
+ ['Sans la pluie, les enfants ____ dehors.','jouer',5,'imaginer'],
+ ['Si vous gagniez, vous ____ très contents.','être',4,'imaginer'],
+ ['Avec un peu de chance, nous ____ le concours.','réussir',3,'imaginer'],
+ ['Tu ____ ranger ta chambre, s\'il te plaît ?','pouvoir',1,'demander poliment'],
+ ['La maîtresse a annoncé que nous ____ une sortie.','avoir',3,'dire ce qui allait arriver'],
+];
+const CTEXTS=[
+ {title:'Si j\'étais astronaute',
+  seg:['Si j\'étais astronaute, j\'',['aller',0],' sur la Lune. Je ',['voir',0],' la Terre de très loin. Mes amis ',['venir',5],' me rendre visite et nous ',['faire',3],' des courses de fusées. Tu ',['pouvoir',1],' m\'envoyer des messages et je t\'',['appeler',0],' chaque soir. Ce ',['être',2],' extraordinaire !']},
+ {title:'Le monde idéal',
+  seg:['Dans un monde idéal, chaque enfant ',['avoir',2],' un jardin. Nous ',['jouer',3],' dehors tous les jours. Les adultes ',['prendre',5],' le temps d\'écouter. Vous ',['choisir',4],' vos livres préférés. Personne ne ',['vouloir',2],' se disputer et tout le monde ',['dire',2],' merci.']},
+];
+function condItem(v,k){
+  if(k==null) k=rnd([0,1,2,3,4,5]);
+  const P=rnd(PRON.filter(p=>p.k===k)); const ans=formE(v,k,COND);
+  let pd=P.p; if(k===0&&VOW.test(ans)) pd="j'";
+  const ctx=rnd(CTX), comp=rnd(v.comp);
+  return {type:'verb',E:COND,v,k,ans,before:ctx+' '+pd,after:' '+comp+'.',say:`${ctx} ${P.p} … ${comp}. Le verbe : ${v.inf}.`};
+}
+function condSpec(row){
+  const [s,inf,k,use]=row; const v=VBY[inf]; const [b,a]=s.split('____');
+  return {type:'verb',E:COND,v,k,ans:formE(v,k,COND),before:b.replace(/\s+$/,''),after:a,use,say:`${b} … ${a} Le verbe : ${inf}.`};
+}
+const NOT_RE=VERBS.filter(v=>v.pl>=1&&v.pl<=6);
+
+/* ---- Manipuler ---- */
+function tabManip(pc){
+  let v=VBY['venir'], k=0;
+  const verbOpts=PLANETS.slice(1,7).map((P,i)=>`<optgroup label="${esc(P.name)}">${VERBS.filter(x=>x.pl===i+1).map(x=>`<option ${x.inf==='venir'?'selected':''}>${esc(x.inf)}</option>`).join('')}</optgroup>`).join('');
+  const intro='Dans le labo, choisis un verbe et un sujet, puis essaie les terminaisons. Compare le futur et le conditionnel. Ensuite, relève la mission transformation !';
+  pc.innerHTML=`${inibo(intro,'mi')}
+   <h3>🧪 Le labo des terminaisons</h3>
+   <p>Verbe : <select id="mv" style="padding:6px;border-radius:10px;border:2px solid #b39ddb">${verbOpts}</select></p>
+   <div class="tiles" id="mp">${PLAB.map((p,i)=>`<button class="tile choice" data-k="${i}">${p}</button>`).join('')}</div>
+   <div class="center big" id="mbuild" style="min-height:50px;margin:8px 0"></div>
+   <p><b>Terminaisons du futur</b></p><div class="tiles">${END.map((e,i)=>`<button class="tile t-tile" data-e="F${i}">${e}</button>`).join('')}</div>
+   <p><b>Terminaisons du conditionnel</b> <span class="small">(comme à l'imparfait)</span></p><div class="tiles">${COND.map((e,i)=>`<button class="tile c-tile" data-e="C${i}">${e}</button>`).join('')}</div>
+   <div id="mfb"></div>
+   <p class="center"><button class="btn yellow" id="mtab">📋 Comparer les deux tableaux</button></p>
+   <hr style="border:none;border-top:3px dashed #b39ddb;margin:18px 0">
+   <h3>🔄 Mission transformation</h3><div id="mtr"></div>`;
+  const pron=()=>k===2?'il':k===5?'ils':['je','tu','il','nous','vous','ils'][k];
+  const showBase=()=>{ pc.querySelectorAll('#mp .tile').forEach(b=>b.classList.toggle('good',+b.dataset.k===k)); const f=formE(v,k,END); const pd=k===0&&VOW.test(f)?"j'":pron()+' '; pc.querySelector('#mbuild').innerHTML=`<span class="pr">${esc(pd)}</span><span class="rad${v.irr?' irr':''}">${esc(v.rad)}</span><span class="rm">r</span> + ?`; pc.querySelector('#mfb').innerHTML=''; };
+  pc.querySelector('#mv').onchange=e=>{v=VBY[e.target.value]; showBase();};
+  pc.querySelectorAll('#mp .tile').forEach(b=>b.onclick=()=>{k=+b.dataset.k; showBase();});
+  pc.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{
+    const isC=b.dataset.e[0]==='C', i=+b.dataset.e.slice(1), E=isC?COND:END;
+    const f=formE(v,i,E); const pd=k===0&&VOW.test(f)?"j'":pron()+' ';
+    pc.querySelector('#mbuild').innerHTML=`<span class="pr">${esc(pd)}</span>${colorForm(v,i,E)}`;
+    let m;
+    if(i!==k) m=`Hum… cette terminaison ne va pas avec « ${PLAB[k]} ». Essaie une autre !`;
+    else m=isC?`✅ Conditionnel présent : ${pd}${f}.`:`✅ Futur : ${pd}${f}. Essaie maintenant la terminaison du conditionnel !`;
+    pc.querySelector('#mfb').innerHTML=fbHTML(i===k?(isC?'ok':'info'):'ko',esc(m),m);
+    speak(i===k?pd+f:m);
+  });
+  pc.querySelector('#mtab').onclick=()=>modal(`<div class="tables">${tableHTML(v,'futur')}${tableHTML(v,'conditionnel',COND)}</div><p class="center"><button class="btn" data-close>Fermer</button></p>`);
+  showBase();
+  // mission transformation
+  const items=shuffle(NOT_RE).slice(0,6).map(x=>({v:x,k:rnd([0,1,2,3,4,5])}));
+  let j=0, ok=0;
+  const tr=pc.querySelector('#mtr');
+  const next=()=>{
+    if(j>=items.length){ markTab(8,'m'); tr.innerHTML=fbHTML('ok',`🎉 Mission transformation terminée : ${ok} sur ${items.length} du premier coup ! Passe au ❓ Quiz.`,'Mission transformation terminée ! Passe au quiz.')+`<p class="center"><button class="btn green" id="toq">❓ Le Quiz ➜</button></p>`; tr.querySelector('#toq').onclick=()=>showPlanet(8,'q'); return; }
+    const it=items[j]; const ff=formE(it.v,it.k,END); const pd=it.k===0&&VOW.test(ff)?"j'":['je','tu','il','nous','vous','ils'][it.k]+' ';
+    let first=true;
+    tr.innerHTML=`<p class="small">Transformation ${j+1} sur ${items.length}</p>
+     <p class="big">⏩ Futur : ${esc(pd)}${colorForm(it.v,it.k)} ${spk(pd+ff)}</p>
+     <p class="big">🌈 Conditionnel : ${esc(pd)}<span class="rad${it.v.irr?' irr':''}">${esc(it.v.rad)}</span><span class="rm">r</span><span class="blank" style="min-width:70px">&nbsp;</span></p>
+     <div class="tiles">${COND.map((e,i)=>`<button class="tile c-tile" data-i="${i}">${e}</button>`).join('')}</div><div class="tz"></div>`;
+    autoSay('Transforme au conditionnel : '+pd+ff);
+    tr.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{
+      if(b.disabled) return;
+      if(+b.dataset.i===it.k){ tr.querySelectorAll('[data-i]').forEach(x=>x.disabled=true); b.classList.add('good'); if(first) ok++; const cf=formE(it.v,it.k,COND); tr.querySelector('.blank').outerHTML=`<span class="tc">${COND[it.k]}</span>`; const m='✅ '+pd+cf; tr.querySelector('.tz').innerHTML=fbHTML('ok',esc(m),pd+cf); speak(pd+cf); nextBtn(tr.querySelector('.tz'),()=>{j++;next();}); }
+      else { first=false; b.classList.add('bad'); b.disabled=true; const m=`Regarde le sujet : « ${PLAB[it.k]} ». Quelle terminaison de l'imparfait va avec ?`; tr.querySelector('.tz').innerHTML=fbHTML('ko',esc(m),m); autoSay(m); }
+    });
+  };
+  next();
+}
+
+/* ---- Quiz ---- */
+function mcFC(){
+  const v=rnd(NOT_RE), k=rnd([0,1,2,3,4,5]); const P=rnd(PRON.filter(p=>p.k===k)); const isC=Math.random()<0.5;
+  const E=isC?COND:END; const f=formE(v,k,E); const pd=k===0&&VOW.test(f)?"j'":P.p+' ';
+  const start=isC?rnd(CTX):rnd(ADV); const comp=rnd(v.comp);
+  const sent=`${start} ${pd}${f} ${comp}.`;
+  return {type:'mc',q:'Ce verbe est-il au futur ou au conditionnel ?',sentHTML:`${esc(start)} ${esc(pd)}<b style="text-decoration:underline">${esc(f)}</b> ${esc(comp)}.`,say:sent,
+    opts:[{t:'⏩ Futur',ok:!isC},{t:'🌈 Conditionnel',ok:isC}],
+    expl:isC?`C'est le conditionnel : terminaison de l'imparfait « -${COND[k]} ».`:`C'est le futur : terminaison « -${END[k]} ».`};
+}
+function mcPick(){
+  const it=condItem(rnd(NOT_RE)); const sep=it.before.endsWith("'")?'':' ';
+  return {type:'mc',q:'Choisis le verbe au conditionnel présent.',sentHTML:`${esc(it.before)}${sep}<span class="blank">&nbsp;</span>${esc(it.after)} <span class="inf">(${esc(it.v.inf)})</span>`,say:it.say,
+    opts:qcmChoices(it).map(c=>({t:c,ok:c===it.ans})),expl:`Conditionnel : radical du futur « ${it.v.rad}r- » + « ${COND[it.k]} » → ${it.ans}.`,fill:colorForm(it.v,it.k,COND)};
+}
+function mcHomo(){
+  const k=rnd([0,1]); const v=rnd([VBY['être'],VBY['aller'],VBY['avoir'],VBY['pouvoir'],VBY['vouloir']]);
+  const isC=Math.random()<0.5; const comp=rnd(v.comp);
+  const start=isC?'Si je pouvais,':'Demain,';
+  const pd=VOW.test(formE(v,0,END))?"j'":'je ';
+  return {type:'mc',q:'Écoute bien : les deux s\'entendent pareil ! Lequel faut-il écrire ?',sentHTML:`${esc(start)} ${esc(pd)}<span class="blank">&nbsp;</span> ${esc(comp)}.`,say:`${start} ${pd} … ${comp}.`,
+    opts:[{t:formE(v,0,END),ok:!isC},{t:formE(v,0,COND),ok:isC}],
+    expl:`Astuce d'IniBO : remplace « je » par « tu ». ${isC?`« tu ${formE(v,1,COND)} » → conditionnel → ${formE(v,0,COND)}`:`« tu ${formE(v,1,END)} » → futur → ${formE(v,0,END)}`}.`,fill:colorForm(v,0,isC?COND:END)};
+}
+function renderMC(box,it,cfg,done){
+  box.innerHTML=`<p><b>${esc(it.q)}</b> ${spk(it.q)}</p><div class="row">${spk(it.say)}<div class="sent">${it.sentHTML}</div></div>
+   <div class="tiles">${it.opts.map((o,i)=>`<button class="tile choice" data-i="${i}">${esc(o.t)}</button>`).join('')}</div><div class="zone"></div>`;
+  autoSay(it.q+' '+it.say);
+  const zone=box.querySelector('.zone'); let tries=cfg.mode==='defi'?1:2, first=null;
+  box.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return; const ok=it.opts[+b.dataset.i].ok;
+    if(first===null) first=ok;
+    if(ok||--tries<=0){
+      box.querySelectorAll('.tile').forEach((x,i)=>{x.disabled=true; if(it.opts[i].ok) x.classList.add('good');});
+      if(it.fill){const bl=box.querySelector('.blank'); if(bl){bl.innerHTML=it.fill; bl.style.borderBottom='none';}}
+      const m=(ok?'✅ '+rnd(PRAISE)+' ':'')+it.expl; zone.innerHTML=fbHTML(ok?'ok':'info',esc(m),m); autoSay(m); nextBtn(zone,()=>done(first));
+    } else { b.classList.add('bad'); b.disabled=true; const m='Pas encore. Regarde bien la terminaison.'; zone.innerHTML=fbHTML('ko',m,m); autoSay(m); }
+  });
+}
+function tabQuizC(pc){
+  const items=shuffle([mcFC(),mcFC(),mcFC(),mcPick(),mcPick(),mcPick(),mcHomo(),mcHomo()]);
+  pc.innerHTML=`${inibo('Le quiz : futur ou conditionnel ? Tu as deux essais par question.','qi')}<div id="ser"></div>`;
+  runSeries(pc.querySelector('#ser'),items,{mode:'solo'},(sc,res)=>{
+    markTab(8,'q');
+    endScreen(pc,`Quiz terminé : ${sc} sur ${res.length} du premier coup.`,[['✍️ Les phrases',()=>showPlanet(8,'p')],['🔁 Un autre quiz',()=>showPlanet(8,'q')]]);
+  });
+}
+/* ---- Phrases ---- */
+function tabPhrasesC(pc){
+  const again=()=>showPlanet(8,'p');
+  const items=shuffle([...shuffle(CSPEC).slice(0,6).map(condSpec),condItem(rnd(NOT_RE)),condItem(rnd(NOT_RE))]);
+  pc.innerHTML=`${inibo('Écris le verbe au conditionnel présent. Regarde à quoi il sert dans chaque phrase : imaginer, demander poliment, ou dire ce qui allait arriver.','pi')}${inputModeBar()}<div id="ser"></div>`;
+  bindInputMode(pc,again);
+  runSeries(pc.querySelector('#ser'),items,{mode:'solo',input:S.qcm?'qcm':'type'},(sc,res)=>{
+    markTab(8,'p');
+    endScreen(pc,`Phrases terminées : ${sc} sur ${res.length} du premier coup.`,[['🏆 Le Défi',()=>showPlanet(8,'c')],['🔁 Recommencer',again]]);
+  });
+}
+/* ---- Défi : texte au conditionnel ---- */
+function defiCond(pc,idx){
+  const T=CTEXTS[idx==null?Math.floor(Math.random()*CTEXTS.length):idx]; const tidx=CTEXTS.indexOf(T);
+  const qcm=!!S.qcm; let n=0; const gaps=[];
+  const body=T.seg.map(s=>{
+    if(typeof s==='string') return esc(s);
+    const v=VBY[s[0]], k=s[1], it={type:'verb',E:COND,v,k,ans:formE(v,k,COND)}; gaps.push(it); const i=n++;
+    if(qcm) return `<select data-g="${i}" aria-label="${v.inf}"><option value="">(${esc(v.inf)})</option>${qcmChoices(it).map(c=>`<option>${esc(c)}</option>`).join('')}</select>`;
+    return `<input data-g="${i}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${esc(v.inf)}" aria-label="${v.inf}">`;
+  }).join('');
+  const intro='Le Défi de la Planète Rêverie : complète le texte avec les verbes au conditionnel présent. Avec 80 sur 100 de bonnes réponses, tu gagnes l\'étoile bonus !';
+  const plain=T.seg.map(s=>typeof s==='string'?s:' … ').join('');
+  pc.innerHTML=`${inibo(intro,'ci')}${livretLine(8)}${inputModeBar()}
+   <h3>🌈 ${esc(T.title)} ${spk(plain)}</h3><div class="textq">${body}</div>
+   <div id="tfb"></div><p class="center"><button class="btn green" id="tv">Vérifier</button></p>`;
+  bindInputMode(pc,()=>defiCond(pc,tidx));
+  autoSay(intro);
+  pc.querySelector('#tv').onclick=()=>{
+    let ok=0;
+    pc.querySelectorAll('[data-g]').forEach(el=>{
+      const g=gaps[+el.dataset.g]; const r=qcm?{ok:el.value===g.ans}:analyse(g,el.value);
+      el.classList.remove('good','bad'); el.disabled=true;
+      if(r.ok){ok++;el.classList.add('good');} else {el.classList.add('bad'); el.insertAdjacentHTML('afterend',` <span class="corr">→ ${colorForm(g.v,g.k,COND)}</span>`);}
+    });
+    const need=Math.ceil(gaps.length*0.8);
+    pc.querySelector('#tv').remove();
+    const full=T.seg.map(s=>typeof s==='string'?s:formE(VBY[s[0]],s[1],COND)).join('');
+    pc.querySelector('#tfb').innerHTML=`<div class="fb ${ok>=need?'ok':'ko'}">${ok} bonnes réponses sur ${gaps.length}.</div><div class="row" style="margin-top:8px">${spk(full)}<span>Écouter le texte complet</span></div><p class="center"><button class="btn green" id="tn">Suite ➜</button> <button class="btn grey" id="tr">🔁 Un autre texte</button></p>`;
+    autoSay(`${ok} bonnes réponses sur ${gaps.length}.`);
+    pc.querySelector('#tr').onclick=()=>defiCond(pc,(tidx+1)%CTEXTS.length);
+    pc.querySelector('#tn').onclick=()=>{ markTab(8,'c'); defiResult(pc,8,ok>=need,`${ok} sur ${gaps.length}`); };
+  };
+}
+
+/* =========================================================
    ESPACE ENSEIGNANTE (5 clics sur le logo)
    ========================================================= */
 function teacherLogin(){
@@ -1128,9 +1428,9 @@ function teacherPanel(){
      const st=d&&d.ok?`✅ Défi réussi (dernier : ${d.last}, ${d.date}, ${d.n} essai${d.n>1?'s':''})`:d?`⏳ Défi tenté (${d.last}, ${d.date}, ${d.n} essai${d.n>1?'s':''})`:(S.start!=null&&i<S.start)?'🛸 Validée par le scanner':i<S.unlocked?'✔︎ Ouverte par mot de passe':'—';
      return `<div style="border-top:1px solid #ddd;padding:6px 0"><b>${P.emoji} ${P.name}</b> — ${st}<br><span class="small">Évalué :</span> ${PCODES[i].ev.length?codeChips(PCODES[i].ev):'<span class="small">aucun</span>'} · <span class="small">Travaillé :</span> ${codeChips(PCODES[i].tr)}</div>`;}).join('')}</div>
    <details style="font-size:16px;margin-top:8px"><summary>Intitulés des codes</summary>${codeChips(Object.keys(CODES),true)}</details>
-   <h4>Mots de passe</h4><table class="conj" style="font-size:17px">${PLANETS.map((P,i)=>`<tr><td>${P.emoji} Départ ${P.name}</td><td><b>${code(i)}</b></td></tr>`).join('')}<tr><td>⭐ Mission terminée</td><td><b>${code(8)}</b></td></tr></table>
+   <h4>Mots de passe</h4><table class="conj" style="font-size:17px">${PLANETS.map((P,i)=>`<tr><td>${P.emoji} Départ ${P.name}</td><td><b>${code(i)}</b></td></tr>`).join('')}<tr><td>⭐ Mission terminée (bonus compris)</td><td><b>${code(9)}</b></td></tr></table>
    <p class="center"><button class="btn" data-close>Fermer</button></p>`);
-  m.querySelector('#ta').onclick=()=>{S.unlocked=Math.max(S.unlocked,7);S.placed=true;save();m.remove();refreshHeader();showMap();};
+  m.querySelector('#ta').onclick=()=>{S.unlocked=Math.max(S.unlocked,8);S.placed=true;save();m.remove();refreshHeader();showMap();};
   m.querySelector('#tsc').onclick=()=>{m.remove();scanIntro();};
   m.querySelector('#trs').onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){} S={name:'',placed:false,unlocked:0,tabs:{},auto:false,slow:false}; m.remove(); refreshHeader(); showWelcome();};
 }
