@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mission Passé composé ⏳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --card:#fffaf0; --ink:#1c1c36; --muted:#5b5b78;
+  --ok:#2e7d32; --okbg:#e8f5e9; --ko:#c62828; --kobg:#ffebee;
+  --violet:#8e44ad;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{min-height:100%;background-color:#1a0f2e;
+  background:
+    radial-gradient(1.5px 1.5px at 20px 30px,#ffe9a8,transparent),
+    radial-gradient(1px 1px at 120px 80px,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 200px 160px,#ffd180,transparent),
+    radial-gradient(1px 1px at 60px 200px,#fff,transparent),
+    radial-gradient(1px 1px at 260px 40px,#f3e5f5,transparent),
+    radial-gradient(ellipse at top,#5b2c6f,#1a0f2e 65%);
+  background-size:300px 240px,300px 240px,300px 240px,300px 240px,300px 240px,100% 900px;
+  background-repeat:repeat,repeat,repeat,repeat,repeat,no-repeat;
+  background-color:#1a0f2e;}
+body{margin:0;font-family:Andika,"Comic Sans MS",Verdana,Arial,sans-serif;font-size:20px;line-height:1.45;color:var(--ink);min-height:100vh;background:transparent}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none}
+input,textarea,select{font-family:inherit;font-size:22px}
+header{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(26,15,46,.94);color:#fff;border-bottom:2px solid #b07d2b}
+#logo{font-weight:700;font-size:23px;user-select:none;background:none;color:#fff;padding:4px}
+.hbtns{display:flex;gap:6px;flex-wrap:wrap}
+.hbtn{background:#4a2c5e;color:#fff;border-radius:999px;padding:6px 12px;font-size:17px}
+.hbtn.on{background:#ffca28;color:#1c1c36;font-weight:700}
+#app{max-width:860px;margin:0 auto;padding:14px 12px 60px}
+.card{background:var(--card);border-radius:22px;padding:18px 18px 22px;box-shadow:0 8px 26px rgba(0,0,0,.35);margin-bottom:16px}
+h1,h2,h3{margin:.2em 0 .4em;line-height:1.2}
+h1{font-size:32px} h2{font-size:27px} h3{font-size:23px}
+.white{color:#fff} .center{text-align:center} .big{font-size:26px}
+.small{font-size:17px;color:var(--muted)}
+.btn{background:var(--violet);color:#fff;border-radius:16px;padding:12px 20px;font-weight:700;margin:6px 4px;box-shadow:0 4px 0 #5e2d75}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #5e2d75}
+.btn.green{background:#43a047;box-shadow:0 4px 0 #2e7d32}
+.btn.grey{background:#8e8eaa;box-shadow:0 4px 0 #66667f}
+.btn.yellow{background:#ffca28;color:#1c1c36;box-shadow:0 4px 0 #c79a00}
+.secret{font-size:25px;letter-spacing:1px;line-height:1.9;background:#1a0f2e;color:#fff;border-radius:16px;padding:12px 14px;border:3px solid #ffca28;word-spacing:10px}
+.secret .sg{display:inline-block;min-width:1em;text-align:center;color:#ffca28}
+.secret .sl{display:inline-block;min-width:1em;text-align:center;color:#69f0ae;font-weight:700}
+.secret .sl.new{animation:pop .8s;color:#fff;background:#43a047;border-radius:6px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1a0f2e;color:#fff;border:3px solid #ffca28;border-radius:16px;padding:10px 16px;z-index:60;font-size:20px;box-shadow:0 6px 20px rgba(0,0,0,.4);animation:pop .5s;max-width:92vw}
+.spk{background:#ffca28;border-radius:50%;width:46px;height:46px;font-size:24px;line-height:46px;padding:0;vertical-align:middle;margin:0 6px;flex:none;box-shadow:0 3px 0 #c79a00}
+.spk.speaking{animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+.speaking-block{outline:3px dashed #ffca28;outline-offset:4px;border-radius:8px}
+.w.hl{background:#fff176;border-radius:4px}
+.row{display:flex;align-items:center;gap:6px}
+.inibo{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
+.inibo .av{flex:none;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#8e44ad,#ff9800);display:flex;align-items:center;justify-content:center;font-size:30px;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.3)}
+.inibo .bub{background:#f3e5f5;border-radius:16px;padding:10px 14px;flex:1}
+.inibo .bub b.n{color:#6a1b9a}
+/* code couleur */
+.ax-av{background:#81D4FA;border-radius:6px;padding:0 3px}
+.ax-et{background:#F8BBD0;border-radius:6px;padding:0 3px}
+.pp{background:#FFE082;border-radius:6px;padding:0 2px}
+.pp.irr{background:#FFB74D}
+.fin{color:#C62828;font-weight:700}
+.acc{color:#1B5E20;background:#C8E6C9;font-weight:700;border-radius:4px;padding:0 1px}
+.ng{color:#fff;background:#546E7A;border-radius:6px;padding:0 3px;font-weight:700}
+.pr{font-weight:700;color:#283593}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:16px;margin-top:8px}
+.legend span{padding:2px 8px;border-radius:8px}
+table.conj{border-collapse:separate;border-spacing:0 6px;font-size:23px;margin:6px auto}
+table.conj td{padding:2px 8px}
+table.conj td:first-child{text-align:right}
+.tables{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.tbox{background:#fff;border-radius:16px;padding:8px 12px;border:2px solid #e6dcef}
+.tbox h4{margin:4px 0;text-align:center;font-size:22px}
+/* carte */
+.map{position:relative;padding:10px 0}
+.map:before{content:"";position:absolute;left:50%;top:30px;bottom:30px;border-left:4px dotted rgba(255,220,150,.45);z-index:0}
+.planet{position:relative;z-index:1;display:flex;align-items:center;gap:14px;width:88%;margin:18px auto;padding:10px 14px;border-radius:24px;background:#3a2150;color:#fff;text-align:left;border:2px solid rgba(255,255,255,.15)}
+.planet:nth-child(even){flex-direction:row-reverse;text-align:right}
+.planet .orb{flex:none;width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:inset -10px -10px 0 rgba(0,0,0,.18),0 0 18px rgba(255,255,255,.25)}
+.planet .pn{font-size:23px;font-weight:700}
+.planet .ps{font-size:17px;opacity:.9}
+.planet .st{font-size:17px;margin-top:2px}
+.planet.locked{color:#b9a5c9}
+.planet.locked .orb{filter:grayscale(.8) brightness(.7)}
+.planet.current{border-color:#ffca28;background:#4f3a3a}
+.planet.current .orb{animation:glow 1.6s infinite}
+@keyframes glow{50%{box-shadow:inset -10px -10px 0 rgba(0,0,0,.18),0 0 34px #ffca28}}
+.pass{display:inline-block;background:#ffca28;color:#1c1c36;font-weight:700;border-radius:12px;padding:4px 12px;letter-spacing:1px}
+.ptitle{display:flex;align-items:center;gap:12px;color:#fff;margin-bottom:10px}
+.ptitle .orb{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.tab{background:#4a2c5e;color:#fff;border-radius:16px 16px 8px 8px;padding:10px 4px;font-size:18px;font-weight:700;line-height:1.15}
+.tab .ic{display:block;font-size:26px}
+.tab.active{background:var(--card);color:var(--ink)}
+.tab .ck{color:#69f0ae} .tab.active .ck{color:var(--ok)}
+/* exercices */
+.sent{font-size:26px;line-height:1.6;background:#fff;border-radius:14px;padding:12px 14px;border:2px solid #e6dcef;flex:1}
+.blank{display:inline-block;min-width:130px;border-bottom:3px solid #8e44ad;text-align:center}
+.inf{color:var(--muted);font-size:21px}
+.tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0}
+.tile{font-size:25px;padding:10px 16px;border-radius:14px;border:3px solid rgba(0,0,0,.12);box-shadow:0 4px 0 rgba(0,0,0,.18);min-width:70px;color:var(--ink);background:#fff}
+.tile.t-av{background:#81D4FA} .tile.t-et{background:#F8BBD0}
+.tile.t-pp{background:#FFE082} .tile.t-pp.irr{background:#FFB74D}
+.tile.t-acc{background:#C8E6C9} .tile.t-ng{background:#CFD8DC}
+.tile.choice{background:#fff;border-color:#ce93d8}
+.tile.word{font-size:24px;padding:8px 12px;min-width:0}
+.tile.good{outline:4px solid var(--ok)}
+.tile.bad{opacity:.35;animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.ans{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;margin-top:12px}
+.ans input{padding:10px 12px;border-radius:12px;border:3px solid #ce93d8;width:300px;max-width:100%}
+.fb{margin-top:12px;border-radius:14px;padding:10px 14px;font-size:20px}
+.fb.ok{background:var(--okbg);color:var(--ok);border:2px solid #a5d6a7}
+.fb.ko{background:var(--kobg);color:#8e1b1b;border:2px solid #ef9a9a}
+.fb.info{background:#e3f2fd;color:#0d47a1;border:2px solid #90caf9}
+.prog{display:flex;gap:6px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.dot{width:20px;height:20px;border-radius:50%;background:#e1bee7}
+.dot.cur{background:#8e44ad;transform:scale(1.2)}
+.dot.y{background:#43a047} .dot.n{background:#ef5350}
+mark{background:#fff176;border-radius:4px;padding:0 3px}
+.slide{min-height:260px}
+.sdots{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.timeline{display:flex;justify-content:space-around;text-align:center;margin:14px 0;gap:6px}
+.timeline div{flex:1;border-radius:14px;padding:10px 4px;font-size:21px}
+.eq{font-size:27px;text-align:center;margin:10px 0}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;display:flex;align-items:center;justify-content:center;padding:14px}
+.modal{background:var(--card);border-radius:22px;padding:18px;max-width:560px;width:100%;max-height:90vh;overflow:auto}
+.textq{font-size:23px;line-height:2.1;background:#fff;border-radius:14px;padding:12px 14px;border:2px solid #e6dcef}
+.textq input,.textq select{font-size:21px;width:190px;padding:2px 6px;border-radius:8px;border:2px solid #ce93d8}
+.textq input.good,.textq select.good{border-color:var(--ok);background:var(--okbg)}
+.textq input.bad,.textq select.bad{border-color:var(--ko);background:var(--kobg)}
+.corr{color:var(--ok);font-weight:700;font-size:19px}
+.badge-big{font-size:80px;text-align:center;animation:pop .6s}
+@keyframes pop{0%{transform:scale(.2)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+textarea{width:100%;min-height:140px;border-radius:14px;border:3px solid #ce93d8;padding:10px}
+.helpbox{background:#fff8e1;border:2px dashed #ffb300;border-radius:12px;padding:6px 10px;font-size:18px;margin:8px 0}
+@media (max-width:560px){
+  body{font-size:19px}
+  .tab{font-size:15px} .tab .ic{font-size:22px}
+  .sent{font-size:23px}
+  .planet .orb{width:62px;height:62px;font-size:30px}
+  .planet .pn{font-size:20px}
+  h1{font-size:27px}
+}
+</style>
+</head>
+<body>
+<header>
+  <button id="logo" aria-label="Mission Passé composé">⏳ Mission Passé composé</button>
+  <div class="hbtns">
+    <button class="hbtn" id="hpass" style="display:none">🔑 Mot de passe</button>
+    <button class="hbtn" id="hauto">🔊 Lecture auto</button>
+    <button class="hbtn" id="hslow">🐢 Lent</button>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+"use strict";
+/* =========================================================
+   DONNÉES
+   ========================================================= */
+const AUXF={'avoir':['ai','as','a','avons','avez','ont'],'être':['suis','es','est','sommes','êtes','sont']};
+const AUXI={'avoir':['avais','avais','avait','avions','aviez','avaient'],'être':['étais','étais','était','étions','étiez','étaient']};
+const auxT=(aux,t)=>(t==='pqp'?AUXI:AUXF)[aux];
+const PQCTX=['Quand le bus est arrivé,','La veille,','Quand maman est rentrée,','Lorsque la cloche a sonné,','Avant la récréation,','Ce jour-là, déjà,'];
+const PLAB=['je','tu','il / elle','nous','vous','ils / elles'];
+const PRON=[{p:'je',k:0,g:''},{p:'tu',k:1,g:''},{p:'il',k:2,g:'m'},{p:'elle',k:2,g:'f'},{p:'on',k:2,g:'m'},{p:'nous',k:3,g:''},{p:'vous',k:4,g:''},{p:'ils',k:5,g:'m'},{p:'elles',k:5,g:'f'}];
+const ADV=['Hier,','Ce matin,','La semaine dernière,','L\'année dernière,','Hier soir,','Lundi dernier,','Il y a deux jours,','Pendant les vacances,','Tout à l\'heure,','L\'été dernier,'];
+
+const VERBS=[
+ // 1 : auxiliaire avoir + participe en -é
+ {inf:'chanter',pp:'chanté',aux:'avoir',pl:1,comp:['une chanson','dans la chorale']},
+ {inf:'parler',pp:'parlé',aux:'avoir',pl:1,comp:['à la directrice','en anglais']},
+ {inf:'danser',pp:'dansé',aux:'avoir',pl:1,comp:['au spectacle','toute la soirée']},
+ {inf:'regarder',pp:'regardé',aux:'avoir',pl:1,comp:['les étoiles','un film']},
+ {inf:'manger',pp:'mangé',aux:'avoir',pl:1,comp:['une pizza','à la cantine']},
+ {inf:'écouter',pp:'écouté',aux:'avoir',pl:1,comp:['la musique','l\'histoire']},
+ {inf:'chercher',pp:'cherché',aux:'avoir',pl:1,comp:['un trésor','les clés']},
+ {inf:'ranger',pp:'rangé',aux:'avoir',pl:1,comp:['la classe','les livres']},
+ {inf:'dessiner',pp:'dessiné',aux:'avoir',pl:1,comp:['un mammouth','un dragon']},
+ {inf:'jouer',pp:'joué',aux:'avoir',pl:1,comp:['au football','aux échecs']},
+ {inf:'oublier',pp:'oublié',aux:'avoir',pl:1,comp:['le rendez-vous','le parapluie']},
+ {inf:'raconter',pp:'raconté',aux:'avoir',pl:1,comp:['une histoire','une blague']},
+ {inf:'préparer',pp:'préparé',aux:'avoir',pl:1,comp:['un spectacle','le repas']},
+ // 2 : participe en -i
+ {inf:'finir',pp:'fini',aux:'avoir',pl:2,comp:['le puzzle','les exercices']},
+ {inf:'choisir',pp:'choisi',aux:'avoir',pl:2,comp:['un livre','une couleur']},
+ {inf:'grandir',pp:'grandi',aux:'avoir',pl:2,comp:['très vite','à la campagne']},
+ {inf:'réussir',pp:'réussi',aux:'avoir',pl:2,comp:['l\'évaluation','ce défi']},
+ {inf:'remplir',pp:'rempli',aux:'avoir',pl:2,comp:['la gourde','le seau']},
+ {inf:'obéir',pp:'obéi',aux:'avoir',pl:2,comp:['aux règles','au capitaine']},
+ {inf:'applaudir',pp:'applaudi',aux:'avoir',pl:2,comp:['très fort','les artistes']},
+ {inf:'réfléchir',pp:'réfléchi',aux:'avoir',pl:2,comp:['longtemps','avant de répondre']},
+ // 3 : être et avoir
+ {inf:'être',pp:'été',aux:'avoir',pl:3,irr:1,wrong:['étais','êtré'],comp:['en retard','au cinéma','à l\'heure']},
+ {inf:'avoir',pp:'eu',aux:'avoir',pl:3,irr:1,wrong:['avé','eut'],comp:['de la chance','un cadeau','peur']},
+ // 4 : participes irréguliers
+ {inf:'faire',pp:'fait',aux:'avoir',pl:4,irr:1,wrong:['faisé','fais'],comp:['un gâteau','du vélo']},
+ {inf:'dire',pp:'dit',aux:'avoir',pl:4,irr:1,wrong:['disé','dis'],comp:['la vérité','bonjour']},
+ {inf:'prendre',pp:'pris',aux:'avoir',pl:4,irr:1,wrong:['prendu','prit'],comp:['le train','le bus']},
+ {inf:'comprendre',pp:'compris',aux:'avoir',pl:4,irr:1,wrong:['comprendu','comprit'],comp:['la leçon','l\'exercice']},
+ {inf:'apprendre',pp:'appris',aux:'avoir',pl:4,irr:1,wrong:['apprendu','apprit'],comp:['une poésie','à nager']},
+ {inf:'voir',pp:'vu',aux:'avoir',pl:4,irr:1,wrong:['voyé','vut'],comp:['un arc-en-ciel','la tour Eiffel']},
+ {inf:'pouvoir',pp:'pu',aux:'avoir',pl:4,irr:1,wrong:['pouvé','put'],comp:['jouer dehors','partir tôt']},
+ {inf:'vouloir',pp:'voulu',aux:'avoir',pl:4,irr:1,wrong:['voulé','voulut'],comp:['une glace','un chocolat chaud']},
+ // 5 : auxiliaire être
+ {inf:'aller',pp:'allé',aux:'être',pl:5,comp:['au cinéma','à la mer']},
+ {inf:'venir',pp:'venu',aux:'être',pl:5,irr:1,wrong:['venir','vené'],comp:['à la fête','en avance']},
+ {inf:'partir',pp:'parti',aux:'être',pl:5,wrong:['partir','partit'],comp:['en voyage','très tôt']},
+ {inf:'arriver',pp:'arrivé',aux:'être',pl:5,comp:['en retard','à l\'école']},
+ {inf:'tomber',pp:'tombé',aux:'être',pl:5,comp:['dans la cour','du vélo']},
+ {inf:'rester',pp:'resté',aux:'être',pl:5,comp:['à la maison','au lit']},
+ {inf:'entrer',pp:'entré',aux:'être',pl:5,comp:['dans la classe','au musée']},
+ {inf:'sortir',pp:'sorti',aux:'être',pl:5,wrong:['sortir','sortit'],comp:['dans le jardin','avec des amis']},
+ {inf:'revenir',pp:'revenu',aux:'être',pl:5,irr:1,wrong:['revenir','revené'],comp:['de vacances','à la maison']},
+ {inf:'monter',pp:'monté',aux:'être',pl:5,comp:['au grenier','dans le bus']},
+ {inf:'descendre',pp:'descendu',aux:'être',pl:5,irr:1,wrong:['descendre','descendé'],comp:['à la cave','du train']},
+ {inf:'rentrer',pp:'rentré',aux:'être',pl:5,comp:['à la maison','tard']},
+];
+const VBY={}; VERBS.forEach(v=>{VBY[v.inf]=v; if(!v.wrong){ v.wrong = v.inf.endsWith('er')?[v.inf,v.pp.slice(0,-1)+'ez']:[v.pp+'t',v.inf]; }});
+
+const PLANETS=[
+ {name:'Le Laboratoire du temps',emoji:'🧪',color:'#CE93D8',sub:'Reconnaître le passé composé'},
+ {name:'La Préhistoire',emoji:'🦣',color:'#BCAAA4',sub:'avoir + participe en é (chanter → chanté)'},
+ {name:'L\'Égypte ancienne',emoji:'🏺',color:'#FFE082',sub:'participe en i (finir → fini)'},
+ {name:'La Grèce antique',emoji:'🏛️',color:'#B3E5FC',sub:'être et avoir : été, eu'},
+ {name:'Le Moyen Âge',emoji:'🏰',color:'#FFCC80',sub:'fait, dit, pris, vu, pu, voulu'},
+ {name:'La Renaissance',emoji:'🎨',color:'#F8BBD0',sub:'auxiliaire être + accord (allé, allée…)'},
+ {name:'L\'île des Pirates',emoji:'🏴‍☠️',color:'#B0BEC5',sub:'la négation : n\'… pas'},
+ {name:'Le Musée du temps',emoji:'🕰️',color:'#A5D6A7',sub:'Phrases et textes (niveau CM2)'},
+ {name:'L\'Atlantide engloutie',emoji:'🔱',color:'#80DEEA',sub:'Le plus-que-parfait : le passé du passé',secret:1},
+];
+
+/* Codes du Livret de Réussite (Étude de la langue CM 2026-2027) */
+const CODES={
+ 'PC':'Je sais conjuguer les verbes fréquents au passé composé.',
+ 'PC 1':'Je sais conjuguer un verbe en -er au passé composé.',
+ 'PC 2':'Je sais conjuguer un verbe en -ir au passé composé.',
+ 'PC 3':'Je sais conjuguer le verbe être au passé composé.',
+ 'PC 4':'Je sais conjuguer le verbe avoir au passé composé.',
+ 'PC 5':'Je sais conjuguer le verbe aller au passé composé.',
+ 'PC 6':'Je sais conjuguer le verbe faire au passé composé.',
+ 'PC 7':'Je sais conjuguer le verbe dire au passé composé.',
+ 'PC 8':'Je sais conjuguer le verbe venir au passé composé.',
+ 'PC 9':'Je sais conjuguer le verbe vouloir au passé composé.',
+ 'PC 10':'Je sais conjuguer le verbe voir au passé composé.',
+ 'PC 11':'Je sais conjuguer le verbe prendre au passé composé.',
+ 'PC 12':'Je sais conjuguer le verbe pouvoir au passé composé.',
+ 'C1':'Je connais la composition du passé composé en deux parties (auxiliaire + participe passé).',
+ 'C2':'CM2 : Je connais la composition des temps composés en deux parties (auxiliaire + participe passé).',
+ 'C3':'Je sais retrouver la forme infinitive du verbe.',
+ 'C4':'Je sais transformer un verbe au passé composé à la forme négative en insérant les adverbes de négation à leur juste place.',
+ 'C5':'CM2 : Je sais transformer un verbe aux temps composés à la forme négative en insérant les adverbes de négation à leur juste place.',
+ 'G31':'Je sais identifier un sujet.',
+ 'G32':'Identifier les différents types de sujets (PP, GN, plusieurs noms).',
+ 'G33':'CM2 : J\'identifie le sujet même quand il est inversé.',
+ 'ACC 1':'Je sais accorder le verbe et son sujet dans une phrase simple.',
+ 'ACC 2':'Je sais accorder le verbe et son sujet dans une phrase complexe.',
+ 'ACC 5':'Je sais accorder le participe passé employé avec « être ».',
+ 'ACC 6':'CM2 : Je sais accorder le participe passé avec les verbes conjugués avec « être » ou « avoir ».',
+ 'ACC 10':'Je transforme à l\'écrit des phrases en faisant varier le temps.',
+ 'PQP':'Je sais conjuguer les verbes fréquents au plus-que-parfait.',
+};
+const PCODES=[
+ {ev:[],tr:['C1']},
+ {ev:['PC 1'],tr:['C1','C3','ACC 1']},
+ {ev:['PC 2'],tr:['C1','C3','ACC 1']},
+ {ev:['PC 3','PC 4'],tr:['C1','ACC 1']},
+ {ev:['PC 6','PC 7','PC 9','PC 10','PC 11','PC 12'],tr:['C1','C3','ACC 1']},
+ {ev:['PC 5','PC 8','ACC 5'],tr:['C1','G31','ACC 1']},
+ {ev:['C4'],tr:['C1','ACC 1']},
+ {ev:['PC','ACC 6','ACC 10','C5'],tr:['C2','G32','G33','ACC 2','ACC 5']},
+ {ev:['PQP','C2'],tr:['C5','ACC 5']},
+];
+
+/* Labo : quelle phrase est au passé composé ? */
+const WHICH=[
+ ['J\'ai chanté.','Je chante.','Je chanterai.'],
+ ['Nous avons joué.','Nous jouons.','Nous jouerons.'],
+ ['Tu es parti.','Tu pars.','Tu partiras.'],
+ ['Ils ont mangé.','Ils mangent.','Ils mangeront.'],
+ ['Elle est venue.','Elle vient.','Elle viendra.'],
+ ['Vous avez fini.','Vous finissez.','Vous finirez.'],
+ ['On a dansé.','On danse.','On dansera.'],
+ ['Je suis allé.','Je vais.','J\'irai.'],
+ ['Nous avons vu.','Nous voyons.','Nous verrons.'],
+ ['Il a pris.','Il prend.','Il prendra.'],
+];
+/* Atlantide : quelle phrase est au plus-que-parfait ? */
+const WHICHPQ=[
+ ['J\'avais chanté.','J\'ai chanté.','Je chantais.'],
+ ['Nous étions partis.','Nous sommes partis.','Nous partions.'],
+ ['Tu avais fini.','Tu as fini.','Tu finissais.'],
+ ['Elles étaient venues.','Elles sont venues.','Elles venaient.'],
+ ['Il avait pris le bus.','Il a pris le bus.','Il prenait le bus.'],
+ ['Vous aviez vu la mer.','Vous avez vu la mer.','Vous voyiez la mer.'],
+];
+function whichPQ(row){return {type:'which',opts:shuffle(row),a:row[0],q:'Quelle phrase est au plus-que-parfait ?',expl:'Au plus-que-parfait, l\'auxiliaire est à l\'imparfait : avais, étais… + le participe passé.'};}
+/* Labo : trouver l'auxiliaire et le participe */
+const DUO=[
+ [['Hier,','j\'','ai','mangé','une','pomme.'],2,3],
+ [['Nous','sommes','allés','au','cinéma.'],1,2],
+ [['Tu','as','fini','tes','devoirs.'],1,2],
+ [['Les','élèves','ont','pris','le','bus.'],2,3],
+ [['Ma','sœur','est','partie','en','voyage.'],2,3],
+ [['Ce','matin,','vous','avez','vu','un','renard.'],3,4],
+ [['Elles','sont','venues','à','la','fête.'],1,2],
+ [['Léo','a','dit','la','vérité.'],1,2],
+ [['Hier','soir,','il','a','regardé','un','film.'],3,4],
+ [['La','semaine','dernière,','je','suis','tombé','du','vélo.'],4,5],
+];
+
+/* Musée du temps : phrases CM2 [phrase, verbe, réponses, distracteurs, aide, type d'étape 1, négation] */
+const CM2=[
+ ['Les enfants de la voisine ____ au cinéma.','aller',['sont allés'],['sont allé','ont allés'],'Qui est allé ? Les enfants : masculin pluriel → allés.','aux'],
+ ['Hier ____ les correspondants anglais.','arriver',['sont arrivés'],['est arrivé','ont arrivé'],'Le sujet est après le verbe. Qui est arrivé ? les correspondants → ils.','aux'],
+ ['Ma sœur et moi ____ une cabane.','faire',['avons fait'],['ont fait','avons faits'],'Ma sœur et moi = nous.','aux'],
+ ['Léa et Inès ____ en retard.','arriver',['sont arrivées'],['sont arrivés','ont arrivé'],'Léa et Inès : féminin pluriel → arrivées.','aux'],
+ ['Les pommes que tu as ____ étaient délicieuses.','manger',['mangées'],['mangé','manger'],'Le COD « que » (= les pommes) est placé avant : féminin pluriel → mangées.','cod'],
+ ['Ces films, je les ai ____ deux fois.','voir',['vus'],['vu','vues'],'« les » (= ces films) est placé avant l\'auxiliaire avoir : masculin pluriel → vus.','cod'],
+ ['La photo que Malik a ____ est magnifique.','prendre',['prise'],['pris','prit'],'Le COD « que » (= la photo) est placé avant : féminin singulier → prise.','cod'],
+ ['Ma grand-mère ____ hier soir.','venir',['est venue'],['est venu','a venu'],'Ma grand-mère : féminin singulier → venue.','aux'],
+ ['Mes cousins ____ à la fête.','venir',['ne sont pas venus'],['ne sont venus pas','sont pas venus'],'Forme négative : ne … pas entourent l\'auxiliaire.','aux',1],
+ ['Tu ____ la vérité.','dire',['n\'as pas dit'],['n\'as dit pas','ne pas as dit'],'Forme négative : n\'… pas entourent l\'auxiliaire.','aux',1],
+ ['Chaque élève ____ un livre.','choisir',['a choisi'],['ont choisi','a choisit'],'Chaque élève = il ou elle (singulier).','aux'],
+ ['Les filles ____ dans la cour.','tomber',['sont tombées'],['sont tombés','ont tombé'],'Les filles : féminin pluriel → tombées.','aux'],
+ ['Le directeur et la maîtresse ____ le spectacle.','regarder',['ont regardé'],['ont regardés','a regardé'],'Avec avoir, le participe ne s\'accorde pas avec le sujet.','aux'],
+ ['Les chansons que nous avons ____ étaient en anglais.','chanter',['chantées'],['chanté','chanter'],'Le COD « que » (= les chansons) est placé avant : féminin pluriel → chantées.','cod'],
+ ['Dans la classe ____ les parents.','entrer',['sont entrés'],['est entré','ont entré'],'Le sujet est après le verbe. Qui est entré ? les parents → ils.','aux'],
+ ['Vous ____ jouer dehors.','pouvoir',['n\'avez pas pu'],['n\'avez pu pas','avez pas pu'],'Forme négative : n\'… pas entourent l\'auxiliaire avez.','aux',1],
+ ['Nina et Paul ____ leurs devoirs.','finir',['ont fini'],['ont finis','ont finit'],'Avec avoir, le participe ne s\'accorde pas avec le sujet.','aux'],
+ ['Cette histoire, je l\'ai ____ tout de suite.','comprendre',['comprise'],['compris','comprit'],'« l\' » (= cette histoire) est placé avant : féminin singulier → comprise.','cod'],
+ ['Mon frère et moi ____ à la maison.','rester',['sommes restés'],['sommes resté','avons resté'],'Mon frère et moi = nous, avec un garçon → masculin pluriel.','aux'],
+ ['Ce matin, Julie ____ le bus.','prendre',['a pris'],['a prise','est pris'],'Le COD « le bus » est après le verbe : pas d\'accord.','aux'],
+ ['Les fleurs que maman a ____ sont jaunes.','choisir',['choisies'],['choisi','choisit'],'Le COD « que » (= les fleurs) est placé avant : féminin pluriel → choisies.','cod'],
+ ['Les élèves ____ très fort.','applaudir',['ont applaudi'],['ont applaudis','sont applaudis'],'Avec avoir, le participe ne s\'accorde pas avec le sujet.','aux'],
+];
+
+/* Musée du temps : textes à transposer [verbe, personne, genre, négation] */
+const TEXTS=[
+ {title:'La sortie au musée',
+  present:'Ce matin, nous allons au musée. Le bus arrive à neuf heures. Les élèves regardent les tableaux. La guide raconte l\'histoire du château. Ma copine prend des photos. Le soir, nous rentrons à l\'école.',
+  seg:['Hier matin, nous ',['aller',3,''],' au musée. Le bus ',['arriver',2,'m'],' à neuf heures. Les élèves ',['regarder',5,'m'],' les tableaux. La guide ',['raconter',2,'f'],' l\'histoire du château. Ma copine ',['prendre',2,'f'],' des photos. Le soir, nous ',['rentrer',3,''],' à l\'école.']},
+ {title:'Les vacances de Malik',
+  present:'Pendant les vacances, Malik part chez ses grands-parents. Il fait du vélo et il voit la mer. Ses cousines viennent le voir. Ensemble, ils jouent sur la plage. Malik ne veut pas rentrer !',
+  seg:['Pendant les vacances, Malik ',['partir',2,'m'],' chez ses grands-parents. Il ',['faire',2,'m'],' du vélo et il ',['voir',2,'m'],' la mer. Ses cousines ',['venir',5,'f'],' le voir. Ensemble, ils ',['jouer',5,'m'],' sur la plage. Malik ',['vouloir',2,'m',1],' rentrer !']},
+ {title:'Le spectacle',
+  present:'Les CM2 préparent un spectacle. Lina dit son texte sans erreur. Les parents applaudissent. Puis Inès et Sarah montent sur scène. Elles chantent une chanson. Tout le monde a un grand sourire.',
+  seg:['Les CM2 ',['préparer',5,'m'],' un spectacle. Lina ',['dire',2,'f'],' son texte sans erreur. Les parents ',['applaudir',5,'m'],'. Puis Inès et Sarah ',['monter',5,'f'],' sur scène. Elles ',['chanter',5,'f'],' une chanson. Tout le monde ',['avoir',2,'m'],' un grand sourire.']},
+];
+
+/* =========================================================
+   OUTILS
+   ========================================================= */
+const app=()=>document.getElementById('app');
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const VOW=/^[aeiouyéèêàâîïôûh]/i;
+const noAcc=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'');
+function agreeList(v,k,g){
+  if(v.aux!=='être') return [v.pp];
+  const pl=k>=3;
+  if(g==='m') return [v.pp+(pl?'s':'')];
+  if(g==='f') return [v.pp+(pl?'es':'e')];
+  return pl?[v.pp+'s',v.pp+'es']:[v.pp,v.pp+'e'];
+}
+function negAux(aux){return (VOW.test(aux)?"n'"+aux:'ne '+aux)+' pas';}
+function answers(v,k,g,neg,t){const aux=auxT(v.aux,t)[k]; return agreeList(v,k,g).map(pp=>(neg?negAux(aux):aux)+' '+pp);}
+function withPron(k,s){ if(k!==0) return s; return (VOW.test(s)?"j'":'je ')+s; }
+function colorPP(v,w){
+  let base=w,suf='';
+  if(v && w.startsWith(v.pp)){base=v.pp;suf=w.slice(v.pp.length);}
+  return `<span class="pp${v&&v.irr?' irr':''}">${esc(base.slice(0,-1))}<span class="fin">${esc(base.slice(-1))}</span></span>${suf?`<span class="acc">${esc(suf)}</span>`:''}`;
+}
+function colorAnswer(v,str){
+  return str.split(' ').map(t=>{
+    if(t==='ne'||t==='pas') return `<span class="ng">${t}</span>`;
+    let pre=''; if(t.startsWith("n'")){pre=`<span class="ng">n'</span>`;t=t.slice(2);}
+    if(AUXF['avoir'].includes(t)||AUXI['avoir'].includes(t)) return pre+`<span class="ax-av">${esc(t)}</span>`;
+    if(AUXF['être'].includes(t)||AUXI['être'].includes(t)) return pre+`<span class="ax-et">${esc(t)}</span>`;
+    return pre+colorPP(v,t);
+  }).join(' ');
+}
+function colorWithPron(it,s){ if(it.k===0&&it.pronInBlank){ return `<span class="pr">${VOW.test(s)?"j'":'je '}</span>`+colorAnswer(it.v,s); } return colorAnswer(it.v,s); }
+function tableHTML(v,t){
+  const rows = v.aux==='avoir'
+    ? [['je',0,''],['tu',1,''],['il, elle, on',2,'m'],['nous',3,''],['vous',4,''],['ils, elles',5,'m']]
+    : [['je',0,'?'],['tu',1,'?'],['il',2,'m'],['elle',2,'f'],['nous',3,'?'],['vous',4,'?'],['ils',5,'m'],['elles',5,'f']];
+  const auxCls=v.aux==='avoir'?'ax-av':'ax-et';
+  let say=[];
+  const tr=rows.map(([p,k,g])=>{
+    const aux=auxT(v.aux,t)[k];
+    const pd=k===0&&VOW.test(aux)?"j'":p;
+    let ppH;
+    if(g==='?') ppH=colorPP(v,v.pp)+`<span class="acc">${k>=3?'(e)s':'(e)'}</span>`;
+    else ppH=colorPP(v,agreeList(v,k,g)[0]);
+    say.push((pd==="j'"?"j'":pd.split(',')[0]+' ')+aux+' '+agreeList(v,k,g==='?'?'m':g)[0]);
+    return `<tr><td class="pr">${esc(pd)}</td><td><span class="${auxCls}">${aux}</span> ${ppH}</td></tr>`;
+  }).join('');
+  return `<div class="tbox"><h4>${esc(v.inf)}${t==='pqp'?' <span class="small">(plus-que-parfait)</span>':''} ${spk(say.join(', ')+'.')}</h4><table class="conj">${tr}</table></div>`;
+}
+const LEGEND=`<div class="legend"><span class="ax-av">auxiliaire avoir</span><span class="ax-et">auxiliaire être</span><span class="pp">participe passé</span><span class="pp irr">participe irrégulier : à apprendre par cœur</span><span class="fin" style="background:#fff">lettre finale</span><span class="acc">accord</span><span class="ng">négation</span></div>`;
+function spk(say,target){return `<button class="spk" aria-label="Écouter" ${say?`data-say="${esc(say)}"`:''} ${target?`data-target="${target}"`:''}>🔊</button>`;}
+const PRAISE=['Bravo !','Super, voyageur du temps !','Mission réussie !','Exact !','Parfait !','Bien joué !'];
+function codeChips(list,withLabel){
+  if(!list.length) return '';
+  if(withLabel) return list.map(c=>`<div style="margin:4px 0"><span class="pass" style="font-size:17px">${c}</span> <span class="small">${esc(CODES[c])}</span></div>`).join('');
+  return list.map(c=>`<span class="pass" style="font-size:16px;margin:2px" title="${esc(CODES[c])}">${c}</span>`).join(' ');
+}
+function livretLine(p){const ev=PCODES[p].ev; return ev.length?`<p class="small">📘 Dans ton livret : ${codeChips(ev)}</p>`:'';}
+
+/* =========================================================
+   SAUVEGARDE + MOT DE PASSE
+   ========================================================= */
+const KEY='missionPasseCompose_v1';
+let S={name:'',placed:false,unlocked:0,tabs:{},auto:false,slow:false};
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const WORDS=['SABLIER','MAMMOUTH','PYRAMIDE','TEMPLE','CHATEAU','PINCEAU','TRESOR','MUSEE','HORLOGE','TRIDENT'];
+const WSAY=['SABLIER','MAMMOUTH','PYRAMIDE','TEMPLE','CHÂTEAU','PINCEAU','TRÉSOR','MUSÉE','HORLOGE','TRIDENT'];
+const num=u=>String(((u+5)*31)%89+10);
+const code=u=>WSAY[u]+'-'+num(u);
+function parseCode(s){
+  const t=noAcc(s).toUpperCase().replace(/\s+/g,'');
+  const m=t.match(/^([A-Z]+)-?(\d{2})$/); if(!m) return -1;
+  const u=WORDS.indexOf(m[1]); if(u<0||num(u)!==m[2]) return -1; return u;
+}
+const sayCode=c=>c.replace('-',', tiret, ');
+
+/* =========================================================
+   VOIX
+   ========================================================= */
+let VOICE=null;
+const HAS_TTS=('speechSynthesis' in window);
+function pickVoice(){ if(!HAS_TTS) return; const vs=speechSynthesis.getVoices();
+  VOICE=vs.find(v=>/^fr[-_]FR/i.test(v.lang)&&/(Google|Amélie|Audrey|Marie|Thomas|Denise|Julie)/i.test(v.name))||vs.find(v=>/^fr[-_]FR/i.test(v.lang))||vs.find(v=>/^fr/i.test(v.lang))||null; }
+if(HAS_TTS){pickVoice(); speechSynthesis.onvoiceschanged=pickVoice;}
+let speakingBtn=null, speakingEl=null;
+function clearSpeak(){
+  if(speakingBtn){speakingBtn.classList.remove('speaking');speakingBtn=null;}
+  if(speakingEl){speakingEl.classList.remove('speaking-block');speakingEl.querySelectorAll('.w.hl').forEach(w=>w.classList.remove('hl'));speakingEl=null;}
+}
+function prepKara(el){
+  if(el._words) return el._words;
+  const txt=el.textContent; let html='', last=0; const words=[];
+  txt.replace(/\S+/g,(m,i)=>{html+=esc(txt.slice(last,i))+`<span class="w" data-i="${i}">${esc(m)}</span>`;last=i+m.length;words.push(i);return m;});
+  html+=esc(txt.slice(last)); el.innerHTML=html; el._words=words; el._text=txt; return words;
+}
+function speak(text,el,btn){
+  if(!HAS_TTS||!text) return;
+  speechSynthesis.cancel(); clearSpeak();
+  let kara=false;
+  if(el){speakingEl=el; el.classList.add('speaking-block'); if(el.classList.contains('kara')){prepKara(el); text=el._text; kara=true;}}
+  if(btn){speakingBtn=btn; btn.classList.add('speaking');}
+  const chunks=text.match(/[^.!?…]+[.!?…]*\s*/g)||[text];
+  let offset=0;
+  chunks.forEach((c,i)=>{
+    const u=new SpeechSynthesisUtterance(c); u.lang='fr-FR'; if(VOICE) u.voice=VOICE; u.rate=S.slow?0.68:0.92;
+    const base=offset; offset+=c.length;
+    if(kara){u.onboundary=e=>{ if(e.name&&e.name!=='word') return; const idx=base+e.charIndex; const spans=el.querySelectorAll('.w'); let cur=null; spans.forEach(s=>{if(+s.dataset.i<=idx) cur=s;}); spans.forEach(s=>s.classList.remove('hl')); if(cur) cur.classList.add('hl'); };}
+    if(i===chunks.length-1) u.onend=clearSpeak;
+    speechSynthesis.speak(u);
+  });
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.spk'); if(!b) return;
+  e.preventDefault();
+  const el=b.dataset.target?document.getElementById(b.dataset.target):null;
+  let text=b.dataset.say||(el?el.textContent:'');
+  if(el && el._text) text=el._text;
+  speak(text,el,b);
+});
+function autoSay(text,el){ if(S.auto) speak(text,el); }
+const stripTags=h=>{const d=document.createElement('div');d.innerHTML=h;return d.textContent;};
+
+/* =========================================================
+   EN-TÊTE
+   ========================================================= */
+function refreshHeader(){
+  document.getElementById('hauto').classList.toggle('on',!!S.auto);
+  document.getElementById('hslow').classList.toggle('on',!!S.slow);
+  document.getElementById('hpass').style.display=S.placed?'':'none';
+}
+document.getElementById('hauto').onclick=()=>{S.auto=!S.auto;save();refreshHeader(); if(S.auto) speak('Lecture automatique activée. Je lirai tout pour toi.');};
+document.getElementById('hslow').onclick=()=>{S.slow=!S.slow;save();refreshHeader(); speak(S.slow?'Je parle plus lentement.':'Je parle normalement.');};
+document.getElementById('hpass').onclick=showPass;
+let logoTaps=0,logoTimer=null;
+document.getElementById('logo').onclick=()=>{logoTaps++;clearTimeout(logoTimer);logoTimer=setTimeout(()=>{ if(logoTaps===1&&S.placed) showMap(); logoTaps=0;},700); if(logoTaps>=5){logoTaps=0;clearTimeout(logoTimer);teacherLogin();}};
+
+function modal(html){const bg=document.createElement('div');bg.className='modal-bg';bg.innerHTML=`<div class="modal">${html}</div>`;document.body.appendChild(bg);bg.addEventListener('click',e=>{if(e.target===bg||e.target.closest('[data-close]'))bg.remove();});return bg;}
+function showPass(){
+  const c=code(S.unlocked);
+  modal(`<h2>🔑 Ton mot de passe</h2><p>Avec ce mot de passe, tu retrouves ta mission sur n'importe quel ordinateur ou tablette.</p>
+  <p class="center"><span class="pass big">${c}</span> ${spk('Ton mot de passe est : '+sayCode(c)+'.')}</p>
+  <p class="small">Écris-le dans ton cahier.</p><p class="center"><button class="btn" data-close>OK</button></p>`);
+}
+
+/* =========================================================
+   ACCUEIL
+   ========================================================= */
+function inibo(text,id){return `<div class="inibo"><div class="av">✋</div><div class="bub"><b class="n">IniBO</b> ${spk(null,id)}<div id="${id}" class="kara">${esc(text)}</div></div></div>`;}
+function showWelcome(){
+  window.scrollTo(0,0);
+  const t='Bonjour, je suis IniBO, ton guide ! Monte dans la machine à remonter le temps : nous allons voyager d\'époque en époque pour apprendre à conjuguer les verbes au passé composé. D\'abord, le scanner va trouver ton époque de départ. Clique sur le haut-parleur jaune quand tu veux que je lise.';
+  app().innerHTML=`<div class="card center"><h1>⏳ Mission Passé composé</h1><p class="small">Voyage dans le temps, d'époque en époque</p>
+   ${inibo(t,'wtxt')}
+   <p><label>Ton nom de voyageur (si tu veux) :<br><input id="nm" maxlength="20" style="padding:8px;border-radius:12px;border:3px solid #ce93d8;width:240px" value="${esc(S.name||'')}"></label></p>
+   <p><button class="btn green" id="go">🛸 Je lance le scanner</button></p>
+   <p><button class="btn yellow" id="haspass">🔑 J'ai déjà un mot de passe</button></p></div>`;
+  autoSay(t,document.getElementById('wtxt'));
+  document.getElementById('go').onclick=()=>{S.name=document.getElementById('nm').value.trim();save();scanIntro();};
+  document.getElementById('haspass').onclick=()=>{S.name=document.getElementById('nm').value.trim();save();askPass();};
+}
+function askPass(){
+  const m=modal(`<h2>🔑 Entre ton mot de passe</h2><p>Exemple : PYRAMIDE-27</p>
+   <p><input id="pw" style="padding:10px;border-radius:12px;border:3px solid #ce93d8;width:100%" autocapitalize="characters" autocomplete="off"></p>
+   <div id="pwfb"></div><p class="center"><button class="btn green" id="pwok">Valider</button> <button class="btn grey" data-close>Annuler</button></p>`);
+  const go=()=>{const u=parseCode(m.querySelector('#pw').value); if(u<0){m.querySelector('#pwfb').innerHTML='<div class="fb ko">Ce mot de passe ne marche pas. Vérifie les lettres et les chiffres.</div>';return;}
+    S.unlocked=u;S.placed=true;S.start=null;save();m.remove();refreshHeader();showMap('bon retour ! Ton voyage continue.');};
+  m.querySelector('#pwok').onclick=go; m.querySelector('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+}
+
+/* =========================================================
+   GÉNÉRATION D'EXERCICES
+   ========================================================= */
+function verbItem(v,k,neg,strict,t){
+  let pool=PRON.filter(p=>k==null||p.k===k);
+  if(strict && v.aux==='être') pool=pool.filter(p=>p.g);
+  if(!pool.length) pool=PRON.filter(p=>p.g);
+  const P=rnd(pool); k=P.k;
+  const acc=answers(v,k,P.g,neg,t);
+  const adv=rnd(t==='pqp'?PQCTX:ADV), comp=rnd(v.comp);
+  const pronInBlank=(k===0);
+  const before=pronInBlank?adv:adv+' '+P.p;
+  const hint=(pronInBlank?'je · ':'')+v.inf+(neg?' · forme négative':'');
+  return {type:'verb',t:t||'pc',v,k,g:P.g,neg:!!neg,acc,ans:acc[0],before,after:' '+comp+'.',hint,pronInBlank,
+    say:`${adv} ${P.p} … ${comp}. Le verbe : ${v.inf}${neg?', à la forme négative':''}.`};
+}
+function cm2Item(row){
+  const [s,inf,acc,wr,tip,step1,neg]=row; const v=VBY[inf]; const [b,a]=s.split('____');
+  return {type:'cm2',v,acc,ans:acc[0],wr,tip,step1,neg:!!neg,before:b.replace(/\s+$/,''),after:a,hint:inf+(neg?' · forme négative':''),
+    say:`${b} … ${a} Le verbe : ${inf}${neg?', à la forme négative':''}.`};
+}
+function verbSet(pl,n){
+  if(pl===8){ const vs=shuffle(VERBS.filter(v=>v.pl>=1&&v.pl<=5)); return vs.slice(0,n).map((v,i)=>verbItem(v,null,i%4===3,true,'pqp')); }
+  if(pl===6){ const vs=shuffle(VERBS.filter(v=>v.pl>=1&&v.pl<=5)); return vs.slice(0,n).map(v=>verbItem(v,null,true)); }
+  const vs=shuffle(VERBS.filter(v=>v.pl===pl)); const ks=shuffle([0,1,2,3,4,5,0,1,2,3,4,5]);
+  const out=[]; for(let i=0;i<n;i++) out.push(verbItem(vs[i%vs.length],ks[i%ks.length],false)); return shuffle(out);
+}
+function whichItem(row){return {type:'which',opts:shuffle(row),a:row[0]};}
+function duoItem(row){return {type:'duo',w:row[0],a:row[1],p:row[2]};}
+function qcmChoices(it){
+  if(it.type==='cm2') return shuffle([it.ans,...it.wr]);
+  const v=it.v,k=it.k; const out=[it.ans]; const T=auxT(v.aux,it.t); const aux=T[k];
+  const add=s=>{ if(s && !out.includes(s) && !it.acc.includes(s) && out.length<3) out.push(s); };
+  if(it.t==='pqp' && !it.neg){ out.push(AUXF[v.aux][k]+' '+it.ans.split(' ').slice(1).join(' ')); }
+  if(it.neg){
+    const pp=it.ans.split(' ').pop(); const na=it.ans.replace(' '+pp,'');
+    add(na.replace(' pas','')+' '+pp+' pas');
+    add(aux+' pas '+pp);
+  } else if(v.aux==='être'){
+    add(auxT('avoir',it.t)[k]+' '+agreeList(v,k,it.g)[0].replace(/e?s?$/,'')+'');
+    if(it.g){ const all=[v.pp,v.pp+'e',v.pp+'s',v.pp+'es'].filter(x=>!agreeList(v,k,it.g).includes(x)); add(aux+' '+rnd(all)); }
+    add(aux+' '+v.wrong[0]);
+  } else {
+    add(aux+' '+v.wrong[0]);
+    for(const kk of shuffle([0,1,2,3,4,5])) add(T[kk]+' '+v.pp);
+  }
+  for(const kk of shuffle([0,1,2,3,4,5])) add((it.neg?negAux(T[kk]):T[kk])+' '+agreeList(v,kk,it.g||'m')[0]);
+  return shuffle(out);
+}
+
+/* =========================================================
+   CORRECTION
+   ========================================================= */
+function norm(s){return s.toLowerCase().replace(/[’`´]/g,"'").replace(/[.!?,;:]/g,'').replace(/\s+/g,' ').trim()
+  .replace(/^(je |j'|j |tu |il |elle |on |nous |vous |ils |elles )/,'').trim();}
+function ppHint(v){
+  if(v.pl===1||(v.aux==='être'&&v.inf.endsWith('er'))) return `Le participe passé des verbes en -er se termine par <b>é</b>. Astuce : remplace par « vendre » : si tu dis « vendu », écris é.`;
+  if(v.pl===2) return `Le participe passé de « ${v.inf} » se termine par <b>i</b>. Astuce : mets-le au féminin (la course est finie) : on n'entend pas de t.`;
+  return `Le participe passé de « ${v.inf} » est irrégulier : regarde le tableau.`;
+}
+function analyse(it,typed){
+  const t=norm(typed);
+  if(!t) return {ok:false,msg:'Écris ta réponse dans la case.'};
+  if(it.acc.includes(t)) return {ok:true};
+  if(it.acc.some(a=>noAcc(a)===noAcc(t))) return {ok:false,msg:'Presque ! Regarde bien les accents.'};
+  if(it.type==='cm2') return {ok:false,msg:esc(it.tip)};
+  const v=it.v, k=it.k, exp=auxT(v.aux,it.t)[k], other=v.aux==='avoir'?'être':'avoir';
+  const pq=it.t==='pqp';
+  let rest=t;
+  if(it.neg){
+    if(!/\bpas\b/.test(t) || !/^(ne |n')/.test(t)) return {ok:false,msg:`À la forme négative, <span class="ng">ne</span> (ou <span class="ng">n'</span>) et <span class="ng">pas</span> entourent l'auxiliaire.`};
+    rest=t.replace(/^ne |^n'/,'');
+    const ws=rest.split(' ');
+    if(ws[1]!=='pas') return {ok:false,msg:`✋ IniBO : Stop ! <span class="ng">pas</span> se place juste après l'auxiliaire, avant le participe.`};
+    rest=rest.replace(' pas','');
+  }
+  const ws=rest.split(' ');
+  if(ws.length<2) return {ok:false,msg:`Le passé composé, c'est deux mots : l'auxiliaire + le participe passé.`};
+  const aux=ws[0], pp=ws.slice(1).join(' ');
+  const auxOk=aux===exp, ppOk=agreeList(v,k,it.g).includes(pp);
+  if(ppOk&&!auxOk){
+    if(pq && AUXF[v.aux].includes(aux)) return {ok:false,msg:`✋ IniBO : Stop ! Ça, c'est le passé composé. Au plus-que-parfait, l'auxiliaire est à l'<b>imparfait</b> (${AUXI[v.aux].slice(0,3).join(', ')}…).`};
+    if(auxT(other,it.t).includes(aux)||AUXF[other].includes(aux)) return {ok:false,msg:`✋ IniBO : Stop ! « ${v.inf} » se conjugue avec l'auxiliaire <b>${v.aux}</b>.`};
+    return {ok:false,msg:`Le participe est juste 👍. Vérifie l'auxiliaire : qui fait l'action ?`};
+  }
+  if(auxOk&&!ppOk){
+    if(pp===v.inf) return {ok:false,msg:`✋ IniBO : Stop ! Après l'auxiliaire, on écrit le participe passé, pas l'infinitif. ${ppHint(v)}`};
+    if(v.wrong.some(w=>pp===w||pp.replace(/e?s?$/,'')===w)) return {ok:false,msg:ppHint(v)};
+    if(v.aux==='être' && pp.startsWith(v.pp)) return {ok:false,msg:`Avec l'auxiliaire être, le participe s'accorde avec le sujet. Qui fait l'action ? Masculin ou féminin ? Un ou plusieurs ?`};
+    if(v.aux==='avoir' && pp.startsWith(v.pp)) return {ok:false,msg:`Avec l'auxiliaire avoir, le participe ne s'accorde pas avec le sujet.`};
+    if(pp.endsWith('ez')&&v.inf.endsWith('er')) return {ok:false,msg:`Attention : -ez, c'est pour « vous » au présent. ${ppHint(v)}`};
+    return {ok:false,msg:ppHint(v)};
+  }
+  if(pq && AUXF[v.aux].includes(aux)) return {ok:false,msg:`✋ IniBO : Stop ! Au plus-que-parfait, l'auxiliaire est à l'<b>imparfait</b>. Et vérifie le participe.`};
+  if(auxT(other,it.t).includes(aux)) return {ok:false,msg:`✋ IniBO : Stop ! « ${v.inf} » se conjugue avec l'auxiliaire <b>${v.aux}</b>. Et vérifie le participe.`};
+  return {ok:false,msg:`Pas encore. Le passé composé = auxiliaire (${v.aux}) + participe passé. Regarde le tableau.`};
+}
+function fullSentence(it,s){ s=s||it.ans; if(it.pronInBlank) s=withPron(0,s); const sep=it.before.endsWith("'")||!it.before?'':' '; return (it.before+sep+s+it.after).replace(/^./,c=>c.toUpperCase()); }
+
+/* =========================================================
+   AFFICHAGE D'UNE QUESTION
+   ========================================================= */
+let QID=0;
+function sentenceHTML(it,id){
+  const sep=it.before?' ':'';
+  return `<div class="row">${spk(it.say)}<div class="sent" id="${id}">${esc(it.before)}${sep}<span class="blank">&nbsp;</span>${esc(it.after)} <span class="inf">(${esc(it.hint)})</span></div></div>`;
+}
+function fillBlank(box,it,s){const b=box.querySelector('.blank'); if(b){b.innerHTML=colorWithPron(it,s||it.ans); b.style.borderBottom='none';}}
+function nextBtn(box,cb,label){const d=document.createElement('p');d.className='center';d.innerHTML=`<button class="btn green">${label||'Suivant ➜'}</button>`;box.appendChild(d);d.querySelector('button').onclick=cb;}
+function fbHTML(cls,html,sayTxt){return `<div class="fb ${cls}"><div class="row">${sayTxt?spk(sayTxt):''}<div>${html}</div></div></div>`;}
+function helpBtn(box,it){
+  if(box.querySelector('.helpb')||!it.v) return;
+  const p=document.createElement('p');p.className='center helpb';p.innerHTML=`<button class="btn yellow">📋 Voir le tableau</button>`;box.appendChild(p);
+  p.querySelector('button').onclick=()=>modal(`<div class="tables">${tableHTML(it.v,it.t)}</div>${LEGEND}<p class="center"><button class="btn" data-close>Fermer</button></p>`);
+}
+function displayChoice(it,c){ return it.pronInBlank?withPron(0,c):c; }
+
+function renderQ(box,it,cfg,done){
+  const id='q'+(++QID);
+  if(it.type==='which') return renderWhich(box,it,cfg,done);
+  if(it.type==='duo') return renderDuo(box,it,cfg,done);
+  if(cfg.mode==='guided') return it.type==='cm2'?renderGuidedCM2(box,it,done,id):renderGuided(box,it,done,id);
+  const instr=(cfg.input==='qcm'?'Choisis':'Écris')+' le verbe '+(it.t==='pqp'?'au plus-que-parfait':'au passé composé')+(it.neg?', à la forme négative':'')+'.';
+  box.innerHTML=`<p><b>${instr}</b></p>${sentenceHTML(it,id)}<div class="zone"></div>`;
+  const zone=box.querySelector('.zone');
+  autoSay(instr+' '+it.say);
+  let tries=cfg.mode==='solo'?2:1, firstOk=null;
+  const finish=(ok,fbh)=>{
+    if(cfg.mode==='scan'){done(ok);return;}
+    zone.insertAdjacentHTML('beforeend',fbh);
+    autoSay(stripTags(fbh)+' '+fullSentence(it,it._given));
+    nextBtn(zone,()=>done(firstOk));
+  };
+  const wrong=(msg)=>{
+    tries--; if(firstOk===null) firstOk=false;
+    const f=zone.querySelector('.fb'); if(f) f.remove();
+    if(tries>0){ zone.insertAdjacentHTML('beforeend',fbHTML('ko',msg,stripTags(msg))); autoSay(stripTags(msg)); helpBtn(zone,it); return false; }
+    const hb=zone.querySelector('.helpb'); if(hb) hb.remove();
+    fillBlank(box,it);
+    finish(false,fbHTML('info',`La bonne réponse est : <b>${colorWithPron(it,it.ans)}</b>.<br>${esc(fullSentence(it))}`,`La bonne réponse est : ${fullSentence(it)}`));
+    return true;
+  };
+  const scanDK=cfg.mode==='scan'?'<p class="center"><button class="btn grey dk">🤔 Je ne sais pas encore</button></p>':'';
+  if(cfg.input==='qcm'){
+    const ch=qcmChoices(it);
+    zone.innerHTML=`<div class="tiles">${ch.map(c=>`<button class="tile choice" data-c="${esc(c)}">${esc(displayChoice(it,c))}</button>`).join('')}</div>${scanDK}`;
+    zone.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+      if(b.disabled) return; const ok=it.acc.includes(b.dataset.c);
+      if(cfg.mode==='scan'){done(ok);return;}
+      if(ok){ if(firstOk===null) firstOk=true; zone.querySelectorAll('.tile').forEach(x=>x.disabled=true); b.classList.add('good'); it._given=b.dataset.c; fillBlank(box,it,b.dataset.c); const hb=zone.querySelector('.helpb'); if(hb) hb.remove(); const f=zone.querySelector('.fb'); if(f) f.remove(); finish(true,fbHTML('ok','✅ '+rnd(PRAISE))); }
+      else { b.classList.add('bad'); b.disabled=true; const r=it.type==='cm2'?{msg:esc(it.tip)}:analyse(it,b.dataset.c); if(wrong(r.msg)) zone.querySelectorAll('.tile').forEach(x=>x.disabled=true); }
+    });
+  } else {
+    zone.innerHTML=`<div class="ans"><input type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Ta réponse" placeholder="${it.pronInBlank?"j'ai… / je suis…":'auxiliaire + participe'}"><button class="btn green vb">Valider</button></div>${scanDK}`;
+    const inp=zone.querySelector('input'), vb=zone.querySelector('.vb');
+    const submit=()=>{
+      if(!norm(inp.value)) return;
+      const r=analyse(it,inp.value);
+      if(cfg.mode==='scan'){ done(r.ok); return; }
+      if(r.ok){ if(firstOk===null) firstOk=true; inp.disabled=true; vb.disabled=true; it._given=norm(inp.value); fillBlank(box,it,it._given); const f=zone.querySelector('.fb'); if(f) f.remove(); const hb=zone.querySelector('.helpb'); if(hb) hb.remove(); finish(true,fbHTML('ok','✅ '+rnd(PRAISE))); }
+      else { if(wrong(r.msg)){inp.disabled=true; vb.disabled=true;} else inp.select(); }
+    };
+    vb.onclick=submit; inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
+    setTimeout(()=>{try{inp.focus({preventScroll:true});}catch(e){}},50);
+  }
+  const dk=zone.querySelector('.dk'); if(dk) dk.onclick=()=>done(false);
+}
+
+function renderWhich(box,it,cfg,done){
+  const qq=it.q||'Quelle phrase est au passé composé ?';
+  box.innerHTML=`<p><b>${qq}</b> ${spk(qq+' '+it.opts.join(' '))}</p>
+   <div class="tiles" style="flex-direction:column;align-items:center">${it.opts.map(o=>`<div class="row"><button class="tile choice" data-o="${esc(o)}" style="min-width:240px">${esc(o)}</button>${spk(o)}</div>`).join('')}</div>${cfg.mode==='scan'?'<p class="center"><button class="btn grey dk">🤔 Je ne sais pas encore</button></p>':''}<div class="zone"></div>`;
+  autoSay(qq+' '+it.opts.join(' '));
+  let first=null; const zone=box.querySelector('.zone');
+  const dk=box.querySelector('.dk'); if(dk) dk.onclick=()=>done(false);
+  box.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return; const ok=b.dataset.o===it.a;
+    if(cfg.mode==='scan'){done(ok);return;}
+    if(first===null) first=ok;
+    if(ok||cfg.mode==='defi'||b.dataset.tried){
+      box.querySelectorAll('.tile').forEach(x=>{x.disabled=true; if(x.dataset.o===it.a) x.classList.add('good');});
+      const m=it.expl?(ok?'✅ '+rnd(PRAISE)+' ':`C'est « ${esc(it.a)} ». `)+it.expl:(ok?'✅ '+rnd(PRAISE)+' Il y a bien deux mots : l\'auxiliaire et le participe passé.':`C'est « ${esc(it.a)} » : il y a deux mots, l'auxiliaire et le participe passé.`);
+      zone.innerHTML=fbHTML(ok?'ok':'info',m,stripTags(m)); autoSay(stripTags(m)); nextBtn(zone,()=>done(first));
+    } else { b.classList.add('bad'); b.disabled=true; box.querySelectorAll('.tile').forEach(x=>x.dataset.tried=1); const m=it.expl?'Pas encore. Cherche l\'auxiliaire à l\'imparfait : avais, avait, étais, était…':'Pas encore. Au passé composé, le verbe a deux mots : avoir ou être, puis le participe passé.'; zone.innerHTML=fbHTML('ko',m,m); autoSay(m); }
+  });
+}
+function renderDuo(box,it,cfg,done){
+  const sentence=it.w.join(' ').replace("' ","'");
+  const guided=cfg.mode==='guided';
+  let step=1, first=true, err=0;
+  box.innerHTML=`<p><b class="instr">1️⃣ Clique sur l'auxiliaire.</b> ${spk('Étape 1 : clique sur l\'auxiliaire, avoir ou être au présent. La phrase est : '+sentence)}</p>
+   ${guided?`<div class="helpbox">💡 L'auxiliaire, c'est <span class="ax-av">avoir</span> ou <span class="ax-et">être</span> au présent : <span class="ax-av">ai, as, a, avons, avez, ont</span> · <span class="ax-et">suis, es, est, sommes, êtes, sont</span></div>`:''}
+   <div class="row">${spk(sentence)}<div class="tiles" style="flex:1;justify-content:flex-start">${it.w.map((w,i)=>`<button class="tile word" data-i="${i}">${esc(w)}</button>`).join('')}</div></div><div class="zone"></div>`;
+  autoSay('Clique sur l\'auxiliaire. '+sentence);
+  const zone=box.querySelector('.zone');
+  box.querySelectorAll('.word').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return; const i=+b.dataset.i; const target=step===1?it.a:it.p;
+    if(i===target){
+      b.disabled=true; b.classList.add(step===1?'t-'+(AUXF['avoir'].includes(it.w[i])?'av':'et'):'t-pp'); b.classList.add('good');
+      zone.innerHTML='';
+      if(step===1){ step=2; err=0; box.querySelector('.instr').textContent='2️⃣ Clique maintenant sur le participe passé.'; if(guided) box.querySelector('.helpbox').innerHTML='💡 Le participe passé est juste après l\'auxiliaire (chanté, fini, pris, venu…).'; autoSay('Bravo ! Clique maintenant sur le participe passé.'); }
+      else { box.querySelectorAll('.word').forEach(x=>x.disabled=true); const m=(first?'✅ '+rnd(PRAISE)+' ':'✅ ')+`L'auxiliaire est « ${it.w[it.a]} » et le participe passé est « ${it.w[it.p].replace(/[.,]/g,'')} ».`; zone.innerHTML=fbHTML('ok',esc(m),m); autoSay(m); nextBtn(zone,()=>done(first)); }
+    } else {
+      first=false; err++; b.classList.add('bad');
+      const m=step===1?'Pas celui-là. Cherche avoir ou être au présent.':'Pas celui-là. Le participe passé est juste après l\'auxiliaire.';
+      if(cfg.mode==='defi'||err>=2){ const g=box.querySelector(`.word[data-i="${target}"]`); zone.innerHTML=fbHTML('info',m+' Le voici en vert : clique dessus.',m); g.classList.add('good'); }
+      else zone.innerHTML=fbHTML('ko',m,m);
+      setTimeout(()=>b.classList.remove('bad'),500);
+      autoSay(m);
+    }
+  });
+}
+
+/* ---- Guidé : auxiliaire → conjugaison → participe → accord ---- */
+function renderGuided(box,it,done,id){
+  const v=it.v; let first=true;
+  const auxName=v.aux, forms=auxT(auxName,it.t), cls=auxName==='avoir'?'av':'et';
+  const ppTiles=shuffle([v.pp,...v.wrong]);
+  const accOpts=[v.pp,v.pp+'e',v.pp+'s',v.pp+'es'];
+  const steps=['aux','form'];
+  if(it.neg) steps.push('neg');
+  steps.push('pp');
+  if(v.aux==='être') steps.push('acc');
+  let si=0; const built={};
+  box.innerHTML=`${sentenceHTML(it,id)}<div class="stepz"></div><div class="build center big" style="margin:8px 0"></div><div class="zone"></div>`;
+  const stepz=box.querySelector('.stepz'), build=box.querySelector('.build'), zone=box.querySelector('.zone');
+  const msg=(cls2,m)=>{zone.innerHTML=fbHTML(cls2,m,stripTags(m)); autoSay(stripTags(m)); helpBtn(zone,it);};
+  const showBuild=()=>{
+    let h=''; if(it.pronInBlank) h+='<span class="pr">je / j\'</span> ';
+    if(built.form) h+=(built.neg?'<span class="ng">'+(VOW.test(built.form)?"n'":'ne')+'</span> ':'')+`<span class="ax-${cls}">${built.form}</span>`+(built.neg?' <span class="ng">pas</span>':'');
+    else if(built.aux) h+=`<span class="ax-${cls}">${built.aux}</span>`;
+    if(built.pp) h+=' '+colorPP(v,built.pp);
+    build.innerHTML=h;
+  };
+  const render=()=>{
+    const st=steps[si]; let q,tiles,sayq;
+    if(st==='aux'){ q='1️⃣ Quel auxiliaire ?'; sayq='Quel auxiliaire : avoir ou être ?'; tiles=[['avoir','t-av'],['être','t-et']]; }
+    const tn=it.t==='pqp'?'à l\'imparfait':'au présent';
+    if(st==='form'){ q=`2️⃣ Conjugue l'auxiliaire ${auxName} ${tn}.`; sayq=`Conjugue l'auxiliaire ${auxName} ${tn}. Regarde le sujet.`; tiles=forms.map(f=>[f,'t-'+cls]); }
+    if(st==='neg'){ const a=forms[it.k]; const na=VOW.test(a)?"n'"+a:'ne '+a; q='🚫 Place la négation.'; sayq='Place la négation autour de l\'auxiliaire.'; tiles=shuffle([[na+' pas','t-ng'],[a+' pas','t-ng'],['ne pas '+a,'t-ng']]); }
+    if(st==='pp'){ q='3️⃣ Choisis le participe passé.'; sayq='Choisis le participe passé du verbe '+v.inf+'.'; tiles=ppTiles.map(p=>[p,'t-pp'+(v.irr?' irr':'')]); }
+    if(st==='acc'){ q='4️⃣ Accorde le participe avec le sujet.'; sayq='Avec l\'auxiliaire être, accorde le participe avec le sujet.'; tiles=accOpts.map(p=>[p,'t-acc']); }
+    stepz.innerHTML=`<p><b>${q}</b> ${spk(sayq)}</p><div class="tiles">${tiles.map(([t,c])=>`<button class="tile ${c}" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>`;
+    autoSay(sayq);
+    let errs=0;
+    stepz.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+      if(b.disabled) return; const t=b.dataset.t; let ok=false, hint='';
+      const a=forms[it.k];
+      if(st==='aux'){ ok=t===auxName; hint=auxName==='être'?'Ce verbe fait partie des verbes de la maison d\'être (aller, venir, partir, arriver, tomber, rester…).':'La plupart des verbes se conjuguent avec avoir.'; }
+      if(st==='form'){ ok=t===a; hint=`Regarde le sujet : qui fait l'action ? (${PLAB[it.k]})`; }
+      if(st==='neg'){ ok=t===(VOW.test(a)?"n'"+a:'ne '+a)+' pas'; hint='La négation entoure l\'auxiliaire : ne (n\') avant, pas après.'; }
+      if(st==='pp'){ ok=t===v.pp; hint=ppHint(v); }
+      if(st==='acc'){ ok=agreeList(v,it.k,it.g).includes(t); hint=it.g?`Qui fait l'action ? Masculin ou féminin ? Un ou plusieurs ? (e = féminin, s = pluriel)`:`Ici, on ne sait pas si c'est un garçon ou une fille : ${agreeList(v,it.k,it.g).join(' ou ')}.`; }
+      if(ok){
+        b.classList.add('good'); stepz.querySelectorAll('.tile').forEach(x=>x.disabled=true); zone.innerHTML='';
+        if(st==='aux') built.aux=t; if(st==='form') built.form=t; if(st==='neg') built.neg=1; if(st==='pp'||st==='acc') built.pp=t;
+        showBuild(); si++;
+        if(si<steps.length) setTimeout(render,450);
+        else {
+          const final=(it.neg?negAux(a):a)+' '+built.pp; it._given=final; fillBlank(box,it,final);
+          const m=(first?'✅ '+rnd(PRAISE)+' ':'✅ ')+fullSentence(it,final);
+          zone.innerHTML=fbHTML('ok',esc(m),m); autoSay(m); nextBtn(zone,()=>done(first));
+        }
+      } else {
+        first=false; errs++; b.classList.add('bad'); b.disabled=true;
+        if(errs>=2){ const g=[...stepz.querySelectorAll('.tile')].find(x=>{const tt=x.dataset.t; return st==='aux'?tt===auxName:st==='form'?tt===a:st==='neg'?tt===(VOW.test(a)?"n'"+a:'ne '+a)+' pas':st==='pp'?tt===v.pp:agreeList(v,it.k,it.g).includes(tt);}); if(g) g.classList.add('good'); msg('info',hint+' La bonne étiquette est entourée en vert.'); }
+        else msg('ko',hint);
+      }
+    });
+  };
+  render();
+}
+/* ---- Guidé Musée CM2 ---- */
+function renderGuidedCM2(box,it,done,id){
+  let first=true, err=0;
+  const q1=it.step1==='cod'?{q:'1️⃣ Avec quoi s\'accorde le participe ?',o:['le sujet','le COD placé avant','rien'],a:'le COD placé avant'}:
+    {q:'1️⃣ Quel auxiliaire ?',o:['avoir','être'],a:(AUXF['être'].some(f=>it.ans.split(' ').includes(f))?'être':'avoir')};
+  box.innerHTML=`${sentenceHTML(it,id)}
+   <div class="step1"><p><b>${q1.q}</b> ${spk(q1.q.replace('1️⃣ ',''))}</p><div class="tiles">${q1.o.map(o=>`<button class="tile choice" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div></div>
+   <div class="step2" style="display:none"><p><b>2️⃣ Choisis la bonne réponse.</b> ${spk('Choisis la bonne réponse.')}</p><div class="tiles t2"></div></div><div class="zone"></div>`;
+  autoSay(q1.q+' '+it.say);
+  const zone=box.querySelector('.zone');
+  const msg=(c,m)=>{zone.innerHTML=fbHTML(c,m,stripTags(m)); autoSay(stripTags(m));};
+  box.querySelectorAll('.step1 .tile').forEach(b=>b.onclick=()=>{
+    if(b.disabled) return;
+    if(b.dataset.o===q1.a){
+      box.querySelectorAll('.step1 .tile').forEach(x=>x.disabled=true); b.classList.add('good'); zone.innerHTML='';
+      const s2=box.querySelector('.step2'); s2.style.display='';
+      const t2=s2.querySelector('.t2'); t2.innerHTML=qcmChoices(it).map(c=>`<button class="tile choice" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+      autoSay('Bien ! Maintenant, choisis la bonne réponse.');
+      t2.querySelectorAll('.tile').forEach(c=>c.onclick=()=>{
+        if(c.disabled) return;
+        if(it.acc.includes(c.dataset.c)){ t2.querySelectorAll('.tile').forEach(x=>x.disabled=true); c.classList.add('good'); fillBlank(box,it); const m=(first?'✅ '+rnd(PRAISE)+' ':'✅ ')+fullSentence(it); zone.innerHTML=fbHTML('ok',esc(m)+'<br><span class="small">'+esc(it.tip)+'</span>',m+' '+it.tip); autoSay(m+' '+it.tip); nextBtn(zone,()=>done(first)); }
+        else { first=false; c.classList.add('bad'); c.disabled=true; msg('ko',esc(it.tip)); }
+      });
+    } else {
+      first=false; err++; b.classList.add('bad'); b.disabled=true;
+      const m=it.step1==='cod'?'✋ IniBO : Stop ! Avec avoir, cherche le COD : quoi ? Est-il placé avant le verbe ?':'✋ IniBO : Stop ! Est-ce un verbe de la maison d\'être (aller, venir, arriver, tomber, rester…) ?';
+      if(err>=2){ box.querySelector(`.step1 .tile[data-o="${q1.a}"]`).classList.add('good'); msg('info',m+' La bonne réponse est entourée en vert.'); } else msg('ko',m);
+    }
+  });
+}
+
+/* =========================================================
+   SÉRIE
+   ========================================================= */
+function runSeries(box,items,cfg,onEnd){
+  let i=0; const res=[];
+  const show=()=>{
+    if(i>=items.length){onEnd(res.filter(Boolean).length,res);return;}
+    box.innerHTML=`<div class="prog">${items.map((_,j)=>`<span class="dot ${j<i?(res[j]?'y':'n'):j===i?'cur':''}"></span>`).join('')}</div><div class="q"></div>`;
+    renderQ(box.querySelector('.q'),items[i],cfg,ok=>{res.push(!!ok);i++;show(); box.scrollIntoView({block:'start',behavior:'smooth'});});
+  };
+  show();
+}
+
+/* =========================================================
+   SCANNER
+   ========================================================= */
+function scanIntro(){
+  window.scrollTo(0,0);
+  const t='Le scanner va te poser quelques questions pour trouver ton époque de départ. Ce n\'est pas une évaluation : il n\'y a ni note ni piège. Si tu ne sais pas, clique sur « Je ne sais pas encore » : c\'est la meilleure façon d\'aider le scanner à trouver la bonne époque pour toi.';
+  app().innerHTML=`<div class="card"><h2>🛸 Le scanner du voyageur</h2>${inibo(t,'stxt')}<p class="center"><button class="btn green" id="sgo">C'est parti !</button></p></div>`;
+  autoSay(t,document.getElementById('stxt'));
+  document.getElementById('sgo').onclick=startScan;
+}
+let SC=null;
+function startScan(){ SC={fam:1,hist:{},tested0:false,used:{},n:0,phase:'fam'}; nextScan(); }
+function scanPick(fam){
+  if(fam===0) return whichItem(rnd(WHICH));
+  const vs=VERBS.filter(v=>v.pl===fam && !SC.used[v.inf]); const v=rnd(vs.length?vs:VERBS.filter(v=>v.pl===fam)); SC.used[v.inf]=1;
+  return verbItem(v,null,false,fam===5);
+}
+function scanFrame(){
+  app().innerHTML=`<div class="card"><div class="row" style="justify-content:space-between"><h3>🛸 Scanner en cours…</h3><span class="small">Question ${SC.n}</span></div><div class="q"></div></div>`;
+  return app().querySelector('.q');
+}
+function nextScan(){
+  window.scrollTo(0,0);
+  if(SC.phase==='prod') return nextProd();
+  SC.n++;
+  const fam=SC.fam; const it=scanPick(fam); const box=scanFrame();
+  renderQ(box,it,{mode:'scan',input:'qcm'},ok=>{
+    const h=SC.hist[fam]||(SC.hist[fam]=[]); h.push(!!ok);
+    const n=h.length,c=h.filter(Boolean).length;
+    let dec=null;
+    if(n===2&&c===2) dec='pass'; else if(n===2&&c===0) dec='fail'; else if(n===3) dec=c>=2?'pass':'fail';
+    if(dec==='pass'){
+      if(fam===0) return placeAt(1);
+      if(fam===5){SC.phase='prod';SC.prod=prodItems();SC.pi=0;SC.pres=[];return nextScan();}
+      SC.fam=fam+1;
+    } else if(dec==='fail'){
+      if(fam===1&&!SC.tested0){SC.tested0=true;SC.fam=0;}
+      else if(fam===0) return placeAt(0);
+      else return placeAt(fam);
+    }
+    nextScan();
+  });
+}
+function prodItems(){
+  const pick=pl=>{const vs=VERBS.filter(v=>v.pl===pl&&!SC.used[v.inf]);return rnd(vs.length?vs:VERBS.filter(v=>v.pl===pl));};
+  const out=[verbItem(pick(3)),verbItem(pick(4)),verbItem(pick(5),null,false,true)];
+  const n=verbItem(pick(rnd([1,2,4,5])),null,true,true); n.plNeg=6; out.push(n);
+  const c=cm2Item(rnd(CM2)); c.cm2=true; out.push(c);
+  return out;
+}
+function nextProd(){
+  if(SC.pi>=SC.prod.length){
+    const ok=SC.pres.filter(Boolean).length;
+    if(ok>=4) return placeAt(7);
+    let m=7; SC.prod.forEach((it,i)=>{if(!SC.pres[i]) m=Math.min(m,it.cm2?7:it.plNeg||it.v.pl);}); return placeAt(m);
+  }
+  SC.n++;
+  const box=scanFrame();
+  if(SC.pi===0) box.insertAdjacentHTML('beforebegin',fbHTML('info','🌟 Bravo, tu connais déjà beaucoup de verbes ! Dernière étape du scanner : cette fois, tu écris toi-même le verbe (l\'auxiliaire et le participe passé).'));
+  renderQ(box,SC.prod[SC.pi],{mode:'scan',input:'type'},ok=>{SC.pres.push(!!ok);SC.pi++;nextScan();});
+}
+function placeAt(p){
+  S.unlocked=p; S.placed=true; S.start=p; S.scanDate=new Date().toLocaleDateString('fr-FR'); save(); refreshHeader(); window.scrollTo(0,0);
+  const P=PLANETS[p];
+  const t=p===0?'Ton voyage commence au Laboratoire du temps : tu vas apprendre à reconnaître le passé composé.':
+    p===7?'Incroyable ! Tu connais déjà tous les verbes au passé composé. Tu pars directement au Musée du temps, pour t\'entraîner dans des phrases et des textes de niveau CM2.':
+    `Ton voyage commence à l'époque : ${P.name}. Tu connais déjà les époques d'avant : elles sont validées ! Tu peux quand même y retourner pour réviser.`;
+  app().innerHTML=`<div class="card center"><h2>Scan terminé ✅</h2>
+   <div class="badge-big">${P.emoji}</div><h2>${P.name}</h2>${inibo(t,'ptxt')}
+   <p>Ton mot de passe : <span class="pass">${code(p)}</span> ${spk('Ton mot de passe est : '+sayCode(code(p))+'.')}</p>
+   <p class="small">Note-le : il te permet de continuer sur n'importe quel appareil.</p>
+   ${p>0?`<p>🔐 Les époques déjà validées t'ont donné ${found1().size} lettres du message secret. Va voir sur la ligne du temps !</p>`:`<p>🔐 À chaque époque validée, tu gagneras des lettres d'un message secret…</p>`}
+   <p><button class="btn green" id="tomap">🗺️ Voir la ligne du temps</button></p></div>`;
+  autoSay(t,document.getElementById('ptxt'));
+  document.getElementById('tomap').onclick=()=>showMap();
+}
+
+/* =========================================================
+   CARTE (LIGNE DU TEMPS)
+   ========================================================= */
+function showMap(msg){
+  window.scrollTo(0,0); if(HAS_TTS) speechSynthesis.cancel();
+  const u=S.unlocked;
+  const hello=(S.name?`${S.name}, `:'')+(msg||(u>=9?'tu as terminé tout le voyage, même l\'Atlantide. Bravo !':'choisis une époque.'));
+  app().innerHTML=`<div class="center white"><h2>🗺️ La ligne du temps</h2>
+    <p>${esc(hello)} ${spk(hello)}</p>
+    <p class="small" style="color:#e1cfee">Mot de passe : <span class="pass">${code(u)}</span></p></div>
+    ${secretsHTML()}
+    <div class="map">${PLANETS.map((P,i)=>{
+      const st=i<u?'done':i===u?'current':'locked';
+      const lab=st==='done'?'⭐ Époque validée':st==='current'?'⏳ Tu es ici':(P.secret?'🔒 Réussis le Musée du temps pour la découvrir':'🔒 Pas encore ouverte');
+      const hide=P.secret&&st==='locked';
+      return `<button class="planet ${st}" data-p="${i}"><div class="orb" style="background:${P.color}">${hide?'❓':P.emoji}</div><div><div class="pn">${hide?'Époque mystère':P.name}</div><div class="ps">${hide?'Quelque part, tout au fond de la mer…':P.sub}</div><div class="st">${lab}</div></div></button>`;}).join('')}</div>`;
+  app().querySelectorAll('.planet').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.p;
+    if(i>u){const m='Cette époque est encore fermée. Réussis le défi de l\'époque d\'avant pour l\'ouvrir !'; speak(m); modal(`<p class="big">🔒</p><p>${m}</p><p class="center"><button class="btn" data-close>OK</button></p>`);return;}
+    showPlanet(i,'d');
+  });
+  bindGuess(app());
+}
+
+/* =========================================================
+   ÉPOQUE + ONGLETS
+   ========================================================= */
+const TABS=[['d','🔭','Découvrir'],['g','🧭','Guidé'],['s','🚀','Seul'],['c','🏆','Défi']];
+function markTab(p,t){
+  S.tabs[p]=S.tabs[p]||{}; const first=!S.tabs[p][t]; S.tabs[p][t]=1; save();
+  if(p===8 && first && t!=='c' && SECRET2.keys[t]) toastLetters(SECRET2.keys[t],2);
+}
+
+/* =========================================================
+   MESSAGES SECRETS
+   ========================================================= */
+const SECRET1={title:'Message secret n°1',
+  text:'DES MAMMOUTHS ONT VÉCU EN MÊME TEMPS QUE LES PHARAONS !',
+  keys:[['E'],['S','A'],['T','N'],['O','U'],['M','D'],['H','R'],['L','C'],['V','P','Q']],
+  expl:'Les derniers mammouths vivaient sur une île tout au nord de la Sibérie, l\'île Wrangel, il y a environ 4 000 ans. À cette époque, les pyramides d\'Égypte étaient déjà construites depuis plusieurs siècles ! Et tu as remarqué ? « ont vécu » est au passé composé.'};
+const SECRET2={title:'Message secret n°2',
+  text:'L\'ATLANTIDE N\'A JAMAIS EXISTÉ : PLATON L\'AVAIT INVENTÉE !',
+  keys:{d:['E','L','N'],g:['A','T','I'],s:['D','S','O','M'],c:['J','X','P','V']},
+  expl:'Il y a environ 2 400 ans, le philosophe grec Platon a raconté l\'histoire d\'une île engloutie, l\'Atlantide. C\'était une histoire inventée pour faire réfléchir ses lecteurs : personne n\'en a jamais trouvé la moindre trace. Regarde le verbe : « l\'avait inventée » est au plus-que-parfait, et le participe s\'accorde avec « l\' » (l\'Atlantide), le COD placé avant !'};
+const GLYPHS='▲△▼▽◆◇○●□■◐◑◒◓◢◣◤◥◧◨◩◪◬◭◮◎';
+const base=c=>noAcc(c).toUpperCase();
+const glyphOf=c=>GLYPHS[base(c).charCodeAt(0)-65]||'?';
+function found1(){const n=Math.min(S.unlocked,8); const f=new Set(); for(let i=0;i<n;i++) SECRET1.keys[i].forEach(x=>f.add(x)); return f;}
+function found2(){const f=new Set(); const all=S.unlocked>=9; Object.entries(SECRET2.keys).forEach(([t,ks])=>{ if(all||(t!=='c'&&S.tabs[8]&&S.tabs[8][t])) ks.forEach(x=>f.add(x)); }); return f;}
+function lettersOf(txt){return new Set([...txt].map(base).filter(c=>/[A-Z]/.test(c)));}
+function isComplete(M,f){return [...lettersOf(M.text)].every(c=>f.has(c));}
+function codedHTML(M,f,fresh){
+  fresh=fresh||[];
+  return M.text.split(' ').map(w=>'<span style="white-space:nowrap">'+[...w].map(c=>{const b=base(c); if(!/[A-Z]/.test(b)) return esc(c);
+    return f.has(b)?`<span class="sl${fresh.includes(b)?' new':''}">${esc(c)}</span>`:`<span class="sg">${glyphOf(c)}</span>`;}).join('')+'</span>').join(' ');
+}
+function secretCard(M,f,label){
+  const done=isComplete(M,f);
+  return `<div class="card"><h3>🔐 ${M.title}</h3>
+    <div class="secret">${codedHTML(M,f)}</div>
+    ${done?`<div class="fb ok"><div class="row">${spk(M.text.toLowerCase()+'. '+M.expl)}<div><b>Message décodé !</b><br>${esc(M.expl)}</div></div></div>`
+      :`<p class="small">${label}</p><p class="center"><button class="btn yellow guess" data-m="${M===SECRET1?1:2}">🕵️ Je crois avoir deviné !</button></p>`}</div>`;
+}
+function bindGuess(root){
+  root.querySelectorAll('.guess').forEach(b=>b.onclick=()=>{
+    const M=b.dataset.m==='1'?SECRET1:SECRET2;
+    const m=modal(`<h3>🕵️ Tu as deviné le message ?</h3><p>Écris-le en entier :</p><textarea id="gs" style="min-height:90px"></textarea><div id="gfb"></div><p class="center"><button class="btn green" id="gok">Vérifier</button> <button class="btn grey" data-close>Fermer</button></p>`);
+    m.querySelector('#gok').onclick=()=>{
+      const clean=x=>noAcc(x).toUpperCase().replace(/[^A-Z]/g,'');
+      if(clean(m.querySelector('#gs').value)===clean(M.text)){ m.querySelector('#gfb').innerHTML=fbHTML('ok','🏅 Bravo, décodeur de génie ! Tu as trouvé le message avant d\'avoir toutes les lettres. Garde le secret pour tes camarades !','Bravo, décodeur de génie !'); speak('Bravo, décodeur de génie !'); }
+      else { m.querySelector('#gfb').innerHTML=fbHTML('ko','Pas encore… Continue ton voyage pour gagner d\'autres lettres !','Pas encore. Continue ton voyage pour gagner d\'autres lettres !'); speak('Pas encore. Continue ton voyage pour gagner d\'autres lettres !'); }
+    };
+  });
+}
+function secretsHTML(){
+  let h=secretCard(SECRET1,found1(),`Chaque époque validée te donne de nouvelles lettres. Les symboles qui restent cachent les lettres qu'il te manque.`);
+  if(S.unlocked>=8) h+=secretCard(SECRET2,found2(),`Dans l'Atlantide, chaque étape terminée (Découvrir, Guidé, Seul, Défi) te donne de nouvelles lettres.`);
+  return h;
+}
+function toastLetters(ls,which){
+  const t=document.createElement('div'); t.className='toast';
+  t.innerHTML=`🔐 Message secret n°${which} : tu gagnes ${ls.length>1?'les lettres':'la lettre'} ${ls.map(l=>`<b style="color:#69f0ae">${l}</b>`).join(', ')} !`;
+  document.body.appendChild(t); speak(`Message secret : tu gagnes ${ls.length>1?'les lettres':'la lettre'} ${ls.join(', ')} !`);
+  setTimeout(()=>t.remove(),4000);
+}
+function secretGainHTML(p,newU){
+  if(!newU) return '';
+  if(p<=7){ const ls=SECRET1.keys[p]; const f=found1();
+    return `<div class="card" style="box-shadow:none;border:3px dashed #ffca28"><h3>🔐 Tu gagnes ${ls.length>1?'les lettres':'la lettre'} ${ls.join(', ')} du message secret !</h3><div class="secret">${codedHTML(SECRET1,f,ls)}</div>
+      ${isComplete(SECRET1,f)?`<div class="fb ok"><div class="row">${spk(SECRET1.text.toLowerCase()+'. '+SECRET1.expl)}<div><b>Message décodé !</b><br>${esc(SECRET1.expl)}</div></div></div>`:''}</div>`; }
+  if(p===8){ const f=found2();
+    return `<div class="card" style="box-shadow:none;border:3px dashed #ffca28"><h3>🔐 Message secret n°2 décodé !</h3><div class="secret">${codedHTML(SECRET2,f,SECRET2.keys.c)}</div>
+      <div class="fb ok"><div class="row">${spk(SECRET2.text.toLowerCase()+'. '+SECRET2.expl)}<div>${esc(SECRET2.expl)}</div></div></div></div>`; }
+  return '';
+}
+function showPlanet(p,tab){
+  window.scrollTo(0,0); if(HAS_TTS) speechSynthesis.cancel();
+  const P=PLANETS[p]; const tb=S.tabs[p]||{};
+  app().innerHTML=`<div class="ptitle"><button class="btn grey" id="back" style="padding:8px 12px">🗺️</button><div class="orb" style="background:${P.color}">${P.emoji}</div><div><h2 style="margin:0">${P.name}</h2><div class="small" style="color:#e1cfee">${P.sub}</div></div></div>
+   <div class="tabs">${TABS.map(([k,ic,lab])=>`<button class="tab ${k===tab?'active':''}" data-t="${k}"><span class="ic">${ic}</span>${lab} ${tb[k]?'<span class="ck">✓</span>':''}</button>`).join('')}</div>
+   <div class="card" id="pc"></div>`;
+  document.getElementById('back').onclick=()=>showMap();
+  app().querySelectorAll('.tab').forEach(b=>b.onclick=()=>showPlanet(p,b.dataset.t));
+  const pc=document.getElementById('pc');
+  if(tab==='d') return tabDiscover(pc,p);
+  if(tab==='g') return tabGuided(pc,p);
+  if(tab==='s') return tabSolo(pc,p);
+  if(tab==='c') return tabDefi(pc,p);
+}
+function inputModeBar(){return `<p class="small">Je réponds avec : <button class="hbtn ${!S.qcm?'on':''}" data-im="0">⌨️ le clavier</button> <button class="hbtn ${S.qcm?'on':''}" data-im="1">🏷️ des étiquettes</button></p>`;}
+function bindInputMode(pc,again){pc.querySelectorAll('[data-im]').forEach(b=>b.onclick=()=>{S.qcm=b.dataset.im==='1';save();again();});}
+
+/* ---- Découvrir ---- */
+function slidesFor(p){
+  const V=n=>VBY[n];
+  const ca=(v,s)=>colorAnswer(v,s);
+  switch(p){
+  case 0: return [
+    {h:'Le passé composé',say:'Le passé composé sert à raconter une action terminée, qui s\'est passée avant maintenant. Hier, j\'ai mangé une pomme.',
+     html:`<p class="kara">Le passé composé sert à raconter une action terminée, qui s'est passée avant maintenant.</p>
+      <div class="timeline"><div style="background:#E1BEE7">⏪<br><b>Passé</b><br>hier</div><div style="background:#FFF9C4">📍<br><b>Présent</b><br>maintenant</div><div style="background:#B3E5FC">⏩<br><b>Futur</b><br>demain</div></div>
+      <p class="eq">Hier, j'${ca(V('manger'),'ai mangé')} une pomme.</p>`},
+    {h:'Un duo : deux mots !',say:'Au passé composé, le verbe est composé de deux mots : l\'auxiliaire, avoir ou être au présent, puis le participe passé. J\'ai mangé. Nous sommes allés.',
+     html:`<p class="kara">Au passé composé, le verbe est composé de deux mots : l'auxiliaire (avoir ou être au présent), puis le participe passé.</p>
+      <p class="eq">j'${ca(V('manger'),'ai mangé')}<br>nous ${ca(V('aller'),'sommes allés')}</p><p class="center small"><span class="ax-av">auxiliaire avoir</span> <span class="ax-et">auxiliaire être</span> + <span class="pp">participe passé</span></p>`},
+    {h:'L\'astuce d\'IniBO',say:'Pour trouver le passé composé, cherche avoir ou être au présent, suivi d\'un participe passé.',
+     html:`${inibo('Pour trouver le passé composé, cherche avoir ou être au présent, suivi d\'un participe passé.','k0')}
+      <div class="tables"><div class="tbox"><h4>avoir</h4><p class="ax-av" style="padding:6px">ai · as · a<br>avons · avez · ont</p></div><div class="tbox"><h4>être</h4><p class="ax-et" style="padding:6px">suis · es · est<br>sommes · êtes · sont</p></div></div>`}
+  ];
+  case 1: return [
+    {h:'L\'auxiliaire avoir',say:'La plupart des verbes se conjuguent avec l\'auxiliaire avoir au présent : j\'ai, tu as, il a, nous avons, vous avez, ils ont.',
+     html:`<p class="kara">La plupart des verbes se conjuguent avec l'auxiliaire avoir au présent.</p><p class="eq"><span class="ax-av">j'ai · tu as · il a<br>nous avons · vous avez · ils ont</span></p>`},
+    {h:'Les verbes en -er : é',say:'Pour les verbes en e r, le participe passé se termine par é. Chanter, chanté. J\'ai chanté.',
+     html:`<p class="kara">Pour les verbes en -er, le participe passé se termine par é.</p><p class="eq">chanter → ${colorPP(V('chanter'),'chanté')}</p><div class="tables">${tableHTML(V('chanter'))}</div>`},
+    {h:'é ou er ?',say:'Astuce d\'IniBO : pour savoir s\'il faut écrire é ou e r, remplace le verbe par vendre. J\'ai mangé : j\'ai vendu, donc é. Je vais manger : je vais vendre, donc e r.',
+     html:`${inibo('Pour savoir s\'il faut écrire é ou er, remplace le verbe par « vendre ».','k1')}<p class="big">J'ai mang<span class="fin">é</span> → j'ai vend<b>u</b> → <b>é</b><br>Je vais mang<b>er</b> → je vais vend<b>re</b> → <b>er</b></p>`},
+    {h:'Le code couleur',say:'Les couleurs t\'aident à mémoriser. En bleu, l\'auxiliaire avoir. En rose, l\'auxiliaire être. En jaune, le participe passé. En orange, un participe irrégulier, à apprendre par cœur. En rouge, la dernière lettre du participe. En vert, l\'accord. En gris, la négation.',
+     html:`<p class="kara">Les couleurs t'aident à mémoriser.</p><p class="big" style="line-height:1.9"><span class="ax-av">bleu</span> = auxiliaire avoir<br><span class="ax-et">rose</span> = auxiliaire être<br><span class="pp">jaune</span> = participe passé<br><span class="pp irr">orange</span> = participe irrégulier : par cœur !<br><span class="fin">rouge</span> = la dernière lettre du participe<br><span class="acc">vert</span> = l'accord<br><span class="ng">gris</span> = la négation</p>`}
+  ];
+  case 2: return [
+    {h:'Les verbes comme finir : i',say:'Pour les verbes comme finir, le participe passé se termine par i. Finir, fini. J\'ai fini.',
+     html:`<p class="kara">Pour les verbes comme finir, le participe passé se termine par i.</p><div class="tables">${tableHTML(V('finir'))}${tableHTML(V('choisir'))}</div>${LEGEND}`},
+    {h:'Pas de t !',say:'Attention : j\'ai fini, sans t ! Astuce d\'IniBO : mets le participe au féminin. La course est finie. On n\'entend pas de t, donc on n\'en écrit pas.',
+     html:`${inibo('Attention : j\'ai fini, sans t ! Astuce : mets le participe au féminin : « la course est finie ». On n\'entend pas de t.','k2')}<p class="eq">j'${ca(V('finir'),'ai fini')} ✅ &nbsp; <s>j'ai finit</s> ❌</p>`}
+  ];
+  case 3: return [
+    {h:'Être → été',say:'Le verbe être se conjugue avec l\'auxiliaire avoir ! Son participe passé est été. J\'ai été.',
+     html:`<p class="kara">Le verbe être se conjugue avec l'auxiliaire avoir ! Son participe passé est « été ».</p><div class="tables">${tableHTML(V('être'))}</div>${LEGEND}`},
+    {h:'Avoir → eu',say:'Le verbe avoir se conjugue aussi avec l\'auxiliaire avoir. Son participe passé est eu. J\'ai eu.',
+     html:`<p class="kara">Le verbe avoir se conjugue aussi avec l'auxiliaire avoir. Son participe passé est « eu ».</p><div class="tables">${tableHTML(V('avoir'))}</div>`},
+    {h:'Bizarre mais vrai',say:'Astuce d\'IniBO : être et avoir prennent tous les deux l\'auxiliaire avoir. J\'ai été en retard. J\'ai eu de la chance.',
+     html:`${inibo('Bizarre mais vrai : être et avoir prennent tous les deux l\'auxiliaire avoir !','k3')}<p class="eq">j'${ca(V('être'),'ai été')} en retard<br>j'${ca(V('avoir'),'ai eu')} de la chance</p>`}
+  ];
+  case 4: return [
+    {h:'Participes en t',say:'Faire, fait : j\'ai fait. Dire, dit : j\'ai dit.',
+     html:`<p class="kara">Certains participes se terminent par t : faire → fait, dire → dit.</p><div class="tables">${tableHTML(V('faire'))}${tableHTML(V('dire'))}</div>${LEGEND}`},
+    {h:'Participes en s',say:'Prendre, pris : j\'ai pris. Comprendre, compris. Apprendre, appris. Astuce : au féminin, on entend le s : la photo prise.',
+     html:`<p class="kara">Prendre → pris (comprendre → compris, apprendre → appris). Astuce : au féminin, on entend le s : « la photo prise ».</p><div class="tables">${tableHTML(V('prendre'))}</div>`},
+    {h:'Participes en u',say:'Voir, vu. Pouvoir, pu. Vouloir, voulu. J\'ai vu, j\'ai pu, j\'ai voulu.',
+     html:`<p class="kara">Voir → vu, pouvoir → pu, vouloir → voulu.</p><div class="tables">${tableHTML(V('voir'))}${tableHTML(V('vouloir'))}</div>`}
+  ];
+  case 5: return [
+    {h:'La maison d\'être',say:'Certains verbes se conjuguent avec l\'auxiliaire être. Ce sont surtout des verbes de mouvement : aller, venir, partir, arriver, tomber, rester, entrer, sortir, monter, descendre, revenir, rentrer.',
+     html:`<p class="kara">Certains verbes se conjuguent avec l'auxiliaire être. Ce sont surtout des verbes de mouvement :</p><p class="big center"><span class="ax-et">aller · venir · partir · arriver · tomber · rester · entrer · sortir · monter · descendre · revenir · rentrer</span></p>`},
+    {h:'L\'accord avec le sujet',say:'Avec l\'auxiliaire être, le participe passé s\'accorde avec le sujet, comme un adjectif. Il est allé. Elle est allée. Ils sont allés. Elles sont allées.',
+     html:`<p class="kara">Avec l'auxiliaire être, le participe passé s'accorde avec le sujet, comme un adjectif.</p><div class="tables">${tableHTML(V('aller'))}</div>${LEGEND}`},
+    {h:'La question d\'IniBO',say:'Stop ! Avec être, je pose la question : qui est allé ? Masculin ou féminin ? Un ou plusieurs ? e pour le féminin, s pour le pluriel.',
+     html:`${inibo('Stop ! Avec être, je pose la question : qui est allé ? Masculin ou féminin ? Un ou plusieurs ?','k5')}<p class="eq"><span class="acc">e</span> = féminin · <span class="acc">s</span> = pluriel</p><div class="tables">${tableHTML(V('venir'))}</div>`}
+  ];
+  case 6: return [
+    {h:'Le sandwich de la négation',say:'À la forme négative, ne et pas entourent l\'auxiliaire, comme un sandwich. Je n\'ai pas mangé.',
+     html:`<p class="kara">À la forme négative, ne et pas entourent l'auxiliaire, comme un sandwich.</p><p class="eq">je ${ca(V('manger'),"n'ai pas mangé")}</p>${LEGEND}`},
+    {h:'ne ou n\' ?',say:'Devant une voyelle, ne devient n apostrophe : je n\'ai pas, il n\'est pas. Mais : je ne suis pas allé.',
+     html:`<p class="kara">Devant une voyelle, ne devient n'.</p><p class="eq">je ${ca(V('manger'),"n'ai pas mangé")}<br>il ${ca(V('aller'),"n'est pas allé")}<br>je ${ca(V('aller'),'ne suis pas allé')}</p>`},
+    {h:'Le participe reste dehors',say:'Astuce d\'IniBO : le participe passé reste dehors, après pas. Je n\'ai pas fini. Pas : je n\'ai fini pas.',
+     html:`${inibo('Le participe passé reste dehors, après « pas » !','k6')}<p class="eq">je ${ca(V('finir'),"n'ai pas fini")} ✅<br><s>je n'ai fini pas</s> ❌</p>`}
+  ];
+  case 7: return [
+    {h:'Qui fait l\'action ?',say:'Avant d\'écrire le verbe, IniBO te dit : Stop ! Cherche le sujet. Il peut être un nom, plusieurs noms, ou même être placé après le verbe.',
+     html:`${inibo('Stop ! Avant d\'écrire le verbe, cherche le sujet. Il peut être un nom, plusieurs noms, ou même être placé après le verbe.','k7')}
+      <p class="big">Ma sœur et moi → <b>nous</b> → ${ca(V('faire'),'avons fait')}<br>Hier ${ca(V('arriver'),'sont arrivés')} les correspondants. <span class="small">(qui ? les correspondants → ils)</span></p>`},
+    {h:'Avec être : accord avec le sujet',say:'Avec être, le participe s\'accorde avec le sujet. Léa et Inès sont arrivées.',
+     html:`<p class="big">Léa et Inès ${ca(V('arriver'),'sont arrivées')}.<br><span class="small">Léa et Inès : féminin pluriel → <span class="acc">es</span></span></p>`},
+    {h:'Avec avoir : le COD placé avant',say:'Avec avoir, le participe ne s\'accorde pas avec le sujet. Mais si le COD est placé avant le verbe, le participe s\'accorde avec ce COD. Les pommes que tu as mangées. Ces films, je les ai vus.',
+     html:`<p class="kara">Avec avoir, le participe ne s'accorde pas avec le sujet. Mais si le COD est placé AVANT le verbe, le participe s'accorde avec ce COD.</p>
+      <p class="big">Tu ${ca(V('manger'),'as mangé')} les pommes. <span class="small">(COD après : pas d'accord)</span><br>Les pommes que tu ${ca(V('manger'),'as mangées')}. <span class="small">(que = les pommes, placé avant)</span><br>Ces films, je les ${ca(V('voir'),'ai vus')}.</p>`},
+    {h:'La question d\'IniBO',say:'Stop ! Avec avoir, je cherche le COD : quoi ? Est-il placé avant le verbe ? Si oui, j\'accorde le participe avec lui.',
+     html:`${inibo('Stop ! Avec avoir, je cherche le COD : quoi ? Est-il placé avant le verbe ? Si oui, j\'accorde le participe avec lui.','k7b')}`}
+  ];
+  case 8: return [
+    {h:'Le passé du passé',say:'Bienvenue dans l\'Atlantide, la cité engloutie, encore plus loin dans le passé ! Le plus-que-parfait raconte une action qui s\'est passée avant une autre action, déjà passée. Quand je suis arrivé à l\'école, la cloche avait déjà sonné. D\'abord la cloche a sonné, ensuite je suis arrivé.',
+     html:`<p class="kara">Bienvenue dans l'Atlantide, encore plus loin dans le passé ! Le plus-que-parfait raconte une action qui s'est passée AVANT une autre action déjà passée.</p>
+      <div class="timeline"><div style="background:#B2EBF2">🔱<br><b>1. Plus-que-parfait</b><br>la cloche avait sonné</div><div style="background:#E1BEE7">⏪<br><b>2. Passé composé</b><br>je suis arrivé</div><div style="background:#FFF9C4">📍<br><b>Maintenant</b></div></div>
+      <p class="big">Quand je ${ca(V('arriver'),'suis arrivé')} à l'école, la cloche ${colorAnswer({pp:'sonné'},'avait sonné')}.</p>`},
+    {h:'La recette',say:'Bonne nouvelle : tu connais déjà presque tout ! Le plus-que-parfait, c\'est l\'auxiliaire avoir ou être à l\'imparfait, plus le participe passé. Mêmes participes, mêmes accords qu\'au passé composé. J\'ai mangé devient j\'avais mangé. Elle est partie devient elle était partie.',
+     html:`<p class="kara">Bonne nouvelle : tu connais déjà presque tout ! Le plus-que-parfait = l'auxiliaire avoir ou être à l'IMPARFAIT + le participe passé. Mêmes participes, mêmes accords qu'au passé composé.</p>
+      <p class="eq">j'${ca(V('manger'),'ai mangé')} → j'${ca(V('manger'),'avais mangé')}<br>elle ${ca(V('partir'),'est partie')} → elle ${ca(V('partir'),'était partie')}</p>
+      <div class="tables"><div class="tbox"><h4>avoir à l'imparfait</h4><p class="ax-av" style="padding:6px">avais · avais · avait<br>avions · aviez · avaient</p></div><div class="tbox"><h4>être à l'imparfait</h4><p class="ax-et" style="padding:6px">étais · étais · était<br>étions · étiez · étaient</p></div></div>`},
+    {h:'Les tableaux',say:'Voici deux verbes au plus-que-parfait : chanter, avec avoir, et aller, avec être.',
+     html:`<div class="tables">${tableHTML(V('chanter'),'pqp')}${tableHTML(V('aller'),'pqp')}</div>${LEGEND}`},
+    {h:'La question d\'IniBO',say:'Stop ! Quand deux actions sont passées, demande-toi : laquelle s\'est passée en premier ? La première se met au plus-que-parfait. Et à la forme négative, c\'est comme au passé composé : je n\'avais pas fini.',
+     html:`${inibo('Stop ! Quand deux actions sont passées, demande-toi : laquelle s\'est passée en PREMIER ? C\'est elle qui se met au plus-que-parfait.','k8')}
+      <p class="big">Forme négative, comme au passé composé :<br>je ${ca(V('finir'),"n'avais pas fini")}</p>`}
+  ];
+  }
+}
+function tabDiscover(pc,p){
+  const sl=slidesFor(p); let i=0;
+  const show=()=>{
+    const s=sl[i];
+    pc.innerHTML=`<div class="slide"><div class="row"><h3 style="flex:1">${s.h}</h3>${spk(s.say)}</div>${s.html}</div>
+     <div class="sdots">${sl.map((_,j)=>`<span class="dot ${j===i?'cur':j<i?'y':''}"></span>`).join('')}</div>
+     <div class="nav"><button class="btn grey" id="pv" ${i===0?'style="visibility:hidden"':''}>⬅ Avant</button>
+     ${i<sl.length-1?'<button class="btn" id="nx">Suite ➜</button>':'<button class="btn green" id="fin">J\'ai compris ! Étape Guidé ➜</button>'}</div>
+     ${i===sl.length-1&&p>0?`<p class="small center">Tu es sûr(e) de toi ? Tu peux aller directement au 🏆 Défi.</p>`:''}`;
+    autoSay(s.say);
+    const pv=pc.querySelector('#pv'); if(pv) pv.onclick=()=>{i--;show();};
+    const nx=pc.querySelector('#nx'); if(nx) nx.onclick=()=>{i++;show();};
+    const fn=pc.querySelector('#fin'); if(fn) fn.onclick=()=>{markTab(p,'d');showPlanet(p,'g');};
+  };
+  show();
+}
+function tabGuided(pc,p){
+  let items;
+  if(p===0) items=shuffle([...shuffle(DUO).slice(0,4).map(duoItem),...shuffle(WHICH).slice(0,2).map(whichItem)]);
+  else if(p===8) items=[...shuffle(WHICHPQ).slice(0,2).map(whichPQ),...verbSet(8,4)];
+  else if(p===7) items=shuffle(CM2).slice(0,6).map(cm2Item);
+  else items=verbSet(p,6);
+  const intro=p===0?'Je t\'aide : un rappel s\'affiche pour trouver l\'auxiliaire.':p===7?'Je t\'aide : d\'abord tu réfléchis, ensuite tu choisis la bonne réponse.':'Je t\'aide : tu construis le verbe étape par étape.';
+  pc.innerHTML=`${inibo(intro,'gi')}<div id="ser"></div>`;
+  runSeries(pc.querySelector('#ser'),items,{mode:'guided'},(sc,res)=>{
+    markTab(p,'g');
+    endScreen(pc,`Étape Guidé terminée : ${sc} sur ${res.length} du premier coup.`,[['🚀 Étape Seul',()=>showPlanet(p,'s')],['🔁 Recommencer',()=>showPlanet(p,'g')]]);
+  });
+}
+function tabSolo(pc,p){
+  const again=()=>showPlanet(p,'s');
+  let items;
+  if(p===0) items=shuffle([...shuffle(DUO).slice(0,4).map(duoItem),...shuffle(WHICH).slice(0,4).map(whichItem)]);
+  else if(p===7) items=shuffle(CM2).slice(0,8).map(cm2Item);
+  else if(p===8) items=shuffle([...shuffle(WHICHPQ).slice(0,2).map(whichPQ),...verbSet(8,6)]);
+  else items=verbSet(p,8);
+  const intro=p===0?'À toi de jouer, sans rappel cette fois.':'À toi de jouer seul ! Si tu te trompes, tu as un deuxième essai et tu peux regarder le tableau.';
+  pc.innerHTML=`${inibo(intro,'si')}${p>0?inputModeBar():''}<div id="ser"></div>`;
+  if(p>0) bindInputMode(pc,again);
+  runSeries(pc.querySelector('#ser'),items,{mode:'solo',input:S.qcm?'qcm':'type'},(sc,res)=>{
+    markTab(p,'s');
+    endScreen(pc,`Étape Seul terminée : ${sc} sur ${res.length} du premier coup.`,[['🏆 Le Défi',()=>showPlanet(p,'c')],['🔁 Recommencer',again]]);
+  });
+}
+function tabDefi(pc,p){
+  const again=()=>showPlanet(p,'c');
+  if(p===7) return defiText(pc);
+  let items;
+  if(p===0) items=shuffle([...shuffle(DUO).slice(0,3).map(duoItem),...shuffle(WHICH).slice(0,2).map(whichItem)]);
+  else if(p===1||p===6||p===8) items=verbSet(p,5);
+  else { items=verbSet(p,4); const rp=1+Math.floor(Math.random()*(p-1)); items.push(verbSet(rp,1)[0]); items=shuffle(items); }
+  const intro='Le Défi : 5 questions, un seul essai. Avec 4 bonnes réponses, tu gagnes l\'étoile de l\'époque et l\'époque suivante s\'ouvre !';
+  pc.innerHTML=`${inibo(intro,'ci')}${livretLine(p)}${p>0?inputModeBar():''}<div id="ser"></div>`;
+  if(p>0) bindInputMode(pc,again);
+  runSeries(pc.querySelector('#ser'),items,{mode:'defi',input:S.qcm?'qcm':'type'},(sc,res)=>{
+    markTab(p,'c'); defiResult(pc,p,sc>=4,`${sc} sur ${res.length}`);
+  });
+}
+function defiResult(pc,p,win,scoreTxt){
+  let newU=false;
+  S.defi=S.defi||{}; const prev=S.defi[p];
+  S.defi[p]={last:scoreTxt,ok:win||!!(prev&&prev.ok),date:new Date().toLocaleDateString('fr-FR'),n:((prev&&prev.n)||0)+1};
+  save();
+  if(win && S.unlocked===p){S.unlocked=Math.min(9,p+1);save();newU=true;}
+  window.scrollTo(0,0);
+  if(win){
+    const nextName=p<8?PLANETS[p+1].name:'';
+    const m=p===8?'Mission accomplie ! Tu as remonté le temps jusqu\'à l\'Atlantide : tu maîtrises le passé composé et le plus-que-parfait. Bravo, maître du temps !':
+      p===7?'Tu as réussi le Musée du temps : tu es un vrai maître du passé composé !'+(newU?' Une époque secrète vient d\'apparaître sous la mer : l\'Atlantide engloutie !':''):
+      `Bravo ! Tu as gagné l'étoile de l'époque : ${PLANETS[p].name}.`+(newU?` L'époque suivante est ouverte : ${nextName} !`:'');
+    const ev=PCODES[p].ev;
+    pc.innerHTML=`<div class="center"><div class="badge-big">⭐</div><h2>Défi réussi : ${scoreTxt}</h2>${inibo(m,'dr')}
+     ${ev.length?`<div class="fb info" style="text-align:left">📘 <b>Dans ton livret de réussite :</b>${codeChips(ev,true)}</div>`:''}
+     ${secretGainHTML(p,newU)}
+     ${newU?`<p>Ton nouveau mot de passe : <span class="pass">${code(S.unlocked)}</span> ${spk('Ton nouveau mot de passe est : '+sayCode(code(S.unlocked))+'. Note-le !')}</p><p class="small">Note-le dans ton cahier !</p>`:''}
+     <p>${p<8?`<button class="btn green" id="nxp">${PLANETS[p+1].emoji} Aller à : ${nextName}</button>`:''}<button class="btn" id="tm">🗺️ La ligne du temps</button></p></div>`;
+    autoSay(m,document.getElementById('dr'));
+    const n=pc.querySelector('#nxp'); if(n) n.onclick=()=>showPlanet(p+1,'d');
+  } else {
+    const m=`Tu as eu ${scoreTxt}. Il faut ${p===7?'au moins 80 sur 100 de bonnes réponses':'4 bonnes réponses'}. Ce n'est pas grave : retourne t'entraîner dans les étapes Guidé ou Seul, puis réessaie. Chaque erreur fait grandir ton cerveau !`;
+    pc.innerHTML=`<div class="center"><div class="badge-big">💪</div>${inibo(m,'dr')}<p><button class="btn" id="tg">🧭 Guidé</button><button class="btn" id="ts">🚀 Seul</button><button class="btn yellow" id="tc">🔁 Réessayer le défi</button></p><p><button class="btn grey" id="tm">🗺️ La ligne du temps</button></p></div>`;
+    autoSay(m,document.getElementById('dr'));
+    pc.querySelector('#tg').onclick=()=>showPlanet(p,'g'); pc.querySelector('#ts').onclick=()=>showPlanet(p,'s'); pc.querySelector('#tc').onclick=()=>showPlanet(p,'c');
+  }
+  pc.querySelector('#tm').onclick=()=>showMap();
+}
+function endScreen(pc,txt,btns){
+  pc.innerHTML=`<div class="center"><div class="badge-big">🎉</div>${inibo(txt,'es')}<p>${btns.map((b,i)=>`<button class="btn ${i===0?'green':'grey'}" data-b="${i}">${b[0]}</button>`).join('')}</p></div>`;
+  autoSay(txt,document.getElementById('es'));
+  pc.querySelectorAll('[data-b]').forEach(b=>b.onclick=btns[+b.dataset.b][1]);
+  window.scrollTo(0,0);
+}
+
+/* ---- Défi Musée : transposer un texte ---- */
+function defiText(pc,idx){
+  const T=TEXTS[idx==null?Math.floor(Math.random()*TEXTS.length):idx];
+  const tidx=TEXTS.indexOf(T);
+  const qcm=!!S.qcm; let n=0; const gaps=[];
+  const body=T.seg.map(s=>{
+    if(typeof s==='string') return esc(s);
+    const [inf,k,g,neg]=s; const v=VBY[inf]; const acc=answers(v,k,g,neg);
+    const it={type:'verb',v,k,g,neg:!!neg,acc,ans:acc[0]}; gaps.push(it); const i=n++;
+    const hint=inf+(neg?' · forme négative':'');
+    if(qcm) return `<select data-g="${i}" aria-label="${esc(inf)}"><option value="">(${esc(hint)})</option>${qcmChoices(it).map(c=>`<option>${esc(c)}</option>`).join('')}</select>`;
+    return `<input data-g="${i}" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${esc(hint)}" aria-label="${esc(inf)}">`;
+  }).join('');
+  const intro='Le grand Défi du Musée : ce texte est au présent. Réécris-le au passé composé ! Avec 80 sur 100 de bonnes réponses, tu termines la mission.';
+  pc.innerHTML=`${inibo(intro,'ti')}${livretLine(7)}${inputModeBar()}
+   <h3>📜 ${esc(T.title)} <span class="small">(au présent)</span></h3>
+   <div class="row">${spk(null,'tp')}<div class="sent kara" id="tp" style="font-size:22px">${esc(T.present)}</div></div>
+   <h3 style="margin-top:16px">⏪ Au passé composé :</h3>
+   <div class="textq">${body}</div>
+   <div id="tfb"></div><p class="center"><button class="btn green" id="tv">Vérifier</button></p>`;
+  bindInputMode(pc,()=>defiText(pc,tidx));
+  autoSay(intro);
+  pc.querySelector('#tv').onclick=()=>{
+    let ok=0;
+    pc.querySelectorAll('[data-g]').forEach(el=>{
+      const g=gaps[+el.dataset.g]; const r=qcm?{ok:g.acc.includes(el.value)}:analyse(g,el.value);
+      el.classList.remove('good','bad'); el.disabled=true;
+      if(r.ok){ok++;el.classList.add('good');} else {el.classList.add('bad'); el.insertAdjacentHTML('afterend',` <span class="corr">→ ${colorAnswer(g.v,g.ans)}</span>`);}
+    });
+    const need=Math.ceil(gaps.length*0.8);
+    pc.querySelector('#tv').remove();
+    let gi=0; const pcText=T.seg.map(s=>typeof s==='string'?s:gaps[gi++].ans).join('');
+    pc.querySelector('#tfb').innerHTML=`<div class="fb ${ok>=need?'ok':'ko'}">${ok} bonnes réponses sur ${gaps.length}.</div><div class="row" style="margin-top:8px">${spk(pcText)}<span>Écouter le texte au passé composé</span></div><p class="center"><button class="btn green" id="tn">Suite ➜</button> <button class="btn grey" id="tr">🔁 Un autre texte</button></p>`;
+    autoSay(`${ok} bonnes réponses sur ${gaps.length}.`);
+    pc.querySelector('#tr').onclick=()=>defiText(pc);
+    pc.querySelector('#tn').onclick=()=>{
+      markTab(7,'c');
+      if(ok>=need){ defiResult(pc,7,true,`${ok} sur ${gaps.length}`); bonus(pc); }
+      else defiResult(pc,7,false,`${ok} sur ${gaps.length}`);
+    };
+  };
+}
+function bonus(pc){
+  const d=document.createElement('div'); d.className='card'; d.style.marginTop='16px'; d.style.boxShadow='none'; d.style.border='3px dashed #ce93d8';
+  d.innerHTML=`<h3>✍️ Bonus : Mon plus beau souvenir</h3><p>Raconte un beau souvenir en quelques phrases au passé composé. Ensuite, écoute ton texte !</p>
+   <p class="small">Idées de verbes : aller, venir, partir, voir, faire, prendre, jouer, rire, découvrir, rencontrer…</p>
+   <textarea id="bt" placeholder="L'été dernier, je suis allé(e)…"></textarea><p class="center"><button class="btn yellow" id="bl">🔊 Écouter mon texte</button></p>`;
+  pc.appendChild(d);
+  d.querySelector('#bl').onclick=()=>speak(d.querySelector('#bt').value);
+}
+
+/* =========================================================
+   ESPACE ENSEIGNANTE (5 appuis sur le titre)
+   ========================================================= */
+function teacherLogin(){
+  const m=modal(`<h3>Espace enseignante</h3><p><input id="tc" type="password" style="padding:8px;border-radius:10px;border:2px solid #ce93d8;width:100%"></p><div id="tcf"></div><p class="center"><button class="btn" id="tok">Entrer</button> <button class="btn grey" data-close>Fermer</button></p>`);
+  const go=()=>{ if(m.querySelector('#tc').value.trim().toUpperCase()!=='OFIKZA'){m.querySelector('#tcf').innerHTML='<div class="fb ko">Code incorrect.</div>';return;} m.remove(); teacherPanel(); };
+  m.querySelector('#tok').onclick=go; m.querySelector('#tc').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+}
+function teacherPanel(){
+  const m=modal(`<h3>Espace enseignante</h3>
+   <p><button class="btn green" id="ta">Ouvrir toutes les époques</button></p>
+   <p><button class="btn yellow" id="tsc">Relancer le scanner</button></p>
+   <p><button class="btn grey" id="trs">Tout effacer sur cet appareil</button></p>
+   <h4>Bilan de cet appareil ${S.name?'('+esc(S.name)+')':''}</h4>
+   <p class="small">${S.start!=null?`Scanner (${S.scanDate||''}) : départ ${PLANETS[S.start].name}.`:'Scanner non passé sur cet appareil (ou progression restaurée par mot de passe).'}</p>
+   <div style="font-size:16px">${PLANETS.map((P,i)=>{const d=(S.defi||{})[i];
+     const st=d&&d.ok?`✅ Défi réussi (dernier : ${d.last}, ${d.date}, ${d.n} essai${d.n>1?'s':''})`:d?`⏳ Défi tenté (${d.last}, ${d.date}, ${d.n} essai${d.n>1?'s':''})`:(S.start!=null&&i<S.start)?'🛸 Validée par le scanner':i<S.unlocked?'✔︎ Ouverte par mot de passe':'—';
+     return `<div style="border-top:1px solid #ddd;padding:6px 0"><b>${P.emoji} ${P.name}</b> — ${st}<br><span class="small">Évalué :</span> ${PCODES[i].ev.length?codeChips(PCODES[i].ev):'<span class="small">aucun</span>'} · <span class="small">Travaillé :</span> ${codeChips(PCODES[i].tr)}</div>`;}).join('')}</div>
+   <details style="font-size:16px;margin-top:8px"><summary>Intitulés des codes</summary>${codeChips(Object.keys(CODES),true)}</details>
+   <h4>Mots de passe</h4><table class="conj" style="font-size:17px">${PLANETS.map((P,i)=>`<tr><td>${P.emoji} Départ ${esc(P.name)}</td><td><b>${code(i)}</b></td></tr>`).join('')}<tr><td>⭐ Mission terminée (Atlantide comprise)</td><td><b>${code(9)}</b></td></tr></table>
+   <p class="center"><button class="btn" data-close>Fermer</button></p>`);
+  m.querySelector('#ta').onclick=()=>{S.unlocked=Math.max(S.unlocked,8);S.placed=true;save();m.remove();refreshHeader();showMap();};
+  m.querySelector('#tsc').onclick=()=>{m.remove();scanIntro();};
+  m.querySelector('#trs').onclick=()=>{try{localStorage.removeItem(KEY);}catch(e){} S={name:'',placed:false,unlocked:0,tabs:{},auto:false,slow:false}; m.remove(); refreshHeader(); showWelcome();};
+}
+
+/* =========================================================
+   DÉMARRAGE
+   ========================================================= */
+refreshHeader();
+if(S.placed) showMap('content de te revoir ! Choisis une époque.'); else showWelcome();
+</script>
+</body>
+</html>
